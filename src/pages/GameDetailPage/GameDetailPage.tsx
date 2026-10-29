@@ -37,8 +37,8 @@ import StateMessage from "../../components/StateMessage/StateMessage";
 import { formatPrice } from "../../utils/format";
 import "./GameDetailPage.css";
 
-const FALLBACK_BANNER = "https://placehold.co/1200x500/18243A/FFFFFF?text=ATA+Games";
-const FALLBACK_COVER = "https://placehold.co/400x225/18243A/FFFFFF?text=ATA+Games";
+const FALLBACK_BANNER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='500' viewBox='0 0 1200 500'%3E%3Crect width='1200' height='500' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='32' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
+const FALLBACK_COVER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'%3E%3Crect width='400' height='225' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='18' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
 
 const STEAM_TRAILERS: Record<string, string[]> = {
     "1245620": [
