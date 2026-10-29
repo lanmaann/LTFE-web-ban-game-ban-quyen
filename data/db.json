@@ -16,8 +16,8 @@
       "publisher": "Bandai Namco",
       "releaseDate": "2022-02-25",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/library_hero.jpg",
+      "coverImage": "/images/games/1245620-cover.jpg",
+      "bannerImage": "/images/games/1245620-banner.jpg",
       "isFeatured": true
     },
     {
@@ -36,8 +36,8 @@
       "publisher": "ConcernedApe",
       "releaseDate": "2016-02-26",
       "rating": 4.9,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/library_hero.jpg",
+      "coverImage": "/images/games/413150-cover.jpg",
+      "bannerImage": "/images/games/413150-banner.jpg",
       "isFeatured": true
     },
     {
@@ -56,8 +56,8 @@
       "publisher": "CD Projekt",
       "releaseDate": "2020-12-10",
       "rating": 4.5,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/library_hero.jpg",
+      "coverImage": "/images/games/1091500-cover.jpg",
+      "bannerImage": "/images/games/1091500-banner.jpg",
       "isFeatured": true
     },
     {
@@ -76,8 +76,8 @@
       "publisher": "Larian Studios",
       "releaseDate": "2023-08-03",
       "rating": 4.9,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/library_hero.jpg",
+      "coverImage": "/images/games/1086940-cover.jpg",
+      "bannerImage": "/images/games/1086940-banner.jpg",
       "isFeatured": true
     },
     {
@@ -96,8 +96,8 @@
       "publisher": "Rockstar Games",
       "releaseDate": "2019-12-05",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/library_hero.jpg",
+      "coverImage": "/images/games/1174180-cover.jpg",
+      "bannerImage": "/images/games/1174180-banner.jpg",
       "isFeatured": true
     },
     {
@@ -116,8 +116,8 @@
       "publisher": "CD Projekt",
       "releaseDate": "2015-05-18",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/library_hero.jpg",
+      "coverImage": "/images/games/292030-cover.jpg",
+      "bannerImage": "/images/games/292030-banner.jpg",
       "isFeatured": true
     },
     {
@@ -136,8 +136,8 @@
       "publisher": "Warner Bros. Games",
       "releaseDate": "2023-02-10",
       "rating": 4.4,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/library_hero.jpg",
+      "coverImage": "/images/games/990080-cover.jpg",
+      "bannerImage": "/images/games/990080-banner.jpg",
       "isFeatured": false
     },
     {
@@ -156,8 +156,8 @@
       "publisher": "Supergiant Games",
       "releaseDate": "2020-09-17",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/library_hero.jpg",
+      "coverImage": "/images/games/1145360-cover.jpg",
+      "bannerImage": "/images/games/1145360-banner.jpg",
       "isFeatured": true
     },
     {
@@ -176,8 +176,8 @@
       "publisher": "Maddy Makes Games",
       "releaseDate": "2018-01-25",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/library_hero.jpg",
+      "coverImage": "/images/games/504230-cover.jpg",
+      "bannerImage": "/images/games/504230-banner.jpg",
       "isFeatured": false
     },
     {
@@ -196,8 +196,8 @@
       "publisher": "Re-Logic",
       "releaseDate": "2011-05-16",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/library_hero.jpg",
+      "coverImage": "/images/games/105600-cover.jpg",
+      "bannerImage": "/images/games/105600-banner.jpg",
       "isFeatured": true
     },
     {
@@ -216,8 +216,8 @@
       "publisher": "Valve",
       "releaseDate": "2009-11-17",
       "rating": 4.7,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/550/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/550/library_hero.jpg",
+      "coverImage": "/images/games/550-cover.jpg",
+      "bannerImage": "/images/games/550-banner.jpg",
       "isFeatured": false
     },
     {
@@ -236,8 +236,8 @@
       "publisher": "Valve",
       "releaseDate": "2011-04-19",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/library_hero.jpg",
+      "coverImage": "/images/games/620-cover.jpg",
+      "bannerImage": "/images/games/620-banner.jpg",
       "isFeatured": false
     },
     {
@@ -256,8 +256,8 @@
       "publisher": "Rockstar Games",
       "releaseDate": "2015-04-14",
       "rating": 4.6,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/library_hero.jpg",
+      "coverImage": "/images/games/271590-cover.jpg",
+      "bannerImage": "/images/games/271590-banner.jpg",
       "isFeatured": true
     },
     {
@@ -276,8 +276,8 @@
       "publisher": "Digital Extremes",
       "releaseDate": "2013-03-25",
       "rating": 4.5,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/230410/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/230410/library_hero.jpg",
+      "coverImage": "/images/games/230410-cover.jpg",
+      "bannerImage": "/images/games/230410-banner.jpg",
       "isFeatured": false
     },
     {
@@ -296,8 +296,8 @@
       "publisher": "Valve",
       "releaseDate": "2013-07-09",
       "rating": 4.4,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/library_hero.jpg",
+      "coverImage": "/images/games/570-cover.jpg",
+      "bannerImage": "/images/games/570-banner.jpg",
       "isFeatured": false
     },
     {
@@ -316,8 +316,8 @@
       "publisher": "Valve",
       "releaseDate": "2023-09-27",
       "rating": 4.4,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/library_hero.jpg",
+      "coverImage": "/images/games/730-cover.jpg",
+      "bannerImage": "/images/games/730-banner.jpg",
       "isFeatured": false
     },
     {
@@ -336,8 +336,8 @@
       "publisher": "Electronic Arts",
       "releaseDate": "2020-11-04",
       "rating": 4.3,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/library_hero.jpg",
+      "coverImage": "/images/games/1172470-cover.jpg",
+      "bannerImage": "/images/games/1172470-banner.jpg",
       "isFeatured": false
     },
     {
@@ -356,8 +356,8 @@
       "publisher": "Pocketpair",
       "releaseDate": "2024-01-19",
       "rating": 4.2,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/library_hero.jpg",
+      "coverImage": "/images/games/1623730-cover.jpg",
+      "bannerImage": "/images/games/1623730-banner.jpg",
       "isFeatured": false
     },
     {
@@ -376,8 +376,8 @@
       "publisher": "Zeekerss",
       "releaseDate": "2023-10-23",
       "rating": 4.6,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/library_hero.jpg",
+      "coverImage": "/images/games/1966720-cover.jpg",
+      "bannerImage": "/images/games/1966720-banner.jpg",
       "isFeatured": false
     },
     {
@@ -396,8 +396,8 @@
       "publisher": "Game Science",
       "releaseDate": "2024-08-20",
       "rating": 4.5,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/library_hero.jpg",
+      "coverImage": "/images/games/2358720-cover.jpg",
+      "bannerImage": "/images/games/2358720-banner.jpg",
       "isFeatured": true
     },
     {
@@ -416,8 +416,8 @@
       "publisher": "Wube Software",
       "releaseDate": "2020-08-14",
       "rating": 4.9,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/library_hero.jpg",
+      "coverImage": "/images/games/427520-cover.jpg",
+      "bannerImage": "/images/games/427520-banner.jpg",
       "isFeatured": false
     },
     {
@@ -436,8 +436,8 @@
       "publisher": "Paradox Interactive",
       "releaseDate": "2015-03-10",
       "rating": 4.6,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/255710/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/255710/library_hero.jpg",
+      "coverImage": "/images/games/255710-cover.jpg",
+      "bannerImage": "/images/games/255710-banner.jpg",
       "isFeatured": false
     },
     {
@@ -456,8 +456,8 @@
       "publisher": "Electronic Arts",
       "releaseDate": "2014-09-02",
       "rating": 4.3,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222670/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222670/library_hero.jpg",
+      "coverImage": "/images/games/1222670-cover.jpg",
+      "bannerImage": "/images/games/1222670-banner.jpg",
       "isFeatured": false
     },
     {
@@ -476,8 +476,8 @@
       "publisher": "2K",
       "releaseDate": "2010-09-21",
       "rating": 4.7,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8930/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8930/library_hero.jpg",
+      "coverImage": "/images/games/8930-cover.jpg",
+      "bannerImage": "/images/games/8930-banner.jpg",
       "isFeatured": false
     },
     {
@@ -496,8 +496,8 @@
       "publisher": "PlayStation Publishing",
       "releaseDate": "2022-08-12",
       "rating": 4.6,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/library_hero.jpg",
+      "coverImage": "/images/games/1817070-cover.jpg",
+      "bannerImage": "/images/games/1817070-banner.jpg",
       "isFeatured": false
     },
     {
@@ -516,8 +516,8 @@
       "publisher": "Square Enix",
       "releaseDate": "2021-12-16",
       "rating": 4.5,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1462040/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1462040/library_hero.jpg",
+      "coverImage": "/images/games/1462040-cover.jpg",
+      "bannerImage": "/images/games/1462040-banner.jpg",
       "isFeatured": false
     },
     {
@@ -536,8 +536,8 @@
       "publisher": "Nicalis",
       "releaseDate": "2014-11-04",
       "rating": 4.7,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/library_hero.jpg",
+      "coverImage": "/images/games/250900-cover.jpg",
+      "bannerImage": "/images/games/250900-banner.jpg",
       "isFeatured": false
     },
     {
@@ -556,8 +556,8 @@
       "publisher": "Electronic Arts",
       "releaseDate": "2021-05-14",
       "rating": 4.6,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1328670/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1328670/library_hero.jpg",
+      "coverImage": "/images/games/1328670-cover.jpg",
+      "bannerImage": "/images/games/1328670-banner.jpg",
       "isFeatured": false
     },
     {
@@ -576,8 +576,8 @@
       "publisher": "PlayStation Publishing",
       "releaseDate": "2020-08-07",
       "rating": 4.5,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151640/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151640/library_hero.jpg",
+      "coverImage": "/images/games/1151640-cover.jpg",
+      "bannerImage": "/images/games/1151640-banner.jpg",
       "isFeatured": false
     },
     {
@@ -596,8 +596,8 @@
       "publisher": "Activision",
       "releaseDate": "2009-11-10",
       "rating": 4.3,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/42700/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/42700/library_hero.jpg",
+      "coverImage": "/images/games/42700-cover.jpg",
+      "bannerImage": "/images/games/42700-banner.jpg",
       "isFeatured": false
     },
     {
@@ -616,8 +616,8 @@
       "publisher": "tobyfox",
       "releaseDate": "2015-09-15",
       "rating": 4.8,
-      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/header.jpg",
-      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/library_hero.jpg",
+      "coverImage": "/images/games/413080-cover.jpg",
+      "bannerImage": "/images/games/413080-banner.jpg",
       "isFeatured": false
     }
   ]
