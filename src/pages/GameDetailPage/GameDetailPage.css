@@ -1,0 +1,1268 @@
+/* GameDetailPage.css */
+
+.game-detail-page {
+    position: relative;
+    min-height: calc(100vh - 64px);
+    padding: 24px 0 60px;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    overflow-x: hidden;
+}
+
+/* Lớp backdrop hiệu ứng mờ gaming */
+.game-detail__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 520px;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    opacity: 0.12;
+    filter: blur(48px);
+    pointer-events: none;
+    z-index: 0;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.game-detail__container {
+    position: relative;
+    z-index: 1;
+    width: min(var(--container-width), 92%);
+    margin: 0 auto;
+}
+
+/* Breadcrumbs */
+.game-detail__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.game-detail__breadcrumb-link {
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+}
+
+.game-detail__breadcrumb-link:hover {
+    color: var(--color-accent);
+}
+
+.game-detail__breadcrumb-separator {
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.game-detail__breadcrumb-current {
+    color: #fff;
+    font-weight: 600;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Thanh tác vụ trên */
+.game-detail__top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.game-detail__back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: #cad8ee;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.game-detail__back-btn:hover {
+    background: var(--color-surface-2);
+    border-color: #3b5377;
+    color: #fff;
+    transform: translateX(-2px);
+}
+
+.game-detail__share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: #cad8ee;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.game-detail__share-btn:hover {
+    background: var(--color-surface-2);
+    border-color: #3b5377;
+    color: #fff;
+}
+
+/* State wrappers */
+.game-detail__state-wrapper {
+    padding: 60px 0;
+}
+
+/* Header Game Info */
+.game-detail__header-info {
+    margin-bottom: 24px;
+}
+
+.game-detail__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.game-detail__genre-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: rgba(38, 141, 233, 0.15);
+    border: 1px solid rgba(38, 141, 233, 0.35);
+    color: var(--color-accent);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.game-detail__featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background: rgba(255, 212, 119, 0.15);
+    border: 1px solid rgba(255, 212, 119, 0.35);
+    color: var(--color-warning);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.game-detail__discount-badge {
+    padding: 5px 10px;
+    background: var(--color-success);
+    color: #071b12;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.game-detail__title {
+    margin: 0 0 12px;
+    font-size: 34px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+}
+
+.game-detail__submeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.game-detail__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-warning);
+}
+
+.game-detail__rating strong {
+    color: #fff;
+    font-size: 15px;
+}
+
+.game-detail__rating span {
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.game-detail__dot {
+    opacity: 0.5;
+}
+
+.game-detail__developer-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-muted);
+}
+
+.game-detail__developer-info strong {
+    color: #dce7f7;
+}
+
+/* Layout 2 cột */
+.game-detail__layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+}
+
+/* Cột trái */
+.game-detail__main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ==========================================================================
+   HERO MEDIA VIEW: VIDEO TRAILER PLAYER CHÍNH & MEDIA THUMBNAILS
+   ========================================================================== */
+
+.game-detail__hero-media-wrapper {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+/* Khung màn hình chính (Viewport 16:9) */
+.game-detail__hero-media-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Container Video */
+.game-detail__video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.game-detail__hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+}
+
+/* ENGINE 2: Cinematic Motion Gameplay Trailer */
+.game-detail__motion-video-player {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+}
+
+.game-detail__motion-bg {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transform-origin: center center;
+    animation: motionCameraPan 18s ease-in-out infinite alternate;
+}
+
+@keyframes motionCameraPan {
+    0% {
+        transform: scale(1.05) translate(0, 0);
+    }
+    33% {
+        transform: scale(1.15) translate(-2%, 1%);
+    }
+    66% {
+        transform: scale(1.1) translate(2%, -1%);
+    }
+    100% {
+        transform: scale(1.2) translate(0, 2%);
+    }
+}
+
+.game-detail__motion-video-player.paused .game-detail__motion-bg {
+    animation-play-state: paused;
+}
+
+.game-detail__motion-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+    );
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.game-detail__motion-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 16px;
+    background: radial-gradient(circle at center, transparent 45%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.game-detail__motion-hud {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+}
+
+.game-detail__motion-hud-hp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.game-detail__motion-hud-bar {
+    width: 70px;
+    height: 5px;
+    background: #22c55e;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+    animation: hpPulse 2s infinite ease-in-out;
+}
+
+@keyframes hpPulse {
+    0%, 100% { opacity: 0.9; width: 70px; }
+    50% { opacity: 1; width: 62px; }
+}
+
+.game-detail__motion-hud-tag {
+    background: rgba(22, 116, 207, 0.85);
+    border: 1px solid rgba(98, 181, 255, 0.4);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+/* Nút Play to ở giữa màn hình nếu video đang paused hoặc autoplay bị chặn */
+.game-detail__big-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(13, 21, 36, 0.9);
+    backdrop-filter: blur(8px);
+    border: 2px solid var(--color-accent);
+    border-radius: 50px;
+    padding: 14px 28px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 15;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(98, 181, 255, 0.4);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.game-detail__big-play-btn svg {
+    color: var(--color-accent);
+}
+
+.game-detail__big-play-btn span {
+    font-size: 14px;
+    font-weight: 750;
+    letter-spacing: 0.5px;
+}
+
+.game-detail__big-play-btn:hover {
+    background: var(--color-accent);
+    color: #0b1120;
+    transform: translate(-50%, -50%) scale(1.06);
+    box-shadow: 0 12px 36px rgba(98, 181, 255, 0.6);
+}
+
+.game-detail__big-play-btn:hover svg {
+    color: #0b1120;
+}
+
+/* Huy hiệu video góc trên bên trái */
+.game-detail__video-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: rgba(13, 21, 36, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 71, 87, 0.4);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.game-detail__video-live-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff4757;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ff4757;
+    animation: livePulse 1.4s infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.35;
+        transform: scale(1.3);
+    }
+}
+
+/* Toast thông báo âm thanh */
+.game-detail__volume-toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    background: rgba(10, 16, 28, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+    border-radius: 30px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    z-index: 20;
+    animation: toastFade 0.25s ease;
+}
+
+@keyframes toastFade {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -42%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Thanh điều khiển video (Controls overlay) */
+.game-detail__video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 16px 12px;
+    background: linear-gradient(to top, rgba(5, 9, 17, 0.94) 0%, rgba(5, 9, 17, 0.6) 60%, transparent 100%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: opacity 0.25s ease;
+}
+
+/* Thanh tiến trình Timeline */
+.game-detail__video-timeline {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: height 0.15s ease;
+}
+
+.game-detail__video-timeline:hover {
+    height: 7px;
+}
+
+.game-detail__video-timeline-fill {
+    height: 100%;
+    background: var(--color-accent);
+    box-shadow: 0 0 10px var(--color-accent);
+    transition: width 0.1s linear;
+}
+
+/* Hàng nút điều khiển */
+.game-detail__video-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.game-detail__video-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-detail__video-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.game-detail__ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.game-detail__ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.04);
+}
+
+.game-detail__ctrl-btn--volume.active {
+    background: rgba(22, 116, 207, 0.7);
+    border-color: var(--color-accent);
+}
+
+.game-detail__ctrl-volume-label {
+    font-size: 11px;
+}
+
+.game-detail__video-time {
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    margin-left: 6px;
+}
+
+/* Khi xem ảnh chụp màn hình (Screenshot Mode) */
+.game-detail__image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.game-detail__hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.game-detail__image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.game-detail__image-caption {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.game-detail__return-video-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-primary);
+    border: 1px solid var(--color-accent);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(22, 116, 207, 0.4);
+}
+
+.game-detail__return-video-btn:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   DANH SÁCH ẢNH THU NHỎ (THUMBNAILS) CHUYỂN ĐỔI VIDEO VÀ ẢNH CHỤP
+   ========================================================================== */
+
+.game-detail__media-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.game-detail__media-thumb {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px;
+    background: var(--color-surface-2);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.game-detail__media-thumb:hover {
+    border-color: rgba(98, 181, 255, 0.4);
+    background: #1c2b42;
+    transform: translateY(-2px);
+}
+
+.game-detail__media-thumb.active {
+    border-color: var(--color-accent);
+    background: rgba(22, 116, 207, 0.18);
+    box-shadow: 0 0 14px rgba(98, 181, 255, 0.35);
+}
+
+.game-detail__thumb-preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #090e18;
+}
+
+.game-detail__thumb-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.game-detail__media-thumb:hover .game-detail__thumb-preview img {
+    transform: scale(1.05);
+}
+
+.game-detail__thumb-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.game-detail__thumb-badge--video {
+    background: #e11d48;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.game-detail__thumb-badge--image {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #93c5fd;
+}
+
+.game-detail__thumb-title {
+    color: #d1dced;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+}
+
+.game-detail__media-thumb.active .game-detail__thumb-title {
+    color: #fff;
+    font-weight: 750;
+}
+
+/* ==========================================================================
+   CÁC PHẦN THÔNG TIN CHI TIẾT GAME KHÁC
+   ========================================================================== */
+
+.game-detail__section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.game-detail__section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.game-detail__section-title svg {
+    color: var(--color-accent);
+}
+
+.game-detail__description {
+    color: #cad8ee;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+.game-detail__description p {
+    margin: 0 0 12px;
+}
+
+/* Highlights */
+.game-detail__highlights {
+    background: var(--color-surface-2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+}
+
+.game-detail__highlights h3 {
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.game-detail__highlights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.game-detail__highlights-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #c0d1ea;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.game-detail__check-icon {
+    color: var(--color-success);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Cấu hình hệ thống */
+.game-detail__requirements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.game-detail__requirements-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+}
+
+.game-detail__requirements-card--recommended {
+    border-color: rgba(38, 141, 233, 0.35);
+    background: linear-gradient(180deg, rgba(22, 116, 207, 0.08) 0%, var(--color-surface-2) 100%);
+}
+
+.game-detail__requirements-card h4 {
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game-detail__requirements-card--recommended h4 {
+    color: var(--color-accent);
+}
+
+.game-detail__req-list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.game-detail__req-list div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.game-detail__req-list dt {
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.game-detail__req-list dd {
+    margin: 0;
+    color: #edf3ff;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Cột phải: Sidebar Purchase Card */
+.game-detail__sidebar {
+    position: sticky;
+    top: 84px;
+}
+
+.game-detail__purchase-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+.game-detail__purchase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.game-detail__stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-success);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.game-detail__pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-success);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(1.3);
+    }
+}
+
+.game-detail__edition-badge {
+    padding: 3px 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--color-muted);
+    font-weight: 600;
+}
+
+/* Khối giá */
+.game-detail__price-box {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.game-detail__price-discount-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.game-detail__price-tag {
+    padding: 3px 8px;
+    background: var(--color-success);
+    color: #071b12;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.game-detail__original-price {
+    color: var(--color-muted);
+    font-size: 15px;
+}
+
+.game-detail__current-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.game-detail__current-price {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.game-detail__saving-text {
+    margin: 8px 0 0;
+    color: var(--color-success);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.game-detail__saving-text strong {
+    font-weight: 700;
+}
+
+/* Nút hành động */
+.game-detail__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.game-detail__add-cart-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(22, 116, 207, 0.35);
+}
+
+.game-detail__add-cart-btn:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 116, 207, 0.45);
+}
+
+.game-detail__add-cart-btn.added {
+    background: #1e8354;
+    box-shadow: 0 4px 14px rgba(30, 131, 84, 0.4);
+}
+
+.game-detail__buy-now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    color: var(--color-accent);
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.game-detail__buy-now-btn:hover {
+    background: var(--color-accent);
+    color: #0b1120;
+    transform: translateY(-2px);
+}
+
+/* Perks cam kết */
+.game-detail__perks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+}
+
+.game-detail__perk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.game-detail__perk-icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.game-detail__perk-item strong {
+    display: block;
+    color: #edf3ff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.game-detail__perk-item p {
+    margin: 2px 0 0;
+    color: var(--color-muted);
+    font-size: 12px;
+}
+
+/* Specs */
+.game-detail__specs h3 {
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.game-detail__specs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-detail__spec-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.game-detail__spec-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-muted);
+}
+
+.game-detail__spec-value {
+    color: #edf3ff;
+    font-weight: 600;
+    text-align: right;
+}
+
+.game-detail__spec-value.rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-warning);
+}
+
+.game-detail__platform-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.game-detail__platform-tag {
+    padding: 2px 7px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: #c2d6f2;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Game cùng thể loại / Đề xuất */
+.game-detail__related-section {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--color-border);
+}
+
+.game-detail__related-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.game-detail__related-header h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.game-detail__related-header p {
+    margin: 6px 0 0;
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.game-detail__related-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-accent);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.game-detail__related-more:hover {
+    color: #fff;
+}
+
+.game-detail__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .game-detail__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .game-detail__sidebar {
+        position: static;
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .game-detail__title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-detail-page {
+        padding: 16px 0 40px;
+    }
+
+    .game-detail__title {
+        font-size: 24px;
+    }
+
+    .game-detail__media-thumbnails {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .game-detail__requirements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-detail__related-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .game-detail__hero-media-wrapper {
+        padding: 10px;
+    }
+
+    .game-detail__section {
+        padding: 18px;
+    }
+
+    .game-detail__purchase-card {
+        padding: 18px;
+    }
+}
