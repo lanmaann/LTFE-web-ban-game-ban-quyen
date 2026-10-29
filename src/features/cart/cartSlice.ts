@@ -19,13 +19,10 @@ const cartSlice = createSlice({
     reducers: {
         addToCart(state, action: PayloadAction<Game>) {
             const game = action.payload;
-            const existing = state.items.find(
+            const alreadyExists = state.items.some(
                 (item) => item.game.id === game.id
             );
-
-            if (existing) {
-                existing.quantity += 1;
-            } else {
+            if (!alreadyExists) {
                 state.items.push({ game, quantity: 1 });
             }
         },
@@ -34,24 +31,6 @@ const cartSlice = createSlice({
             state.items = state.items.filter(
                 (item) => item.game.id !== action.payload
             );
-        },
-
-        increaseQuantity(state, action: PayloadAction<string>) {
-            const item = state.items.find(
-                (item) => item.game.id === action.payload
-            );
-
-            if (item) item.quantity += 1;
-        },
-
-        decreaseQuantity(state, action: PayloadAction<string>) {
-            const item = state.items.find(
-                (item) => item.game.id === action.payload
-            );
-
-            if (item && item.quantity > 1) {
-                item.quantity -= 1;
-            }
         },
 
         clearCart(state) {
@@ -63,17 +42,20 @@ const cartSlice = createSlice({
 export const {
     addToCart,
     removeFromCart,
-    increaseQuantity,
-    decreaseQuantity,
     clearCart,
 } = cartSlice.actions;
-
+export const selectCartCount = (state: RootState) => state.cart.items.length;
 export const selectCartItems = (state: RootState) => state.cart.items;
-
-export const selectCartCount = (state: RootState) =>
-    state.cart.items.reduce((sum, item) => sum + item.quantity, 0);
-
+export const selectIsInCart = (gameId: string) => (state: RootState) =>
+    state.cart.items.some((item) => item.game.id === gameId);
 export const selectCartTotal = (state: RootState) =>
-    state.cart.items.reduce((sum, item) => sum + item.game.price * item.quantity, 0);
+    state.cart.items.reduce((sum, item) => sum + item.game.price, 0);
+export const selectCartOriginalTotal = (state: RootState) =>
+    state.cart.items.reduce((sum, item) => sum + item.game.originalPrice, 0);
+export const selectCartSavings = (state: RootState) =>
+    state.cart.items.reduce(
+        (sum, item) => sum + Math.max(0, item.game.originalPrice - item.game.price),
+        0
+    );
 
 export default cartSlice.reducer;
