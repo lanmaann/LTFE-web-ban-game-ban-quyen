@@ -1,16 +1,18 @@
 .game-card {
+    position: relative;
     min-width: 0;
-    overflow: hidden;
     background: #111c2e;
     border: 1px solid #273750;
     border-radius: 12px;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.game-card:hover {
-    transform: translateY(-4px);
+.game-card:hover,
+.game-card--hovered {
+    transform: translateY(-3px);
     border-color: #3e78a9;
-    box-shadow: 0 12px 28px rgb(0 0 0 / 20%);
+    box-shadow: 0 12px 28px rgb(0 0 0 / 30%);
+    z-index: 100;
 }
 
 .game-card__image-link {
@@ -19,6 +21,7 @@
     overflow: hidden;
     aspect-ratio: 16 / 10;
     background: #1a2940;
+    border-radius: 11px 11px 0 0;
 }
 
 .game-card__image {
@@ -26,21 +29,47 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .game-card:hover .game-card__image {
-    transform: scale(1.04);
+    transform: scale(1.03);
+}
+
+/* Nút 3 chấm tùy chọn chuẩn Steam ở góc phải ảnh */
+.game-card__steam-more-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+    color: #cbd5e1;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s;
+}
+
+.game-card__steam-more-btn:hover {
+    background: #1674cf;
+    border-color: #62b5ff;
+    color: #fff;
 }
 
 .game-card__discount,
 .game-card__featured {
     position: absolute;
     top: 10px;
-    padding: 6px 8px;
-    border-radius: 5px;
+    padding: 5px 8px;
+    border-radius: 4px;
     font-size: 11px;
     font-weight: 800;
+    z-index: 1;
 }
 
 .game-card__discount {
@@ -57,7 +86,7 @@
 }
 
 .game-card__body {
-    padding: 15px;
+    padding: 14px;
 }
 
 .game-card__meta {
@@ -65,7 +94,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: #9db1cb;
     font-size: 11px;
 }
@@ -82,7 +111,7 @@
     display: block;
     overflow: hidden;
     color: #f0f5ff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 750;
     line-height: 1.4;
     text-overflow: ellipsis;
@@ -95,7 +124,7 @@
 
 .game-card__developer {
     overflow: hidden;
-    margin: 7px 0 12px;
+    margin: 6px 0 10px;
     color: #92a5c0;
     font-size: 12px;
     text-overflow: ellipsis;
@@ -106,71 +135,203 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 24px;
+    margin-bottom: 12px;
 }
 
 .game-card__platforms span {
-    padding: 4px 7px;
-    color: #a9c7e8;
-    background: #1b2c43;
+    padding: 2px 7px;
+    color: #a9bedb;
+    background: #18263c;
     border-radius: 4px;
     font-size: 10px;
+    font-weight: 700;
 }
 
 .game-card__bottom {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 10px;
-    margin-top: 16px;
-    padding-top: 13px;
-    border-top: 1px solid #26364c;
 }
 
 .game-card__price {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 0;
 }
 
 .game-card__price del {
-    color: #7f91aa;
+    color: #8fa4c1;
     font-size: 11px;
 }
 
 .game-card__price strong {
-    color: #ffffff;
-    font-size: 14px;
-    overflow-wrap: anywhere;
+    color: #fff;
+    font-size: 15px;
 }
 
 .game-card__cart-button {
     display: grid;
-    flex-shrink: 0;
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     place-items: center;
-    color: #ffffff;
+    color: #fff;
     background: #1674cf;
     border: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
+    border-radius: 7px;
+    transition: background 0.2s, transform 0.2s;
 }
 
 .game-card__cart-button:hover {
     background: #268de9;
+    transform: scale(1.05);
 }
 
 .game-card__added {
-    margin: 10px 0 0;
-    color: #7de5b0;
-    font-size: 12px;
+    margin: 8px 0 0;
+    color: #72e5ad;
+    font-size: 11px;
+    font-weight: 700;
 }
 
-@media (max-width: 480px) {
-    .game-card__image-link {
-        aspect-ratio: 16 / 9;
+/* ==========================================================================
+   STEAM HOVER POPOVER: BOX GIỚI THIỆU CHI TIẾT CHUẨN PHONG CÁCH STEAM
+   (Theo đúng ảnh giao diện Steam thực tế)
+   ========================================================================== */
+
+.steam-hover-box {
+    position: absolute;
+    top: 0;
+    width: 310px;
+    background: #1c2838;
+    background: linear-gradient(135deg, #1c2838 0%, #152232 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 4px;
+    padding: 14px 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 1px 1px rgba(102, 192, 244, 0.15);
+    z-index: 1000;
+    pointer-events: auto;
+    animation: steamBoxFadeIn 0.18s ease-out;
+}
+
+@keyframes steamBoxFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.steam-hover-box--right {
+    left: calc(100% + 10px);
+}
+
+.steam-hover-box--left {
+    right: calc(100% + 10px);
+}
+
+/* 1. Tên game */
+.steam-hover-box__title {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #fff;
+}
+
+.steam-hover-box__title a {
+    color: #fff;
+    transition: color 0.2s;
+}
+
+.steam-hover-box__title a:hover {
+    color: #66c0f4;
+}
+
+/* 2. Ngày phát hành */
+.steam-hover-box__date {
+    color: #8f98a0;
+    font-size: 11.5px;
+    margin-bottom: 12px;
+}
+
+/* 3. Đoạn mô tả game */
+.steam-hover-box__desc {
+    margin: 0 0 14px;
+    color: #acb2b8;
+    font-size: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 4. Khung đánh giá riêng biệt chuẩn Steam */
+.steam-hover-box__review-section {
+    background: #121a24;
+    border-radius: 3px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+}
+
+.steam-hover-box__review-label {
+    color: #8f98a0;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.steam-hover-box__review-result {
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.steam-hover-box__review-highlight {
+    color: #66c0f4; /* Màu xanh dương đặc trưng Steam */
+    font-weight: 700;
+}
+
+.steam-hover-box__review-count {
+    color: #8f98a0;
+    font-size: 11.5px;
+}
+
+/* 5. Khối Nhãn người dùng (User Tags) chuẩn Steam */
+.steam-hover-box__tags-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.steam-hover-box__tags-label {
+    color: #8f98a0;
+    font-size: 11px;
+}
+
+.steam-hover-box__tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.steam-hover-box__tag-pill {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(38, 56, 78, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    color: #67c1f5;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Ẩn trên mobile/touch để không che khuất màn hình */
+@media (max-width: 900px) {
+    .steam-hover-box {
+        display: none !important;
     }
 }
