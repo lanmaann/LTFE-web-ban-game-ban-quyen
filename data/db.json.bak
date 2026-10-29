@@ -1,0 +1,624 @@
+{
+  "games": [
+    {
+      "id": "1245620",
+      "title": "Elden Ring",
+      "slug": "elden-ring",
+      "description": "Khám phá Vùng đất Giữa trong cuộc phiêu lưu hành động nhập vai đầy thử thách.",
+      "price": 899000,
+      "originalPrice": 1199000,
+      "discountPercent": 25,
+      "genre": "Action RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "FromSoftware",
+      "publisher": "Bandai Namco",
+      "releaseDate": "2022-02-25",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "413150",
+      "title": "Stardew Valley",
+      "slug": "stardew-valley",
+      "description": "Xây dựng nông trại, kết bạn với cư dân và khám phá thung lũng yên bình.",
+      "price": 120000,
+      "originalPrice": 150000,
+      "discountPercent": 20,
+      "genre": "Simulation",
+      "platform": [
+        "PC"
+      ],
+      "developer": "ConcernedApe",
+      "publisher": "ConcernedApe",
+      "releaseDate": "2016-02-26",
+      "rating": 4.9,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "1091500",
+      "title": "Cyberpunk 2077",
+      "slug": "cyberpunk-2077",
+      "description": "Khám phá Night City trong thế giới nhập vai khoa học viễn tưởng.",
+      "price": 690000,
+      "originalPrice": 990000,
+      "discountPercent": 30,
+      "genre": "Action RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "CD Projekt Red",
+      "publisher": "CD Projekt",
+      "releaseDate": "2020-12-10",
+      "rating": 4.5,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "1086940",
+      "title": "Baldur's Gate 3",
+      "slug": "baldurs-gate-3",
+      "description": "Một cuộc phiêu lưu nhập vai theo lượt với lựa chọn ảnh hưởng đến câu chuyện.",
+      "price": 999000,
+      "originalPrice": 1199000,
+      "discountPercent": 17,
+      "genre": "RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Larian Studios",
+      "publisher": "Larian Studios",
+      "releaseDate": "2023-08-03",
+      "rating": 4.9,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "1174180",
+      "title": "Red Dead Redemption 2",
+      "slug": "red-dead-redemption-2",
+      "description": "Khám phá miền Tây nước Mỹ trong câu chuyện phiêu lưu thế giới mở.",
+      "price": 799000,
+      "originalPrice": 1199000,
+      "discountPercent": 33,
+      "genre": "Adventure",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Rockstar Games",
+      "publisher": "Rockstar Games",
+      "releaseDate": "2019-12-05",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "292030",
+      "title": "The Witcher 3: Wild Hunt",
+      "slug": "the-witcher-3",
+      "description": "Theo chân Geralt trong hành trình tìm kiếm người thân giữa lục địa rộng lớn.",
+      "price": 299000,
+      "originalPrice": 599000,
+      "discountPercent": 50,
+      "genre": "RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "CD Projekt Red",
+      "publisher": "CD Projekt",
+      "releaseDate": "2015-05-18",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "990080",
+      "title": "Hogwarts Legacy",
+      "slug": "hogwarts-legacy",
+      "description": "Trải nghiệm cuộc sống học viên phép thuật trong một thế giới mở kỳ ảo.",
+      "price": 799000,
+      "originalPrice": 1199000,
+      "discountPercent": 33,
+      "genre": "Adventure",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Avalanche Software",
+      "publisher": "Warner Bros. Games",
+      "releaseDate": "2023-02-10",
+      "rating": 4.4,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1145360",
+      "title": "Hades",
+      "slug": "hades",
+      "description": "Chiến đấu vượt qua địa ngục trong trò chơi hành động roguelike nhịp độ nhanh.",
+      "price": 250000,
+      "originalPrice": 350000,
+      "discountPercent": 29,
+      "genre": "Action",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Supergiant Games",
+      "publisher": "Supergiant Games",
+      "releaseDate": "2020-09-17",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "504230",
+      "title": "Celeste",
+      "slug": "celeste",
+      "description": "Vượt qua thử thách platformer chính xác trong hành trình chinh phục ngọn núi.",
+      "price": 180000,
+      "originalPrice": 250000,
+      "discountPercent": 28,
+      "genre": "Platformer",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Maddy Makes Games",
+      "publisher": "Maddy Makes Games",
+      "releaseDate": "2018-01-25",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "105600",
+      "title": "Terraria",
+      "slug": "terraria",
+      "description": "Đào bới, chế tạo, xây dựng và khám phá thế giới sandbox 2D.",
+      "price": 130000,
+      "originalPrice": 180000,
+      "discountPercent": 28,
+      "genre": "Sandbox",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Re-Logic",
+      "publisher": "Re-Logic",
+      "releaseDate": "2011-05-16",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "550",
+      "title": "Left 4 Dead 2",
+      "slug": "left-4-dead-2",
+      "description": "Hợp tác cùng bạn bè để vượt qua các chiến dịch sinh tồn đầy thử thách.",
+      "price": 120000,
+      "originalPrice": 200000,
+      "discountPercent": 40,
+      "genre": "Action",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Valve",
+      "publisher": "Valve",
+      "releaseDate": "2009-11-17",
+      "rating": 4.7,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/550/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/550/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "620",
+      "title": "Portal 2",
+      "slug": "portal-2",
+      "description": "Giải những câu đố không gian độc đáo trong cuộc phiêu lưu hài hước.",
+      "price": 120000,
+      "originalPrice": 180000,
+      "discountPercent": 33,
+      "genre": "Puzzle",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Valve",
+      "publisher": "Valve",
+      "releaseDate": "2011-04-19",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "271590",
+      "title": "Grand Theft Auto V",
+      "slug": "grand-theft-auto-v",
+      "description": "Khám phá thành phố Los Santos trong thế giới mở rộng lớn.",
+      "price": 450000,
+      "originalPrice": 750000,
+      "discountPercent": 40,
+      "genre": "Action",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Rockstar North",
+      "publisher": "Rockstar Games",
+      "releaseDate": "2015-04-14",
+      "rating": 4.6,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "230410",
+      "title": "Warframe",
+      "slug": "warframe",
+      "description": "Tham gia các nhiệm vụ hành động khoa học viễn tưởng với nhiều phong cách chiến đấu.",
+      "price": 0,
+      "originalPrice": 0,
+      "discountPercent": 0,
+      "genre": "Action",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Digital Extremes",
+      "publisher": "Digital Extremes",
+      "releaseDate": "2013-03-25",
+      "rating": 4.5,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/230410/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/230410/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "570",
+      "title": "Dota 2",
+      "slug": "dota-2",
+      "description": "Trò chơi chiến thuật đồng đội cạnh tranh với hệ thống tướng đa dạng.",
+      "price": 0,
+      "originalPrice": 0,
+      "discountPercent": 0,
+      "genre": "MOBA",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Valve",
+      "publisher": "Valve",
+      "releaseDate": "2013-07-09",
+      "rating": 4.4,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "730",
+      "title": "Counter-Strike 2",
+      "slug": "counter-strike-2",
+      "description": "Trải nghiệm đấu súng chiến thuật theo đội trong các trận đấu cạnh tranh.",
+      "price": 0,
+      "originalPrice": 0,
+      "discountPercent": 0,
+      "genre": "FPS",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Valve",
+      "publisher": "Valve",
+      "releaseDate": "2023-09-27",
+      "rating": 4.4,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1172470",
+      "title": "Apex Legends",
+      "slug": "apex-legends",
+      "description": "Trận đấu sinh tồn theo đội với các nhân vật có kỹ năng riêng.",
+      "price": 0,
+      "originalPrice": 0,
+      "discountPercent": 0,
+      "genre": "Battle Royale",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Respawn Entertainment",
+      "publisher": "Electronic Arts",
+      "releaseDate": "2020-11-04",
+      "rating": 4.3,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1623730",
+      "title": "Palworld",
+      "slug": "palworld",
+      "description": "Khám phá thế giới mở, thu thập sinh vật và xây dựng căn cứ.",
+      "price": 390000,
+      "originalPrice": 490000,
+      "discountPercent": 20,
+      "genre": "Survival",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Pocketpair",
+      "publisher": "Pocketpair",
+      "releaseDate": "2024-01-19",
+      "rating": 4.2,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1966720",
+      "title": "Lethal Company",
+      "slug": "lethal-company",
+      "description": "Hợp tác với đồng đội trong trò chơi khám phá và sinh tồn mang phong cách kinh dị.",
+      "price": 180000,
+      "originalPrice": 220000,
+      "discountPercent": 18,
+      "genre": "Co-op",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Zeekerss",
+      "publisher": "Zeekerss",
+      "releaseDate": "2023-10-23",
+      "rating": 4.6,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "2358720",
+      "title": "Black Myth: Wukong",
+      "slug": "black-myth-wukong",
+      "description": "Bước vào cuộc phiêu lưu hành động lấy cảm hứng từ Tây Du Ký.",
+      "price": 1290000,
+      "originalPrice": 1390000,
+      "discountPercent": 7,
+      "genre": "Action RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Game Science",
+      "publisher": "Game Science",
+      "releaseDate": "2024-08-20",
+      "rating": 4.5,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/library_hero.jpg",
+      "isFeatured": true
+    },
+    {
+      "id": "427520",
+      "title": "Factorio",
+      "slug": "factorio",
+      "description": "Thiết kế dây chuyền sản xuất và tự động hóa một nhà máy ngày càng lớn.",
+      "price": 550000,
+      "originalPrice": 650000,
+      "discountPercent": 15,
+      "genre": "Strategy",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Wube Software",
+      "publisher": "Wube Software",
+      "releaseDate": "2020-08-14",
+      "rating": 4.9,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "255710",
+      "title": "Cities: Skylines",
+      "slug": "cities-skylines",
+      "description": "Quy hoạch và quản lý thành phố của riêng bạn.",
+      "price": 250000,
+      "originalPrice": 400000,
+      "discountPercent": 38,
+      "genre": "Simulation",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Colossal Order",
+      "publisher": "Paradox Interactive",
+      "releaseDate": "2015-03-10",
+      "rating": 4.6,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/255710/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/255710/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1222670",
+      "title": "The Sims 4",
+      "slug": "the-sims-4",
+      "description": "Tạo nhân vật, xây nhà và kể những câu chuyện cuộc sống của riêng bạn.",
+      "price": 0,
+      "originalPrice": 0,
+      "discountPercent": 0,
+      "genre": "Simulation",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Maxis",
+      "publisher": "Electronic Arts",
+      "releaseDate": "2014-09-02",
+      "rating": 4.3,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222670/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222670/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "8930",
+      "title": "Sid Meier's Civilization V",
+      "slug": "civilization-v",
+      "description": "Xây dựng nền văn minh và phát triển đế chế qua nhiều thời đại.",
+      "price": 220000,
+      "originalPrice": 350000,
+      "discountPercent": 37,
+      "genre": "Strategy",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Firaxis Games",
+      "publisher": "2K",
+      "releaseDate": "2010-09-21",
+      "rating": 4.7,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8930/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8930/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1817070",
+      "title": "Marvel's Spider-Man Remastered",
+      "slug": "marvels-spider-man-remastered",
+      "description": "Đu tơ qua thành phố và trải nghiệm cuộc phiêu lưu siêu anh hùng.",
+      "price": 990000,
+      "originalPrice": 1190000,
+      "discountPercent": 17,
+      "genre": "Action",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Insomniac Games",
+      "publisher": "PlayStation Publishing",
+      "releaseDate": "2022-08-12",
+      "rating": 4.6,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1462040",
+      "title": "FINAL FANTASY VII REMAKE INTERGRADE",
+      "slug": "final-fantasy-vii-remake-intergrade",
+      "description": "Tái khám phá câu chuyện nhập vai nổi tiếng với hình ảnh hiện đại.",
+      "price": 990000,
+      "originalPrice": 1190000,
+      "discountPercent": 17,
+      "genre": "JRPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Square Enix",
+      "publisher": "Square Enix",
+      "releaseDate": "2021-12-16",
+      "rating": 4.5,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1462040/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1462040/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "250900",
+      "title": "The Binding of Isaac: Rebirth",
+      "slug": "binding-of-isaac-rebirth",
+      "description": "Khám phá các hầm ngục được tạo ngẫu nhiên trong game hành động roguelike.",
+      "price": 180000,
+      "originalPrice": 250000,
+      "discountPercent": 28,
+      "genre": "Roguelike",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Nicalis",
+      "publisher": "Nicalis",
+      "releaseDate": "2014-11-04",
+      "rating": 4.7,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1328670",
+      "title": "Mass Effect Legendary Edition",
+      "slug": "mass-effect-legendary-edition",
+      "description": "Trải nghiệm bộ ba game nhập vai khoa học viễn tưởng trong một bộ sưu tập.",
+      "price": 450000,
+      "originalPrice": 900000,
+      "discountPercent": 50,
+      "genre": "RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "BioWare",
+      "publisher": "Electronic Arts",
+      "releaseDate": "2021-05-14",
+      "rating": 4.6,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1328670/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1328670/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "1151640",
+      "title": "Horizon Zero Dawn Complete Edition",
+      "slug": "horizon-zero-dawn",
+      "description": "Khám phá thế giới hậu tận thế nơi những cỗ máy khổng lồ lang thang.",
+      "price": 450000,
+      "originalPrice": 990000,
+      "discountPercent": 55,
+      "genre": "Action RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Guerrilla",
+      "publisher": "PlayStation Publishing",
+      "releaseDate": "2020-08-07",
+      "rating": 4.5,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151640/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151640/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "42700",
+      "title": "Call of Duty: Modern Warfare 2",
+      "slug": "call-of-duty-modern-warfare-2",
+      "description": "Trải nghiệm chiến dịch hành động và các chế độ chơi nhiều người.",
+      "price": 390000,
+      "originalPrice": 590000,
+      "discountPercent": 34,
+      "genre": "FPS",
+      "platform": [
+        "PC"
+      ],
+      "developer": "Infinity Ward",
+      "publisher": "Activision",
+      "releaseDate": "2009-11-10",
+      "rating": 4.3,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/42700/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/42700/library_hero.jpg",
+      "isFeatured": false
+    },
+    {
+      "id": "413080",
+      "title": "Undertale",
+      "slug": "undertale",
+      "description": "Một game nhập vai độc lập với các nhân vật đáng nhớ và nhiều lựa chọn khác nhau.",
+      "price": 150000,
+      "originalPrice": 200000,
+      "discountPercent": 25,
+      "genre": "RPG",
+      "platform": [
+        "PC"
+      ],
+      "developer": "tobyfox",
+      "publisher": "tobyfox",
+      "releaseDate": "2015-09-15",
+      "rating": 4.8,
+      "coverImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/header.jpg",
+      "bannerImage": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/library_hero.jpg",
+      "isFeatured": false
+    }
+  ]
+}
