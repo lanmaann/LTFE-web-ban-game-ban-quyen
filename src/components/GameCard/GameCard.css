@@ -186,6 +186,18 @@
     transform: scale(1.05);
 }
 
+.game-card__cart-button--in-cart {
+    background: #1e8354;
+}
+
+.game-card__cart-button--in-cart:hover {
+    background: #279e67;
+}
+
+.game-card__added--warning {
+    color: #f6ad55;
+}
+
 .game-card__added {
     margin: 8px 0 0;
     color: #72e5ad;

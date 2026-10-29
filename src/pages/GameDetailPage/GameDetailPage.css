@@ -1047,6 +1047,30 @@
     box-shadow: 0 4px 14px rgba(30, 131, 84, 0.4);
 }
 
+.game-detail__add-cart-btn.in-cart {
+    background: #155c38;
+    border: 1px solid #2d8a58;
+    box-shadow: 0 4px 14px rgba(30, 131, 84, 0.25);
+    cursor: default;
+}
+
+.game-detail__add-cart-btn.in-cart:hover {
+    background: #1a7045;
+    transform: translateY(-1px);
+}
+
+.game-detail__cart-toast {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #72e5ad;
+    text-align: center;
+}
+
+.game-detail__cart-toast--warning {
+    color: #f6ad55;
+}
+
 .game-detail__buy-now-btn {
     display: flex;
     align-items: center;
@@ -1163,8 +1187,6 @@
     font-size: 11px;
     font-weight: 600;
 }
-
-/* Game cùng thể loại / Đề xuất */
 .game-detail__related-section {
     margin-top: 56px;
     padding-top: 36px;
@@ -1212,8 +1234,6 @@
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
 }
-
-/* Responsive */
 @media (max-width: 1024px) {
     .game-detail__layout {
         grid-template-columns: 1fr;

@@ -9,7 +9,6 @@ import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
 function App() {
     return (
         <Routes>
-            {/* Mọi trang bên trong đều có Header + Footer */}
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Navigate to="/store" replace />} />
                 <Route path="/home" element={<HomePage />} />

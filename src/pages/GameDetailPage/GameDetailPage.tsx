@@ -28,7 +28,7 @@ import {
     Zap,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { addToCart } from "../../features/cart/cartSlice";
+import { addToCart, selectIsInCart } from "../../features/cart/cartSlice";
 import { fetchGames, selectGames } from "../../features/games/gamesSlice";
 import { gameService } from "../../services/gameService";
 import type { Game } from "../../types/game";
@@ -40,25 +40,24 @@ import "./GameDetailPage.css";
 const FALLBACK_BANNER = "https://placehold.co/1200x500/18243A/FFFFFF?text=ATA+Games";
 const FALLBACK_COVER = "https://placehold.co/400x225/18243A/FFFFFF?text=ATA+Games";
 
-// Danh sách trailer video chính thức từ Steam CDN cho các tựa game phổ biến
 const STEAM_TRAILERS: Record<string, string[]> = {
-    "1245620": [ // Elden Ring
+    "1245620": [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256870005/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256855109/movie480.mp4",
     ],
-    "1091500": [ // Cyberpunk 2077
+    "1091500": [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256811448/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256811446/movie480.mp4",
     ],
-    "413150": [ // Stardew Valley
+    "413150": [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256660296/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256660297/movie480.mp4",
     ],
-    "1174180": [ // Red Dead Redemption 2
+    "1174180": [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256768372/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256768371/movie480.mp4",
     ],
-    "1086940": [ // Baldur's Gate 3
+    "1086940": [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256961917/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256961916/movie480.mp4",
     ],
@@ -113,9 +112,11 @@ export default function GameDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [addedToCart, setAddedToCart] = useState(false);
+    const isInCart = useAppSelector(selectIsInCart(game?.id ?? ""));
+    const [cartToastMessage, setCartToastMessage] = useState<string | null>(null);
+    const [cartToastType, setCartToastType] = useState<"success" | "warning">("success");
+    const cartToastTimerRef = useRef<number | undefined>(undefined);
     const [copiedLink, setCopiedLink] = useState(false);
-
-    // Media Player State
     const [activeMediaIndex, setActiveMediaIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
     const [isMuted, setIsMuted] = useState(true);
@@ -129,13 +130,9 @@ export default function GameDetailPage() {
     const mediaContainerRef = useRef<HTMLDivElement>(null);
     const toastTimerRef = useRef<number | undefined>(undefined);
     const fallbackTimerRef = useRef<number | undefined>(undefined);
-
-    // Cuộn lên đầu trang khi đổi game
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [id]);
-
-    // Tải dữ liệu game
     useEffect(() => {
         let isCancelled = false;
 
@@ -189,8 +186,6 @@ export default function GameDetailPage() {
             window.clearInterval(fallbackTimerRef.current);
         };
     }, [id, dispatch, storeGames]);
-
-    // Cập nhật title trình duyệt
     useEffect(() => {
         if (game?.title) {
             document.title = `${game.title} | ATA GAMES - Bản Quyền Chính Hãng`;
@@ -198,8 +193,6 @@ export default function GameDetailPage() {
             document.title = "Chi tiết game | ATA GAMES";
         }
     }, [game?.title]);
-
-    // Danh sách Media Items (BẮT BUỘC ITEM ĐẦU TIÊN LÀ VIDEO TRAILER)
     const mediaItems: MediaItem[] = useMemo(() => {
         if (!game) return [];
 
@@ -252,8 +245,6 @@ export default function GameDetailPage() {
     }, [game]);
 
     const activeMedia = mediaItems[activeMediaIndex] ?? mediaItems[0];
-
-    // Gán ref cho video và kích hoạt Autoplay chuẩn DOM
     function handleVideoRef(el: HTMLVideoElement | null) {
         videoRef.current = el;
         if (el) {
@@ -267,20 +258,15 @@ export default function GameDetailPage() {
                         setVideoError(false);
                     })
                     .catch(() => {
-                        // Nếu trình duyệt chặn autoplay, chờ người dùng click nút Play
                         setIsPlaying(false);
                     });
             }
         }
     }
-
-    // Xử lý khi video từ xa bị lỗi mạng hoặc không tải được -> chuyển sang Motion Reel
     function handleVideoLoadError() {
         setVideoError(true);
         setIsPlaying(true);
     }
-
-    // Mô phỏng tiến trình thời gian khi ở chế độ Cinematic Motion Reel
     useEffect(() => {
         if (!videoError || activeMedia?.type !== "video") {
             window.clearInterval(fallbackTimerRef.current);
@@ -378,8 +364,6 @@ export default function GameDetailPage() {
         setCurrentTime(0);
         setVideoError(false);
     }
-
-    // Danh sách game cùng thể loại / liên quan
     const relatedGames = useMemo(() => {
         if (!game) return [];
         const sameGenre = storeGames.filter((g) => g.id !== game.id && g.genre === game.genre);
@@ -395,14 +379,25 @@ export default function GameDetailPage() {
 
     function handleAddToCart() {
         if (!game) return;
-        dispatch(addToCart(game));
-        setAddedToCart(true);
-        window.setTimeout(() => setAddedToCart(false), 2200);
+        if (isInCart) {
+            setCartToastMessage("Game đã có trong giỏ hàng");
+            setCartToastType("warning");
+        } else {
+            dispatch(addToCart(game));
+            setCartToastMessage("Đã thêm vào giỏ hàng");
+            setCartToastType("success");
+            setAddedToCart(true);
+            window.setTimeout(() => setAddedToCart(false), 2200);
+        }
+        window.clearTimeout(cartToastTimerRef.current);
+        cartToastTimerRef.current = window.setTimeout(() => setCartToastMessage(null), 2500);
     }
 
     function handleBuyNow() {
         if (!game) return;
-        dispatch(addToCart(game));
+        if (!isInCart) {
+            dispatch(addToCart(game));
+        }
         navigate("/cart");
     }
 
@@ -428,7 +423,6 @@ export default function GameDetailPage() {
             )}
 
             <div className="game-detail__container">
-                {/* Breadcrumbs điều hướng */}
                 <nav className="game-detail__breadcrumbs" aria-label="Breadcrumb">
                     <Link to="/home" className="game-detail__breadcrumb-link">
                         Trang chủ
@@ -447,7 +441,6 @@ export default function GameDetailPage() {
                     )}
                 </nav>
 
-                {/* Thanh tác vụ trên cùng */}
                 <div className="game-detail__top-bar">
                     <Link to="/store" className="game-detail__back-btn">
                         <ArrowLeft size={18} />
@@ -470,8 +463,6 @@ export default function GameDetailPage() {
                         </button>
                     )}
                 </div>
-
-                {/* Trạng thái Loading */}
                 {loading && (
                     <div className="game-detail__state-wrapper">
                         <StateMessage
@@ -481,8 +472,6 @@ export default function GameDetailPage() {
                         />
                     </div>
                 )}
-
-                {/* Trạng thái Error / Not found */}
                 {!loading && error && !game && (
                     <div className="game-detail__state-wrapper">
                         <StateMessage
@@ -494,12 +483,8 @@ export default function GameDetailPage() {
                         />
                     </div>
                 )}
-
-                {/* Nội dung chi tiết game */}
                 {!loading && game && (
-                    <>
-                        {/* Header thông tin game */}
-                        <div className="game-detail__header-info">
+                    <><div className="game-detail__header-info">
                             <div className="game-detail__badges">
                                 <span className="game-detail__genre-badge">
                                     <Tag size={13} />
@@ -534,25 +519,17 @@ export default function GameDetailPage() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Layout 2 cột: Trái (Hero Media Video View & Details), Phải (Card Mua & Specs) */}
                         <div className="game-detail__layout">
                             {/* Cột trái */}
                             <div className="game-detail__main">
-                                {/* =========================================================================
-                                    HERO MEDIA VIEW: MÀN HÌNH XEM CHÍNH BẮT BUỘC LÀ VIDEO TRAILER ĐỘNG
-                                    (HỖ TRỢ DUAL-ENGINE: NATIVE VIDEO STREAM + CINEMATIC MOTION REEL CHẮC CHẮN PHÁT ĐƯỢC)
-                                    ========================================================================= */}
                                 <div className="game-detail__hero-media-wrapper">
                                     <div
                                         ref={mediaContainerRef}
                                         className="game-detail__hero-media-viewport"
                                     >
                                         {activeMedia && activeMedia.type === "video" ? (
-                                            /* MÀN HÌNH PHÁT VIDEO CHÍNH */
                                             <div className="game-detail__video-container">
                                                 {!videoError ? (
-                                                    /* ENGINE 1: HTML5 Native Video Stream */
                                                     <video
                                                         ref={handleVideoRef}
                                                         key={activeMedia.src}
@@ -568,7 +545,6 @@ export default function GameDetailPage() {
                                                         onClick={handleTogglePlay}
                                                     />
                                                 ) : (
-                                                    /* ENGINE 2: Cinematic Motion Gameplay Trailer (Đảm bảo xem được 100% kể cả khi offline) */
                                                     <div
                                                         className={`game-detail__motion-video-player ${
                                                             isPlaying ? "playing" : "paused"
@@ -599,8 +575,6 @@ export default function GameDetailPage() {
                                                         </div>
                                                     </div>
                                                 )}
-
-                                                {/* Nút Play To ở giữa màn hình nếu video đang tạm dừng hoặc bị trình duyệt chặn autoplay */}
                                                 {!isPlaying && (
                                                     <button
                                                         type="button"
@@ -612,14 +586,10 @@ export default function GameDetailPage() {
                                                         <span>Phát Video Trailer</span>
                                                     </button>
                                                 )}
-
-                                                {/* Huy hiệu Video Trailer góc trên bên trái */}
                                                 <div className="game-detail__video-badge">
                                                     <span className="game-detail__video-live-dot" />
                                                     <span>TRAILER GAMEPLAY 4K</span>
                                                 </div>
-
-                                                {/* Thông báo bật/tắt tiếng Toast */}
                                                 {showVolumeToast && (
                                                     <div className="game-detail__volume-toast">
                                                         {isMuted ? (
@@ -630,10 +600,7 @@ export default function GameDetailPage() {
                                                         <span>{volumeToastMessage}</span>
                                                     </div>
                                                 )}
-
-                                                {/* THANH ĐIỀU KHIỂN VIDEO (CONTROLS BAR) */}
                                                 <div className="game-detail__video-controls">
-                                                    {/* Thanh tiến trình (Timeline seek bar) */}
                                                     <div
                                                         className="game-detail__video-timeline"
                                                         onClick={handleTimelineClick}
@@ -651,7 +618,6 @@ export default function GameDetailPage() {
 
                                                     <div className="game-detail__video-controls-row">
                                                         <div className="game-detail__video-controls-left">
-                                                            {/* Nút Play/Pause */}
                                                             <button
                                                                 type="button"
                                                                 className="game-detail__ctrl-btn"
@@ -665,7 +631,6 @@ export default function GameDetailPage() {
                                                                 )}
                                                             </button>
 
-                                                            {/* Nút Tua lại từ đầu */}
                                                             <button
                                                                 type="button"
                                                                 className="game-detail__ctrl-btn"
@@ -674,8 +639,6 @@ export default function GameDetailPage() {
                                                             >
                                                                 <RotateCcw size={16} />
                                                             </button>
-
-                                                            {/* Nút Bật/Tắt tiếng */}
                                                             <button
                                                                 type="button"
                                                                 className={`game-detail__ctrl-btn game-detail__ctrl-btn--volume ${
@@ -699,8 +662,6 @@ export default function GameDetailPage() {
                                                                         : "Đang phát tiếng"}
                                                                 </span>
                                                             </button>
-
-                                                            {/* Hiển thị thời lượng video */}
                                                             <span className="game-detail__video-time">
                                                                 {formatVideoTime(currentTime)} /{" "}
                                                                 {formatVideoTime(duration || 30)}
@@ -708,7 +669,6 @@ export default function GameDetailPage() {
                                                         </div>
 
                                                         <div className="game-detail__video-controls-right">
-                                                            {/* Nút Xem toàn màn hình */}
                                                             <button
                                                                 type="button"
                                                                 className="game-detail__ctrl-btn"
@@ -722,7 +682,6 @@ export default function GameDetailPage() {
                                                 </div>
                                             </div>
                                         ) : (
-                                            /* KHI NGƯỜI DÙNG CHỌN XEM ẢNH CHỤP MÀN HÌNH */
                                             <div className="game-detail__image-container">
                                                 <img
                                                     src={activeMedia?.src}
@@ -749,8 +708,6 @@ export default function GameDetailPage() {
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* DANH SÁCH ẢNH THU NHỎ (THUMBNAILS) ĐỂ CHUYỂN ĐỔI VIDEO / SCREENSHOTS */}
                                     <div
                                         className="game-detail__media-thumbnails"
                                         role="tablist"
@@ -800,7 +757,6 @@ export default function GameDetailPage() {
                                     </div>
                                 </div>
 
-                                {/* Giới thiệu game */}
                                 <section className="game-detail__section">
                                     <h2 className="game-detail__section-title">
                                         <Gamepad2 size={22} />
@@ -840,8 +796,6 @@ export default function GameDetailPage() {
                                         </ul>
                                     </div>
                                 </section>
-
-                                {/* Cấu hình yêu cầu */}
                                 <section className="game-detail__section">
                                     <h2 className="game-detail__section-title">
                                         <Cpu size={22} />
@@ -902,8 +856,6 @@ export default function GameDetailPage() {
                                     </div>
                                 </section>
                             </div>
-
-                            {/* Cột phải: Sticky Purchase Card & Metadata */}
                             <aside className="game-detail__sidebar">
                                 <div className="game-detail__purchase-card">
                                     <div className="game-detail__purchase-header">
@@ -913,8 +865,6 @@ export default function GameDetailPage() {
                                         </div>
                                         <span className="game-detail__edition-badge">Bản quyền 100%</span>
                                     </div>
-
-                                    {/* Khối giá */}
                                     <div className="game-detail__price-box">
                                         {hasDiscount ? (
                                             <>
@@ -943,16 +893,23 @@ export default function GameDetailPage() {
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* Nút hành động */}
                                     <div className="game-detail__actions">
                                         <button
                                             type="button"
-                                            className={`game-detail__add-cart-btn ${addedToCart ? "added" : ""}`}
+                                            className={`game-detail__add-cart-btn ${isInCart ? "in-cart" : ""} ${addedToCart ? "added" : ""}`}
                                             onClick={handleAddToCart}
-                                            aria-label={`Thêm ${game.title} vào giỏ hàng`}
+                                            aria-label={
+                                                isInCart
+                                                    ? `${game.title} đã có trong giỏ hàng`
+                                                    : `Thêm ${game.title} vào giỏ hàng`
+                                            }
                                         >
-                                            {addedToCart ? (
+                                            {isInCart ? (
+                                                <>
+                                                    <Check size={20} />
+                                                    <span>Đã trong giỏ hàng</span>
+                                                </>
+                                            ) : addedToCart ? (
                                                 <>
                                                     <Check size={20} />
                                                     <span>Đã thêm vào giỏ!</span>
@@ -975,7 +932,14 @@ export default function GameDetailPage() {
                                         </button>
                                     </div>
 
-                                    {/* Các cam kết & quyền lợi */}
+                                    {cartToastMessage && (
+                                        <p
+                                            className={`game-detail__cart-toast ${cartToastType === "warning" ? "game-detail__cart-toast--warning" : ""}`}
+                                            role="status"
+                                        >
+                                            {cartToastMessage}
+                                        </p>
+                                    )}
                                     <div className="game-detail__perks">
                                         <div className="game-detail__perk-item">
                                             <ShieldCheck size={18} className="game-detail__perk-icon" />
@@ -1006,8 +970,6 @@ export default function GameDetailPage() {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Bảng thông số chi tiết (Metadata Specs) */}
                                     <div className="game-detail__specs">
                                         <h3>Thông tin sản phẩm</h3>
                                         <div className="game-detail__specs-list">
@@ -1072,8 +1034,6 @@ export default function GameDetailPage() {
                                 </div>
                             </aside>
                         </div>
-
-                        {/* Game cùng thể loại / Đề xuất */}
                         {relatedGames.length > 0 && (
                             <section className="game-detail__related-section">
                                 <div className="game-detail__related-header">

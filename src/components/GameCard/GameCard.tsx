@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { MoreHorizontal, ShoppingCart, Star } from "lucide-react";
+import { Check, MoreHorizontal, ShoppingCart, Star } from "lucide-react";
 import type { Game } from "../../types/game";
-import { useAppDispatch } from "../../app/hooks";
-import { addToCart } from "../../features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { addToCart, selectIsInCart } from "../../features/cart/cartSlice";
 import { formatPrice } from "../../utils/format";
 import "./GameCard.css";
 
@@ -41,7 +41,9 @@ function getSteamReview(rating: number, gameId: string): { label: string; count:
 
 export default function GameCard({ game }: GameCardProps) {
     const dispatch = useAppDispatch();
-    const [added, setAdded] = useState(false);
+    const isInCart = useAppSelector(selectIsInCart(game.id));
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [toastType, setToastType] = useState<"success" | "warning">("success");
     const [isHovered, setIsHovered] = useState(false);
     const [popoverPlacement, setPopoverPlacement] = useState<"right" | "left">("right");
     const [cardImageIndex, setCardImageIndex] = useState(0);
@@ -106,10 +108,16 @@ export default function GameCard({ game }: GameCardProps) {
     function handleAdd(e: React.MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
-        dispatch(addToCart(game));
-        setAdded(true);
+        if (isInCart) {
+            setToastMessage("Game đã có trong giỏ hàng");
+            setToastType("warning");
+        } else {
+            dispatch(addToCart(game));
+            setToastMessage("Đã thêm vào giỏ hàng");
+            setToastType("success");
+        }
         window.clearTimeout(addedTimerRef.current);
-        addedTimerRef.current = window.setTimeout(() => setAdded(false), 1600);
+        addedTimerRef.current = window.setTimeout(() => setToastMessage(null), 1800);
     }
 
     function handleMouseEnter() {
@@ -224,17 +232,25 @@ export default function GameCard({ game }: GameCardProps) {
 
                     <button
                         type="button"
-                        className="game-card__cart-button"
-                        aria-label={`Thêm ${game.title} vào giỏ hàng`}
+                        className={`game-card__cart-button ${isInCart ? "game-card__cart-button--in-cart" : ""}`}
+                        aria-label={
+                            isInCart
+                                ? `${game.title} đã có trong giỏ hàng`
+                                : `Thêm ${game.title} vào giỏ hàng`
+                        }
+                        title={isInCart ? "Đã có trong giỏ hàng" : "Thêm vào giỏ hàng"}
                         onClick={handleAdd}
                     >
-                        <ShoppingCart size={17} />
+                        {isInCart ? <Check size={17} /> : <ShoppingCart size={17} />}
                     </button>
                 </div>
 
-                {added && (
-                    <p className="game-card__added" role="status">
-                        Đã thêm vào giỏ hàng
+                {toastMessage && (
+                    <p
+                        className={`game-card__added ${toastType === "warning" ? "game-card__added--warning" : ""}`}
+                        role="status"
+                    >
+                        {toastMessage}
                     </p>
                 )}
             </div>
