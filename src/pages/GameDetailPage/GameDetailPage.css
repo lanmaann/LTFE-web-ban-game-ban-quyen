@@ -1,5 +1,3 @@
-/* GameDetailPage.css */
-
 .game-detail-page {
     position: relative;
     min-height: calc(100vh - 64px);
@@ -9,7 +7,6 @@
     overflow-x: hidden;
 }
 
-/* Lớp backdrop hiệu ứng mờ gaming */
 .game-detail__backdrop {
     position: absolute;
     top: 0;
@@ -34,7 +31,6 @@
     margin: 0 auto;
 }
 
-/* Breadcrumbs */
 .game-detail__breadcrumbs {
     display: flex;
     align-items: center;
@@ -67,7 +63,6 @@
     white-space: nowrap;
 }
 
-/* Thanh tác vụ trên */
 .game-detail__top-bar {
     display: flex;
     align-items: center;
@@ -117,12 +112,10 @@
     color: #fff;
 }
 
-/* State wrappers */
 .game-detail__state-wrapper {
     padding: 60px 0;
 }
 
-/* Header Game Info */
 .game-detail__header-info {
     margin-bottom: 24px;
 }
@@ -222,7 +215,6 @@
     color: #dce7f7;
 }
 
-/* Layout 2 cột */
 .game-detail__layout {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -230,17 +222,12 @@
     align-items: start;
 }
 
-/* Cột trái */
 .game-detail__main {
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 32px;
 }
-
-/* ==========================================================================
-   HERO MEDIA VIEW: VIDEO TRAILER PLAYER CHÍNH & MEDIA THUMBNAILS
-   ========================================================================== */
 
 .game-detail__hero-media-wrapper {
     background: var(--color-surface);
@@ -250,7 +237,6 @@
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
 }
 
-/* Khung màn hình chính (Viewport 16:9) */
 .game-detail__hero-media-viewport {
     position: relative;
     width: 100%;
@@ -261,7 +247,6 @@
     box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
 }
 
-/* Container Video */
 .game-detail__video-container {
     position: relative;
     width: 100%;
@@ -276,7 +261,6 @@
     cursor: pointer;
 }
 
-/* ENGINE 2: Cinematic Motion Gameplay Trailer */
 .game-detail__motion-video-player {
     position: relative;
     width: 100%;
@@ -325,9 +309,9 @@
         rgba(0, 0, 0, 0.25) 50%
     ), linear-gradient(
         90deg,
-        rgba(255, 0, 0, 0.03),
-        rgba(0, 255, 0, 0.01),
-        rgba(0, 0, 255, 0.03)
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.01),
+        rgba(0, 0, 0, 0.02)
     );
     background-size: 100% 4px, 6px 100%;
     pointer-events: none;
@@ -395,7 +379,6 @@
     letter-spacing: 0.5px;
 }
 
-/* Nút Play to ở giữa màn hình nếu video đang paused hoặc autoplay bị chặn */
 .game-detail__big-play-btn {
     position: absolute;
     top: 50%;
@@ -437,48 +420,6 @@
     color: #0b1120;
 }
 
-/* Huy hiệu video góc trên bên trái */
-.game-detail__video-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 5px 12px;
-    background: rgba(13, 21, 36, 0.88);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 71, 87, 0.4);
-    border-radius: 6px;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.game-detail__video-live-dot {
-    width: 8px;
-    height: 8px;
-    background: #ff4757;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #ff4757;
-    animation: livePulse 1.4s infinite;
-}
-
-@keyframes livePulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.35;
-        transform: scale(1.3);
-    }
-}
-
-/* Toast thông báo âm thanh */
 .game-detail__volume-toast {
     position: absolute;
     top: 50%;
@@ -512,7 +453,6 @@
     }
 }
 
-/* Thanh điều khiển video (Controls overlay) */
 .game-detail__video-controls {
     position: absolute;
     bottom: 0;
@@ -527,7 +467,6 @@
     transition: opacity 0.25s ease;
 }
 
-/* Thanh tiến trình Timeline */
 .game-detail__video-timeline {
     width: 100%;
     height: 4px;
@@ -549,7 +488,6 @@
     transition: width 0.1s linear;
 }
 
-/* Hàng nút điều khiển */
 .game-detail__video-controls-row {
     display: flex;
     align-items: center;
@@ -609,7 +547,6 @@
     margin-left: 6px;
 }
 
-/* Khi xem ảnh chụp màn hình (Screenshot Mode) */
 .game-detail__image-container {
     position: relative;
     width: 100%;
@@ -622,147 +559,6 @@
     object-fit: cover;
     display: block;
 }
-
-.game-detail__image-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-.game-detail__image-caption {
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.game-detail__return-video-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: var(--color-primary);
-    border: 1px solid var(--color-accent);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 14px rgba(22, 116, 207, 0.4);
-}
-
-.game-detail__return-video-btn:hover {
-    background: var(--color-primary-hover);
-    transform: translateY(-2px);
-}
-
-/* ==========================================================================
-   DANH SÁCH ẢNH THU NHỎ (THUMBNAILS) CHUYỂN ĐỔI VIDEO VÀ ẢNH CHỤP
-   ========================================================================== */
-
-.game-detail__media-thumbnails {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-top: 14px;
-}
-
-.game-detail__media-thumb {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 6px;
-    background: var(--color-surface-2);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s ease;
-}
-
-.game-detail__media-thumb:hover {
-    border-color: rgba(98, 181, 255, 0.4);
-    background: #1c2b42;
-    transform: translateY(-2px);
-}
-
-.game-detail__media-thumb.active {
-    border-color: var(--color-accent);
-    background: rgba(22, 116, 207, 0.18);
-    box-shadow: 0 0 14px rgba(98, 181, 255, 0.35);
-}
-
-.game-detail__thumb-preview {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 6px;
-    overflow: hidden;
-    background: #090e18;
-}
-
-.game-detail__thumb-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.25s ease;
-}
-
-.game-detail__media-thumb:hover .game-detail__thumb-preview img {
-    transform: scale(1.05);
-}
-
-.game-detail__thumb-badge {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.game-detail__thumb-badge--video {
-    background: #e11d48;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.game-detail__thumb-badge--image {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #93c5fd;
-}
-
-.game-detail__thumb-title {
-    color: #d1dced;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 2px;
-}
-
-.game-detail__media-thumb.active .game-detail__thumb-title {
-    color: #fff;
-    font-weight: 750;
-}
-
-/* ==========================================================================
-   CÁC PHẦN THÔNG TIN CHI TIẾT GAME KHÁC
-   ========================================================================== */
 
 .game-detail__section {
     background: var(--color-surface);
@@ -798,7 +594,6 @@
     margin: 0 0 12px;
 }
 
-/* Highlights */
 .game-detail__highlights {
     background: var(--color-surface-2);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -837,7 +632,6 @@
     margin-top: 2px;
 }
 
-/* Cấu hình hệ thống */
 .game-detail__requirements-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -897,7 +691,6 @@
     line-height: 1.4;
 }
 
-/* Cột phải: Sidebar Purchase Card */
 .game-detail__sidebar {
     position: sticky;
     top: 84px;
@@ -957,7 +750,6 @@
     font-weight: 600;
 }
 
-/* Khối giá */
 .game-detail__price-box {
     background: var(--color-surface-2);
     border: 1px solid var(--color-border);
@@ -1011,7 +803,6 @@
     font-weight: 700;
 }
 
-/* Nút hành động */
 .game-detail__actions {
     display: flex;
     flex-direction: column;
@@ -1093,7 +884,6 @@
     transform: translateY(-2px);
 }
 
-/* Perks cam kết */
 .game-detail__perks {
     display: flex;
     flex-direction: column;
@@ -1128,7 +918,6 @@
     font-size: 12px;
 }
 
-/* Specs */
 .game-detail__specs h3 {
     margin: 0 0 14px;
     color: #fff;
@@ -1258,10 +1047,6 @@
 
     .game-detail__title {
         font-size: 24px;
-    }
-
-    .game-detail__media-thumbnails {
-        grid-template-columns: repeat(2, 1fr);
     }
 
     .game-detail__requirements-grid {
