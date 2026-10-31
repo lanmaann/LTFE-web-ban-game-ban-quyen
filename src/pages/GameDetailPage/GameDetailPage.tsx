@@ -10,7 +10,6 @@ import {
     Flame,
     Gamepad2,
     Headphones,
-    Image,
     Layers,
     Maximize,
     Monitor,
@@ -35,40 +34,10 @@ import type { Game } from "../../types/game";
 import GameCard from "../../components/GameCard/GameCard";
 import StateMessage from "../../components/StateMessage/StateMessage";
 import { formatPrice } from "../../utils/format";
+import { STEAM_TRAILERS } from "../../data/trailers";
 import "./GameDetailPage.css";
 
 const FALLBACK_BANNER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='500' viewBox='0 0 1200 500'%3E%3Crect width='1200' height='500' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='32' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
-const FALLBACK_COVER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'%3E%3Crect width='400' height='225' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='18' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
-
-const STEAM_TRAILERS: Record<string, string[]> = {
-    "1245620": [
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256870005/movie480.mp4",
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256855109/movie480.mp4",
-    ],
-    "1091500": [
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256811448/movie480.mp4",
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256811446/movie480.mp4",
-    ],
-    "413150": [
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256660296/movie480.mp4",
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256660297/movie480.mp4",
-    ],
-    "1174180": [
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256768372/movie480.mp4",
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256768371/movie480.mp4",
-    ],
-    "1086940": [
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256961917/movie480.mp4",
-        "https://cdn.cloudflare.steamstatic.com/steam/apps/256961916/movie480.mp4",
-    ],
-};
-
-const DEFAULT_TRAILERS = [
-    "https://cdn.cloudflare.steamstatic.com/steam/apps/256870005/movie480.mp4",
-    "https://cdn.cloudflare.steamstatic.com/steam/apps/256811448/movie480.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-];
 
 function formatDate(dateString: string): string {
     if (!dateString) return "Chưa cập nhật";
@@ -196,50 +165,29 @@ export default function GameDetailPage() {
     const mediaItems: MediaItem[] = useMemo(() => {
         if (!game) return [];
 
-        const steamUrls = STEAM_TRAILERS[game.id];
-        let v1 = steamUrls?.[0];
-        let v2 = steamUrls?.[1];
+        const trailerUrl = STEAM_TRAILERS[game.id]?.[0];
 
-        if (!v1) {
-            const idNum = Math.abs(
-                (game.id || "").split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
-            );
-            v1 = DEFAULT_TRAILERS[idNum % DEFAULT_TRAILERS.length];
-            v2 = DEFAULT_TRAILERS[(idNum + 1) % DEFAULT_TRAILERS.length];
+        if (trailerUrl) {
+            return [
+                {
+                    id: "media-trailer",
+                    type: "video",
+                    title: `${game.title} - Official Trailer`,
+                    label: "Trailer chính thức",
+                    src: trailerUrl,
+                    thumbnail: game.bannerImage || game.coverImage || FALLBACK_BANNER,
+                },
+            ];
         }
 
         return [
             {
-                id: "video-trailer-1",
-                type: "video",
-                title: `${game.title} - Official Gameplay Trailer`,
-                label: "Trailer 1 (Gameplay)",
-                src: v1,
-                thumbnail: game.bannerImage || FALLBACK_BANNER,
-            },
-            {
-                id: "video-trailer-2",
-                type: "video",
-                title: `${game.title} - Cinematic Action Teaser`,
-                label: "Trailer 2 (Teaser)",
-                src: v2 || v1,
-                thumbnail: game.coverImage || FALLBACK_COVER,
-            },
-            {
-                id: "screenshot-banner",
+                id: "media-image",
                 type: "image",
-                title: `${game.title} - Ảnh chụp màn hình 4K`,
-                label: "Ảnh màn hình",
-                src: game.bannerImage || FALLBACK_BANNER,
-                thumbnail: game.bannerImage || FALLBACK_BANNER,
-            },
-            {
-                id: "screenshot-cover",
-                type: "image",
-                title: `${game.title} - Ảnh bìa nghệ thuật chính thức`,
-                label: "Ảnh bìa Artwork",
-                src: game.coverImage || FALLBACK_COVER,
-                thumbnail: game.coverImage || FALLBACK_COVER,
+                title: `${game.title}`,
+                label: "Ảnh bìa",
+                src: game.bannerImage || game.coverImage || FALLBACK_BANNER,
+                thumbnail: game.bannerImage || game.coverImage || FALLBACK_BANNER,
             },
         ];
     }, [game]);
@@ -358,12 +306,6 @@ export default function GameDetailPage() {
         setCurrentTime(targetTime);
     }
 
-    function handleSelectMedia(index: number) {
-        setActiveMediaIndex(index);
-        setIsPlaying(true);
-        setCurrentTime(0);
-        setVideoError(false);
-    }
     const relatedGames = useMemo(() => {
         if (!game) return [];
         const sameGenre = storeGames.filter((g) => g.id !== game.id && g.genre === game.genre);
@@ -411,7 +353,6 @@ export default function GameDetailPage() {
 
     return (
         <div className="game-detail-page">
-            {/* Lớp nền mờ banner của game */}
             {game && (
                 <div
                     className="game-detail__backdrop"
@@ -520,7 +461,6 @@ export default function GameDetailPage() {
                             </div>
                         </div>
                         <div className="game-detail__layout">
-                            {/* Cột trái */}
                             <div className="game-detail__main">
                                 <div className="game-detail__hero-media-wrapper">
                                     <div
@@ -586,10 +526,6 @@ export default function GameDetailPage() {
                                                         <span>Phát Video Trailer</span>
                                                     </button>
                                                 )}
-                                                <div className="game-detail__video-badge">
-                                                    <span className="game-detail__video-live-dot" />
-                                                    <span>TRAILER GAMEPLAY 4K</span>
-                                                </div>
                                                 {showVolumeToast && (
                                                     <div className="game-detail__volume-toast">
                                                         {isMuted ? (
@@ -692,68 +628,8 @@ export default function GameDetailPage() {
                                                         e.currentTarget.src = FALLBACK_BANNER;
                                                     }}
                                                 />
-                                                <div className="game-detail__image-overlay">
-                                                    <span className="game-detail__image-caption">
-                                                        {activeMedia?.title}
-                                                    </span>
-                                                    <button
-                                                        type="button"
-                                                        className="game-detail__return-video-btn"
-                                                        onClick={() => handleSelectMedia(0)}
-                                                    >
-                                                        <Play size={16} fill="currentColor" />
-                                                        <span>Quay lại Video Trailer</span>
-                                                    </button>
-                                                </div>
                                             </div>
                                         )}
-                                    </div>
-                                    <div
-                                        className="game-detail__media-thumbnails"
-                                        role="tablist"
-                                        aria-label="Danh sách trailer video và ảnh chụp"
-                                    >
-                                        {mediaItems.map((item, idx) => {
-                                            const isActive = idx === activeMediaIndex;
-                                            return (
-                                                <button
-                                                    key={item.id}
-                                                    type="button"
-                                                    className={`game-detail__media-thumb ${
-                                                        isActive ? "active" : ""
-                                                    }`}
-                                                    onClick={() => handleSelectMedia(idx)}
-                                                    role="tab"
-                                                    aria-selected={isActive}
-                                                    title={item.title}
-                                                >
-                                                    <div className="game-detail__thumb-preview">
-                                                        <img
-                                                            src={item.thumbnail}
-                                                            alt={item.label}
-                                                            onError={(e) => {
-                                                                e.currentTarget.onerror = null;
-                                                                e.currentTarget.src = FALLBACK_COVER;
-                                                            }}
-                                                        />
-                                                        {item.type === "video" ? (
-                                                            <div className="game-detail__thumb-badge game-detail__thumb-badge--video">
-                                                                <Play size={12} fill="currentColor" />
-                                                                <span>Video</span>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="game-detail__thumb-badge game-detail__thumb-badge--image">
-                                                                <Image size={11} />
-                                                                <span>Ảnh</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <span className="game-detail__thumb-title">
-                                                        {item.label}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
                                     </div>
                                 </div>
 
