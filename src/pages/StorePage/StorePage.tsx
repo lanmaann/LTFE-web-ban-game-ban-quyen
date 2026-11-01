@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
     Search,
     SlidersHorizontal,
     RefreshCw,
     Gamepad2,
+    X,
 } from "lucide-react";
 import type { Game } from "../../types/game.ts";
 import { gameService } from "../../services/gameService.ts";
@@ -25,12 +27,15 @@ const PAGE_SIZE = 12;
 
 export default function StorePage() {
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const queryParam = searchParams.get("q") ?? "";
+
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [reloadKey, setReloadKey] = useState(0);
 
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState(queryParam);
     const [selectedGenre, setSelectedGenre] = useState("all");
     const [selectedPlatform, setSelectedPlatform] = useState("all");
     const [priceFilter, setPriceFilter] = useState("all");
@@ -161,7 +166,6 @@ export default function StorePage() {
     ]);
 
         useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentPage(1);
     }, [searchTerm, selectedGenre, selectedPlatform, priceFilter, sortBy]);
 
@@ -177,8 +181,17 @@ export default function StorePage() {
         safePage * PAGE_SIZE
     );
 
-    function resetFilters() {
+    function handleClearSearch() {
         setSearchTerm("");
+        if (searchParams.has("q")) {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.delete("q");
+            setSearchParams(nextParams);
+        }
+    }
+
+    function resetFilters() {
+        handleClearSearch();
         setSelectedGenre("all");
         setSelectedPlatform("all");
         setPriceFilter("all");
@@ -260,6 +273,20 @@ export default function StorePage() {
                             value={searchTerm}
                             onChange={(event) => setSearchTerm(event.target.value)}
                         />
+                        {searchTerm && (
+                            <button
+                                type="button"
+                                className="store-search__clear-btn"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleClearSearch();
+                                }}
+                                aria-label="Xóa từ khóa tìm kiếm"
+                                title="Xóa từ khóa"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
                     </label>
 
                     <button
@@ -363,7 +390,7 @@ export default function StorePage() {
                         {!loading && !error && filteredGames.length === 0 && (
                             <div className="store-state">
                                 <Search size={36} />
-                                <h3>Không tìm thấy game</h3>
+                                <h3>Không tìm thấy game phù hợp</h3>
                                 <p>Hãy thử từ khóa hoặc bộ lọc khác.</p>
                                 <button
                                     type="button"

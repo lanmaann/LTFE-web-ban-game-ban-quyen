@@ -168,6 +168,29 @@
     color: #7488a5;
 }
 
+.store-search input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.store-search__clear-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #7488a5;
+    padding: 6px;
+    margin-left: -4px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.store-search__clear-btn:hover {
+    color: #f2f6ff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .store-reset-button,
 .store-primary-button {
     display: inline-flex;
