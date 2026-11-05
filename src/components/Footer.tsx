@@ -23,6 +23,7 @@ export default function Footer() {
                 <div className="footer__column">
                     <h4>Tài khoản</h4>
                     <Link to="/login">Đăng nhập</Link>
+                    <Link to="/register">Đăng ký</Link>
                 </div>
             </div>
 

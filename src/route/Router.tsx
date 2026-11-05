@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Layout from "./Layout";
 import Error from "./Error";
 import Home from "../components/Home";
@@ -6,6 +6,19 @@ import GameList from "../components/GameList";
 import GameDetail from "../components/GameDetail";
 import Cart from "../components/Cart";
 import Checkout from "../components/Checkout";
+import AuthPage from "../components/AuthPage";
+import { useAuth } from "../auth/useAuth";
+
+function RequireAuth({ children }: { children: React.ReactNode }) {
+    const { user } = useAuth();
+    const location = useLocation();
+
+    if (!user) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return children;
+}
 
 export default function Router() {
     return (
@@ -16,7 +29,16 @@ export default function Router() {
                 <Route path="/store" element={<GameList />} />
                 <Route path="/games/:id" element={<GameDetail />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
+                <Route
+                    path="/checkout"
+                    element={
+                        <RequireAuth>
+                            <Checkout />
+                        </RequireAuth>
+                    }
+                />
+                <Route path="/login" element={<AuthPage mode="login" />} />
+                <Route path="/register" element={<AuthPage mode="register" />} />
                 <Route path="*" element={<Error />} />
             </Route>
         </Routes>
