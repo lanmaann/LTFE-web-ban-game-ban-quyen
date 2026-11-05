@@ -1,18 +1,17 @@
 import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import type { Game } from "../../types/game";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import type { Game } from "../types/game";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
     fetchGames,
     selectGames,
     selectGamesError,
     selectGamesStatus,
-} from "../../features/games/gamesSlice";
-import HeroCarousel from "../../components/HeroCarousel/HeroCarousel";
-import GameCard from "../../components/GameCard/GameCard";
-import StateMessage from "../../components/StateMessage/StateMessage";
-import "./HomePage.css";
+} from "../store/gamesSlice";
+import HeroCarousel from "./HeroCarousel";
+import GameItem from "./GameItem";
+import StateMessage from "./StateMessage";
 
 interface SectionProps {
     title: string;
@@ -37,14 +36,14 @@ function GameSection({ title, subtitle, games }: SectionProps) {
 
             <div className="home-game-grid">
                 {games.map((game) => (
-                    <GameCard key={game.id} game={game} />
+                    <GameItem key={game.id} game={game} />
                 ))}
             </div>
         </section>
     );
 }
 
-export default function HomePage() {
+export default function Home() {
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);
     const status = useAppSelector(selectGamesStatus);

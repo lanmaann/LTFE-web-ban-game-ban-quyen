@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, MoreHorizontal, ShoppingCart, Star } from "lucide-react";
-import type { Game } from "../../types/game";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { addToCart, selectIsInCart } from "../../features/cart/cartSlice";
-import { formatPrice } from "../../utils/format";
-import "./GameCard.css";
+import type { Game } from "../types/game";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addToCart, selectIsInCart } from "../store/cartSlice";
+import { formatPrice } from "../utils/format";
 
-interface GameCardProps {
+interface GameItemProps {
     game: Game;
 }
 
 const FALLBACK_IMAGE = "https://placehold.co/400x225/18243A/FFFFFF?text=ATA+Games";
 
-// Định dạng ngày theo chuẩn Steam tiếng Việt: vd "15 Thg11, 2025"
 function formatDateSteam(dateStr?: string): string {
     if (!dateStr) return "Chưa cập nhật";
     try {
@@ -28,7 +26,6 @@ function formatDateSteam(dateStr?: string): string {
     }
 }
 
-// Tạo thông tin đánh giá theo phong cách Steam
 function getSteamReview(rating: number, gameId: string): { label: string; count: string } {
     const idNum = Math.abs(gameId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0));
     const count = (1200 + (idNum * 173) % 8500).toLocaleString("vi-VN");
@@ -39,7 +36,7 @@ function getSteamReview(rating: number, gameId: string): { label: string; count:
     return { label: "Khá tích cực", count: `(${count} đánh giá)` };
 }
 
-export default function GameCard({ game }: GameCardProps) {
+export default function GameItem({ game }: GameItemProps) {
     const dispatch = useAppDispatch();
     const isInCart = useAppSelector(selectIsInCart(game.id));
     const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -57,13 +54,11 @@ export default function GameCard({ game }: GameCardProps) {
     const hasDiscount = game.originalPrice > game.price && game.price > 0;
     const isFree = game.price === 0;
 
-    // Danh sách ảnh để trình chiếu nhẹ trên thẻ khi hover
     const cardImages = useMemo(() => {
         const list = [game.coverImage, game.bannerImage].filter(Boolean);
         return list.length > 0 ? list : [FALLBACK_IMAGE];
     }, [game.coverImage, game.bannerImage]);
 
-    // Danh sách nhãn người dùng (User Tags) chuẩn Steam
     const userTags = useMemo(() => {
         const list: string[] = [];
         if (game.genre) list.push(game.genre);
@@ -91,7 +86,6 @@ export default function GameCard({ game }: GameCardProps) {
         };
     }, []);
 
-    // Khi hover vào thẻ, tự động đổi nhẹ giữa cover và banner sau 1.8s
     useEffect(() => {
         if (!isHovered || cardImages.length <= 1) {
             window.clearInterval(slideTimerRef.current);
@@ -126,7 +120,6 @@ export default function GameCard({ game }: GameCardProps) {
         hoverTimerRef.current = window.setTimeout(() => {
             if (cardRef.current) {
                 const rect = cardRef.current.getBoundingClientRect();
-                // Nếu thẻ nằm ở nửa phải màn hình (cách mép phải < 330px), hiển thị box sang bên trái
                 if (rect.right + 330 > window.innerWidth) {
                     setPopoverPlacement("left");
                 } else {
@@ -180,7 +173,6 @@ export default function GameCard({ game }: GameCardProps) {
                     }}
                 />
 
-                {/* Nút 3 chấm tùy chọn chuẩn Steam ở góc phải ảnh */}
                 {isHovered && (
                     <button
                         type="button"
@@ -255,9 +247,6 @@ export default function GameCard({ game }: GameCardProps) {
                 )}
             </div>
 
-            {/* =========================================================================
-                BOX THÔNG TIN CHI TIẾT NỔI CHUẨN PHONG CÁCH STEAM (HOVER POPOVER)
-                ========================================================================= */}
             {isHovered && (
                 <div
                     className={`steam-hover-box steam-hover-box--${popoverPlacement}`}
@@ -265,20 +254,16 @@ export default function GameCard({ game }: GameCardProps) {
                     onMouseLeave={handlePopoverMouseLeave}
                     role="tooltip"
                 >
-                    {/* Tên game */}
                     <h4 className="steam-hover-box__title">
                         <Link to={`/games/${game.id}`}>{game.title}</Link>
                     </h4>
 
-                    {/* Ngày phát hành */}
                     <div className="steam-hover-box__date">
                         Đã phát hành: {formatDateSteam(game.releaseDate)}
                     </div>
 
-                    {/* Mô tả tóm tắt nội dung game */}
                     <p className="steam-hover-box__desc">{game.description}</p>
 
-                    {/* Khối đánh giá người dùng (Review Box riêng biệt với chữ xanh dương Steam) */}
                     <div className="steam-hover-box__review-section">
                         <div className="steam-hover-box__review-label">
                             Đánh giá của người dùng:
@@ -293,7 +278,6 @@ export default function GameCard({ game }: GameCardProps) {
                         </div>
                     </div>
 
-                    {/* Khối nhãn người dùng (User Tags) */}
                     <div className="steam-hover-box__tags-section">
                         <div className="steam-hover-box__tags-label">Nhãn người dùng:</div>
                         <div className="steam-hover-box__tags-list">

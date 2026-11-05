@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Trash2, ArrowRight, ShoppingBag, AlertCircle, X } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
     selectCartItems,
     selectCartTotal,
@@ -9,13 +9,12 @@ import {
     selectCartSavings,
     removeFromCart,
     clearCart,
-} from "../../features/cart/cartSlice";
-import { formatPrice } from "../../utils/format";
-import "./CartPage.css";
+} from "../store/cartSlice";
+import { formatPrice } from "../utils/format";
 
 const FALLBACK_IMAGE = "https://placehold.co/120x68/18243A/FFFFFF?text=ATA";
 
-export default function CartPage() {
+export default function Cart() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const items = useAppSelector(selectCartItems);

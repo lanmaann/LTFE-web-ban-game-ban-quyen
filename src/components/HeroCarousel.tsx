@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Game } from "../../types/game";
-import { formatPrice } from "../../utils/format";
-import "./HeroCarousel.css";
+import type { Game } from "../types/game";
+import { formatPrice } from "../utils/format";
 
 interface HeroCarouselProps {
     games: Game[];

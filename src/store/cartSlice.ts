@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { CartItem, Game } from "../../types/game";
-import type { RootState } from "../../app/store";
-import { loadFromStorage } from "../../utils/storage";
+import type { CartItem, Game } from "../types/game";
+import type { RootState } from "./store";
+import { loadFromStorage } from "../utils/storage";
 
 export const CART_STORAGE_KEY = "ata-cart";
 

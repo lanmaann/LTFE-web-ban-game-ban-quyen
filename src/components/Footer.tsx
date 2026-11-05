@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Gamepad2 } from "lucide-react";
-import "./Footer.css";
 
 export default function Footer() {
     return (

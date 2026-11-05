@@ -26,16 +26,13 @@ import {
     VolumeX,
     Zap,
 } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { addToCart, selectIsInCart } from "../../features/cart/cartSlice";
-import { fetchGames, selectGames } from "../../features/games/gamesSlice";
-import { gameService } from "../../services/gameService";
-import type { Game } from "../../types/game";
-import GameCard from "../../components/GameCard/GameCard";
-import StateMessage from "../../components/StateMessage/StateMessage";
-import { formatPrice } from "../../utils/format";
-import { STEAM_TRAILERS } from "../../data/trailers";
-import "./GameDetailPage.css";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addToCart, selectIsInCart } from "../store/cartSlice";
+import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
+import GameItem from "./GameItem";
+import StateMessage from "./StateMessage";
+import { formatPrice } from "../utils/format";
+import { STEAM_TRAILERS } from "../data/trailers";
 
 const FALLBACK_BANNER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='500' viewBox='0 0 1200 500'%3E%3Crect width='1200' height='500' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='32' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
 
@@ -70,16 +67,19 @@ interface MediaItem {
     thumbnail: string;
 }
 
-export default function GameDetailPage() {
+export default function GameDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     const storeGames = useAppSelector(selectGames);
 
-    const [game, setGame] = useState<Game | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const status = useAppSelector(selectGamesStatus);
+    const game = storeGames.find((g) => g.id === id) ?? null;
+    const loading = status === "idle" || status === "loading";
+    const error = !id
+        ? "Không tìm thấy mã định danh game."
+        : "Không thể tải thông tin game hoặc tựa game không tồn tại.";
     const [addedToCart, setAddedToCart] = useState(false);
     const isInCart = useAppSelector(selectIsInCart(game?.id ?? ""));
     const [cartToastMessage, setCartToastMessage] = useState<string | null>(null);
@@ -95,6 +95,17 @@ export default function GameDetailPage() {
     const [showVolumeToast, setShowVolumeToast] = useState(false);
     const [volumeToastMessage, setVolumeToastMessage] = useState("");
 
+    // Đổi sang game khác thì đặt lại trạng thái trình phát media
+    const [prevId, setPrevId] = useState(id);
+    if (prevId !== id) {
+        setPrevId(id);
+        setActiveMediaIndex(0);
+        setIsPlaying(true);
+        setIsMuted(true);
+        setCurrentTime(0);
+        setVideoError(false);
+    }
+
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const mediaContainerRef = useRef<HTMLDivElement>(null);
     const toastTimerRef = useRef<number | undefined>(undefined);
@@ -103,58 +114,15 @@ export default function GameDetailPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [id]);
     useEffect(() => {
-        let isCancelled = false;
+        void dispatch(fetchGames());
+    }, [dispatch]);
 
-        async function loadGameData() {
-            if (!id) {
-                setError("Không tìm thấy mã định danh game.");
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const data = await gameService.getById(id);
-                if (!isCancelled) {
-                    setGame(data);
-                    setActiveMediaIndex(0);
-                    setIsPlaying(true);
-                    setIsMuted(true);
-                    setCurrentTime(0);
-                    setVideoError(false);
-                    setError(null);
-                    setLoading(false);
-                }
-            } catch {
-                if (!isCancelled) {
-                    const fromStore = storeGames.find((g) => g.id === id);
-                    if (fromStore) {
-                        setGame(fromStore);
-                        setActiveMediaIndex(0);
-                        setIsPlaying(true);
-                        setIsMuted(true);
-                        setCurrentTime(0);
-                        setVideoError(false);
-                        setError(null);
-                    } else {
-                        setError("Không thể tải thông tin game hoặc tựa game không tồn tại.");
-                    }
-                    setLoading(false);
-                }
-            }
-        }
-
-        void loadGameData();
-
-        if (storeGames.length === 0) {
-            void dispatch(fetchGames());
-        }
-
+    useEffect(() => {
         return () => {
-            isCancelled = true;
             window.clearTimeout(toastTimerRef.current);
             window.clearInterval(fallbackTimerRef.current);
         };
-    }, [id, dispatch, storeGames]);
+    }, []);
     useEffect(() => {
         if (game?.title) {
             document.title = `${game.title} | ATA GAMES - Bản Quyền Chính Hãng`;
@@ -925,7 +893,7 @@ export default function GameDetailPage() {
                                 </div>
                                 <div className="game-detail__related-grid">
                                     {relatedGames.map((item) => (
-                                        <GameCard key={item.id} game={item} />
+                                        <GameItem key={item.id} game={item} />
                                     ))}
                                 </div>
                             </section>

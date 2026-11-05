@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
     Search,
     SlidersHorizontal,
     RefreshCw,
     Gamepad2,
 } from "lucide-react";
-import type { Game } from "../../types/game.ts";
-import { gameService } from "../../services/gameService.ts";
-import GameCard from "../../components/GameCard/GameCard";
-import "./StorePage.css";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+    fetchGames,
+    selectGames,
+    selectGamesError,
+    selectGamesStatus,
+} from "../store/gamesSlice";
+import GameItem from "./GameItem";
 
 
 type SortOption =
@@ -23,14 +28,20 @@ const PAGE_SIZE = 12;
 
 
 
-export default function StorePage() {
+export default function GameList() {
 
-    const [games, setGames] = useState<Game[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [reloadKey, setReloadKey] = useState(0);
+    const dispatch = useAppDispatch();
+    const games = useAppSelector(selectGames);
+    const status = useAppSelector(selectGamesStatus);
+    const storeError = useAppSelector(selectGamesError);
+    const loading = status === "idle" || status === "loading";
+    const error = status === "failed" ? (storeError ?? "Không thể tải danh sách game.") : "";
 
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const searchTerm = searchParams.get("q") ?? "";
+    const setSearchTerm = (value: string) => {
+        setSearchParams(value ? { q: value } : {}, { replace: true });
+    };
     const [selectedGenre, setSelectedGenre] = useState("all");
     const [selectedPlatform, setSelectedPlatform] = useState("all");
     const [priceFilter, setPriceFilter] = useState("all");
@@ -38,37 +49,8 @@ export default function StorePage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        let cancelled = false;
-
-        async function loadGames() {
-            setLoading(true);
-            setError("");
-
-            try {
-                const data = await gameService.getAll();
-
-                if (!cancelled) {
-                    setGames(data);
-                }
-            } catch {
-                if (!cancelled) {
-                    setError(
-                        "Không thể tải danh sách game."
-                    );
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        void loadGames();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [reloadKey]);
+        void dispatch(fetchGames());
+    }, [dispatch]);
 
     const genres = useMemo(
         () => [...new Set(games.map((game) => game.genre).filter(Boolean))].sort(),
@@ -160,8 +142,7 @@ export default function StorePage() {
         sortBy,
     ]);
 
-        useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+    useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm, selectedGenre, selectedPlatform, priceFilter, sortBy]);
 
@@ -353,7 +334,7 @@ export default function StorePage() {
                                 <button
                                     type="button"
                                     className="store-primary-button"
-                                    onClick={() => setReloadKey((key) => key + 1)}
+                                    onClick={() => dispatch(fetchGames())}
                                 >
                                     Thử lại
                                 </button>
@@ -379,7 +360,7 @@ export default function StorePage() {
                             <>
                                 <div className="store-game-grid">
                                     {paginatedGames.map((game) => (
-                                        <GameCard key={game.id} game={game} />
+                                        <GameItem key={game.id} game={game} />
                                     ))}
                                 </div>
 

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { Game } from "../../types/game";
-import type { RootState } from "../../app/store";
-import { gameService } from "../../services/gameService";
+import type { Game } from "../types/game";
+import type { RootState } from "./store";
+import { gameService } from "../services/gameService";
 
 interface GamesState {
     items: Game[];

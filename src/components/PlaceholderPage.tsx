@@ -1,5 +1,5 @@
 import { Construction } from "lucide-react";
-import StateMessage from "../StateMessage/StateMessage";
+import StateMessage from "./StateMessage";
 
 export default function PlaceholderPage({ title }: { title: string }) {
     return (
