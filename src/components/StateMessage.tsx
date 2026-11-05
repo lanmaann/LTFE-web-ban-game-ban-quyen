@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import "./StateMessage.css";
 
 interface StateMessageProps {
     variant: "loading" | "error" | "empty";

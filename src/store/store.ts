@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import gamesReducer from "../features/games/gamesSlice";
-import cartReducer, { CART_STORAGE_KEY } from "../features/cart/cartSlice";
+import gamesReducer from "./gamesSlice";
+import cartReducer, { CART_STORAGE_KEY } from "./cartSlice";
 import { saveToStorage } from "../utils/storage";
 
 export const store = configureStore({
