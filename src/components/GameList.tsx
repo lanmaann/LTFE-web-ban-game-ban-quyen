@@ -142,9 +142,12 @@ export default function GameList() {
         sortBy,
     ]);
 
-    useEffect(() => {
+    const currentFilterKey = `${searchTerm}|${selectedGenre}|${selectedPlatform}|${priceFilter}|${sortBy}`;
+    const [prevFilterKey, setPrevFilterKey] = useState(currentFilterKey);
+    if (prevFilterKey !== currentFilterKey) {
+        setPrevFilterKey(currentFilterKey);
         setCurrentPage(1);
-    }, [searchTerm, selectedGenre, selectedPlatform, priceFilter, sortBy]);
+    }
 
     const totalPages = Math.max(
         1,
