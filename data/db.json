@@ -620,5 +620,14 @@
       "bannerImage": "/images/games/413080-banner.jpg",
       "isFeatured": false
     }
-  ]
+  ],
+  "users": [
+    {
+      "id": "demo-user-1",
+      "name": "Nguyễn Văn A",
+      "email": "demo@atagames.vn",
+      "password": "123456"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

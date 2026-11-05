@@ -31,7 +31,6 @@ export default function Cart() {
     const handleRemove = useCallback(
         (gameId: string) => {
             setRemovingId(gameId);
-            // Ngắn delay để animation fade-out chạy trước khi xóa khỏi store
             window.setTimeout(() => {
                 dispatch(removeFromCart(gameId));
                 setRemovingId(null);
@@ -86,7 +85,6 @@ export default function Cart() {
 
     return (
         <div className="cart-page">
-            {/* Tiêu đề trang */}
             <div className="cart-page__header">
                 <ShoppingCart size={28} aria-hidden="true" />
                 <h1 id="cart-heading">Giỏ hàng</h1>
@@ -101,7 +99,6 @@ export default function Cart() {
                     className="cart-items"
                     aria-labelledby="cart-heading"
                 >
-                    {/* Nút xóa toàn bộ */}
                     <div className="cart-items__toolbar">
                         <button
                             type="button"

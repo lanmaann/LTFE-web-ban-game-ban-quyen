@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type SubmitEvent } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
-import { Gamepad2, Search, ShoppingCart, User } from "lucide-react";
+import { Gamepad2, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
 import { formatPrice } from "../utils/format";
 import { selectCartCount } from "../store/cartSlice";
+import { useAuth } from "../auth/useAuth";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "header__link header__link--active" : "header__link";
@@ -22,6 +23,7 @@ const normalize = (text: string) =>
 export default function Header() {
     const navigate = useNavigate();
     const cartCount = useAppSelector(selectCartCount);
+    const { user, logout } = useAuth();
     const [searchParams] = useSearchParams();
     const urlKeyword = searchParams.get("q") ?? "";
     const [keyword, setKeyword] = useState(urlKeyword);
@@ -211,10 +213,32 @@ export default function Header() {
                         <ShoppingCart size={20} />
                         {cartCount > 0 && <span className="header__badge">{cartCount}</span>}
                     </Link>
-                    <Link to="/login" className="header__login">
-                        <User size={17} />
-                        <span>Đăng nhập</span>
-                    </Link>
+                    {user ? (
+                        <div className="header__account">
+                            <span className="header__account-name" title={user.name}>
+                                {user.name}
+                            </span>
+                            <button
+                                type="button"
+                                className="header__logout"
+                                onClick={() => {
+                                    try {
+                                        logout();
+                                    } catch {
+                                        window.alert("Không thể đăng xuất. Vui lòng thử lại.");
+                                    }
+                                }}
+                            >
+                                <LogOut size={17} />
+                                <span>Đăng xuất</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" className="header__login">
+                            <User size={17} />
+                            <span>Đăng nhập</span>
+                        </Link>
+                    )}
                 </div>
             </div>
         </header>
