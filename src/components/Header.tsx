@@ -128,6 +128,7 @@ export default function Header() {
                 <nav className="header__nav" aria-label="Điều hướng chính">
                     <NavLink to="/home" className={navClass}>Trang chủ</NavLink>
                     <NavLink to="/store" className={navClass}>Cửa hàng</NavLink>
+                    <NavLink to="/library" className={navClass}>Thư viện</NavLink>
                 </nav>
 
                 <form className="header__search" onSubmit={handleSearch} role="search" ref={searchRef}>

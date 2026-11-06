@@ -4,6 +4,7 @@ import Error from "./Error";
 import Home from "../components/Home";
 import GameList from "../components/GameList";
 import GameDetail from "../components/GameDetail";
+import Library from "../components/Library";
 import Cart from "../components/Cart";
 import Checkout from "../components/Checkout";
 import AuthPage from "../components/AuthPage";
@@ -28,6 +29,7 @@ export default function Router() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/store" element={<GameList />} />
                 <Route path="/games/:id" element={<GameDetail />} />
+                <Route path="/library" element={<Library />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route
                     path="/checkout"
