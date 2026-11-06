@@ -626,14 +626,132 @@
       "id": "demo-user-1",
       "name": "Nguyễn Văn A",
       "email": "demo@atagames.vn",
-      "password": "123456"
+      "password": "123456",
+      "purchasedGames": [
+        "1245620",
+        "1091500",
+        "413150"
+      ]
     },
     {
       "name": "Ngọc Trân Huỳnh Thị",
       "email": "tranhuynh.01102005@gmail.com",
       "password": "01102005",
-      "id": "y5BKcs7bzMc"
+      "id": "y5BKcs7bzMc",
+      "purchasedGames": [
+        "1245620",
+        "1091500"
+      ]
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json"
+  "$schema": "./node_modules/json-server/schema.json",
+  "orders": [
+    {
+      "id": "ord-1001",
+      "userId": "demo-user-1",
+      "gameIds": [
+        "1245620",
+        "1091500",
+        "413150"
+      ],
+      "items": [
+        {
+          "gameId": "1245620",
+          "title": "Elden Ring",
+          "price": 990000
+        },
+        {
+          "gameId": "1091500",
+          "title": "Cyberpunk 2077",
+          "price": 890000
+        },
+        {
+          "gameId": "413150",
+          "title": "Stardew Valley",
+          "price": 165000
+        }
+      ],
+      "totalAmount": 2045000,
+      "status": "completed",
+      "createdAt": "2026-10-15T09:30:00.000Z"
+    },
+    {
+      "id": "ord-1002",
+      "userId": "y5BKcs7bzMc",
+      "gameIds": [
+        "1245620",
+        "1091500"
+      ],
+      "items": [
+        {
+          "gameId": "1245620",
+          "title": "Elden Ring",
+          "price": 990000
+        },
+        {
+          "gameId": "1091500",
+          "title": "Cyberpunk 2077",
+          "price": 890000
+        }
+      ],
+      "totalAmount": 1880000,
+      "status": "completed",
+      "createdAt": "2026-10-20T14:20:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "gameId": "1245620",
+      "userId": "demo-user-1",
+      "userName": "Nguyễn Văn A",
+      "userEmail": "demo@atagames.vn",
+      "rating": 5,
+      "comment": "Siêu phẩm xuất sắc của FromSoftware! Đồ họa hùng vĩ, gameplay thử thách đầy mê hoặc và thế giới The Lands Between chứa đựng vô vàn bí ẩn để khám phá. 10/10!",
+      "createdAt": "2026-10-22T08:15:00.000Z",
+      "updatedAt": "2026-10-22T08:15:00.000Z"
+    },
+    {
+      "id": "rev-2",
+      "gameId": "1245620",
+      "userId": "gamer-tran-01",
+      "userName": "Trần Minh Quân",
+      "rating": 5,
+      "comment": "Cơ chế chiến đấu xuất sắc, boss fight mãn nhãn. Chơi trên PC rất mượt mà sau các bản cập nhật gần đây.",
+      "createdAt": "2026-10-25T11:40:00.000Z",
+      "updatedAt": "2026-10-25T11:40:00.000Z"
+    },
+    {
+      "id": "rev-3",
+      "gameId": "1245620",
+      "userId": "gamer-le-02",
+      "userName": "Lê Hoàng Phúc",
+      "rating": 4,
+      "comment": "Game rất đỉnh nhưng độ khó cao nên cần người chơi kiên nhẫn. Cốt truyện sâu sắc, nhạc nền cực đỉnh.",
+      "createdAt": "2026-10-28T16:20:00.000Z",
+      "updatedAt": "2026-10-28T16:20:00.000Z"
+    },
+    {
+      "id": "rev-4",
+      "gameId": "1091500",
+      "userId": "demo-user-1",
+      "userName": "Nguyễn Văn A",
+      "userEmail": "demo@atagames.vn",
+      "rating": 5,
+      "comment": "Night City quá đẹp và sống động! Bản DLC Phantom Liberty nâng tầm trải nghiệm lên một đẳng cấp mới.",
+      "createdAt": "2026-10-26T14:10:00.000Z",
+      "updatedAt": "2026-10-26T14:10:00.000Z"
+    },
+    {
+      "id": "rev-5",
+      "gameId": "413150",
+      "userId": "demo-user-1",
+      "userName": "Nguyễn Văn A",
+      "userEmail": "demo@atagames.vn",
+      "rating": 5,
+      "comment": "Tựa game chữa lành tuyệt vời nhất từng chơi! Nhạc thư giãn, trồng trọt và kết bạn ở Pelican Town rất vui.",
+      "createdAt": "2026-10-27T09:00:00.000Z",
+      "updatedAt": "2026-10-27T09:00:00.000Z"
+    }
+  ]
 }
