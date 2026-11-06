@@ -31,6 +31,7 @@ import { addToCart, selectIsInCart } from "../store/cartSlice";
 import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
 import GameItem from "./GameItem";
 import StateMessage from "./StateMessage";
+import ReviewSection from "./ReviewSection";
 import { formatPrice } from "../utils/format";
 import { STEAM_TRAILERS } from "../data/trailers";
 
@@ -95,7 +96,9 @@ export default function GameDetail() {
     const [showVolumeToast, setShowVolumeToast] = useState(false);
     const [volumeToastMessage, setVolumeToastMessage] = useState("");
 
-    // Đổi sang game khác thì đặt lại trạng thái trình phát media
+    const [dynamicRating, setDynamicRating] = useState<number | null>(null);
+    const [dynamicReviewCount, setDynamicReviewCount] = useState<number | null>(null);
+
     const [prevId, setPrevId] = useState(id);
     if (prevId !== id) {
         setPrevId(id);
@@ -104,6 +107,8 @@ export default function GameDetail() {
         setIsMuted(true);
         setCurrentTime(0);
         setVideoError(false);
+        setDynamicRating(null);
+        setDynamicReviewCount(null);
     }
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -416,8 +421,10 @@ export default function GameDetail() {
                             <div className="game-detail__submeta">
                                 <div className="game-detail__rating">
                                     <Star size={17} fill="currentColor" />
-                                    <strong>{Number(game.rating).toFixed(1)}</strong>
-                                    <span>/ 5.0 (Cộng đồng đánh giá rất tích cực)</span>
+                                    <strong>{Number(dynamicRating ?? game.rating).toFixed(1)}</strong>
+                                    <span>
+                                        / 5.0 {dynamicReviewCount !== null && dynamicReviewCount > 0 ? `(${dynamicReviewCount} lượt đánh giá)` : "(Cộng đồng đánh giá rất tích cực)"}
+                                    </span>
                                 </div>
                                 <span className="game-detail__dot">•</span>
                                 <div className="game-detail__developer-info">
@@ -699,6 +706,16 @@ export default function GameDetail() {
                                         </div>
                                     </div>
                                 </section>
+
+                                <ReviewSection
+                                    gameId={game.id}
+                                    gameTitle={game.title}
+                                    defaultRating={game.rating}
+                                    onRatingUpdated={(newRating, totalReviews) => {
+                                        setDynamicRating(newRating);
+                                        setDynamicReviewCount(totalReviews);
+                                    }}
+                                />
                             </div>
                             <aside className="game-detail__sidebar">
                                 <div className="game-detail__purchase-card">
@@ -870,7 +887,7 @@ export default function GameDetail() {
                                                 </span>
                                                 <span className="game-detail__spec-value rating">
                                                     <Star size={14} fill="currentColor" />
-                                                    {Number(game.rating).toFixed(1)} / 5.0
+                                                    {Number(dynamicRating ?? game.rating).toFixed(1)} / 5.0
                                                 </span>
                                             </div>
                                         </div>
