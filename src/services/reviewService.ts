@@ -166,6 +166,72 @@ export const reviewService = {
         return false;
     },
 
+    async getPurchasedGameIds(userId: string): Promise<string[]> {
+        if (!userId) return [];
+        const ids = new Set<string>();
+
+        if (DEFAULT_PURCHASES[userId]) {
+            DEFAULT_PURCHASES[userId].forEach((id) => ids.add(id));
+        }
+
+        try {
+            const userRes = await api.get<UserAccount>(`/users/${userId}`);
+            if (Array.isArray(userRes.data?.purchasedGames)) {
+                userRes.data.purchasedGames.forEach((id) => ids.add(id));
+            }
+        } catch (_err) {
+            void _err;
+        }
+
+        try {
+            const ordersRes = await api.get<Order[]>("/orders", {
+                params: { userId },
+            });
+            if (Array.isArray(ordersRes.data)) {
+                ordersRes.data.forEach((order) => {
+                    if (Array.isArray(order.gameIds)) {
+                        order.gameIds.forEach((id) => ids.add(id));
+                    }
+                });
+            }
+        } catch (_err) {
+            void _err;
+        }
+
+        try {
+            const localOrdersRaw = window.localStorage.getItem(ORDERS_STORAGE_KEY);
+            if (localOrdersRaw) {
+                const localOrders = JSON.parse(localOrdersRaw) as Order[];
+                if (Array.isArray(localOrders)) {
+                    localOrders.forEach((ord) => {
+                        if (ord.userId === userId && Array.isArray(ord.gameIds)) {
+                            ord.gameIds.forEach((id) => ids.add(id));
+                        }
+                    });
+                }
+            }
+        } catch (_err) {
+            void _err;
+        }
+
+        return Array.from(ids);
+    },
+
+    async getUserReviews(userId: string): Promise<Review[]> {
+        if (!userId) return [];
+        try {
+            const response = await api.get<Review[]>("/reviews", {
+                params: { userId },
+            });
+            if (Array.isArray(response.data) && response.data.length > 0) {
+                return response.data;
+            }
+        } catch (_err) {
+            void _err;
+        }
+        return getStoredReviews().filter((r) => r.userId === userId);
+    },
+
     async createReview(payload: CreateReviewPayload): Promise<Review> {
         const newReview: Review = {
             id: `rev-${Date.now()}`,
