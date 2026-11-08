@@ -7,6 +7,7 @@ import GameDetail from "../components/GameDetail";
 import Library from "../components/Library";
 import Cart from "../components/Cart";
 import Checkout from "../components/Checkout";
+import OrderHistory from "../components/OrderHistory";
 import AuthPage from "../components/AuthPage";
 import { useAuth } from "../auth/useAuth";
 
@@ -36,6 +37,14 @@ export default function Router() {
                     element={
                         <RequireAuth>
                             <Checkout />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/orders"
+                    element={
+                        <RequireAuth>
+                            <OrderHistory />
                         </RequireAuth>
                     }
                 />
