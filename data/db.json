@@ -647,7 +647,13 @@
       "name": "Anh Võ Lê Quỳnh",
       "email": "23130015@st.hcmuaf.edu.vn",
       "password": "Qanh1909",
-      "id": "Kds4tdLgsEI"
+      "id": "Kds4tdLgsEI",
+      "purchasedGames": [
+        "271590",
+        "292030",
+        "1151640",
+        "1328670"
+      ]
     }
   ],
   "orders": [
@@ -702,6 +708,133 @@
       "totalAmount": 1880000,
       "status": "completed",
       "createdAt": "2026-10-20T14:20:00.000Z"
+    },
+    {
+      "id": "Ysu_Pe6U4jI",
+      "userId": "Kds4tdLgsEI",
+      "userName": "Anh Võ Lê Quỳnh",
+      "userEmail": "23130015@st.hcmuaf.edu.vn",
+      "gameIds": [
+        "271590"
+      ],
+      "items": [
+        {
+          "gameId": "271590",
+          "title": "Grand Theft Auto V",
+          "price": 450000,
+          "originalPrice": 750000,
+          "coverImage": "/images/games/271590-cover.jpg",
+          "cdKey": "ATA-2715-F60A-KDS4-KEY1"
+        }
+      ],
+      "subtotal": 750000,
+      "discount": 300000,
+      "fee": 0,
+      "totalAmount": 450000,
+      "paymentMethod": "visa",
+      "paymentDetails": {
+        "method": "visa",
+        "cardLast4": "4242",
+        "cardHolder": "NGUYEN VAN A",
+        "paidAt": "2026-11-08T05:23:18.734Z"
+      },
+      "status": "completed",
+      "createdAt": "2026-11-08T05:23:18.734Z"
+    },
+    {
+      "id": "qnhE5VLlWc4",
+      "userId": "Kds4tdLgsEI",
+      "userName": "Anh Võ Lê Quỳnh",
+      "userEmail": "23130015@st.hcmuaf.edu.vn",
+      "gameIds": [
+        "292030"
+      ],
+      "items": [
+        {
+          "gameId": "292030",
+          "title": "The Witcher 3: Wild Hunt",
+          "price": 299000,
+          "originalPrice": 599000,
+          "coverImage": "/images/games/292030-cover.jpg",
+          "cdKey": "ATA-2920-F602-KDS4-KEY1"
+        }
+      ],
+      "subtotal": 599000,
+      "discount": 300000,
+      "fee": 0,
+      "totalAmount": 299000,
+      "paymentMethod": "visa",
+      "paymentDetails": {
+        "method": "visa",
+        "cardLast4": "4242",
+        "cardHolder": "NGUYEN VAN A",
+        "paidAt": "2026-11-08T05:25:59.574Z"
+      },
+      "status": "completed",
+      "createdAt": "2026-11-08T05:25:59.574Z"
+    },
+    {
+      "id": "FSh9xtBnGxc",
+      "userId": "Kds4tdLgsEI",
+      "userName": "Anh Võ Lê Quỳnh",
+      "userEmail": "23130015@st.hcmuaf.edu.vn",
+      "gameIds": [
+        "1151640"
+      ],
+      "items": [
+        {
+          "gameId": "1151640",
+          "title": "Horizon Zero Dawn Complete Edition",
+          "price": 450000,
+          "originalPrice": 990000,
+          "coverImage": "/images/games/1151640-cover.jpg",
+          "cdKey": "ATA-1151-F634-KDS4-KEY1"
+        }
+      ],
+      "subtotal": 990000,
+      "discount": 540000,
+      "fee": 0,
+      "totalAmount": 450000,
+      "paymentMethod": "ewallet",
+      "paymentDetails": {
+        "method": "ewallet",
+        "walletType": "vnpay",
+        "paidAt": "2026-11-08T05:39:50.995Z"
+      },
+      "status": "completed",
+      "createdAt": "2026-11-08T05:39:50.995Z"
+    },
+    {
+      "id": "YSbGKh6OY5Q",
+      "userId": "Kds4tdLgsEI",
+      "userName": "Anh Võ Lê Quỳnh",
+      "userEmail": "23130015@st.hcmuaf.edu.vn",
+      "gameIds": [
+        "1328670"
+      ],
+      "items": [
+        {
+          "gameId": "1328670",
+          "title": "Mass Effect Legendary Edition",
+          "price": 450000,
+          "originalPrice": 900000,
+          "coverImage": "/images/games/1328670-cover.jpg",
+          "cdKey": "ATA-1328-F63D-KDS4-KEY1"
+        }
+      ],
+      "subtotal": 900000,
+      "discount": 450000,
+      "fee": 0,
+      "totalAmount": 450000,
+      "paymentMethod": "visa",
+      "paymentDetails": {
+        "method": "visa",
+        "cardLast4": "4242",
+        "cardHolder": "NGUYEN VAN A",
+        "paidAt": "2026-11-08T05:41:43.939Z"
+      },
+      "status": "completed",
+      "createdAt": "2026-11-08T05:41:43.939Z"
     }
   ],
   "reviews": [
@@ -757,6 +890,17 @@
       "comment": "Tựa game chữa lành tuyệt vời nhất từng chơi! Nhạc thư giãn, trồng trọt và kết bạn ở Pelican Town rất vui.",
       "createdAt": "2026-10-27T09:00:00.000Z",
       "updatedAt": "2026-10-27T09:00:00.000Z"
+    },
+    {
+      "id": "BvglkJVsEto",
+      "gameId": "test-game-1",
+      "userId": "user-123",
+      "userName": "Test User",
+      "userEmail": "test@example.com",
+      "rating": 4,
+      "comment": "Game rat hay sau update!",
+      "createdAt": "2026-11-08T05:35:53.183Z",
+      "updatedAt": "2026-11-08T05:35:53.194Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
