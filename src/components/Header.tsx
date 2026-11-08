@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type SubmitEvent } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
-import { Gamepad2, LogOut, Package, Search, ShoppingCart, User } from "lucide-react";
+import { Gamepad2, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
 import { formatPrice } from "../utils/format";
@@ -220,7 +220,6 @@ export default function Header() {
                     {user ? (
                         <div className="header__account">
                             <Link to="/orders" className="header__orders-btn" title="Lịch sử đơn hàng">
-                                <Package size={16} />
                                 <span>Đơn hàng</span>
                             </Link>
                             <span className="header__account-name" title={user.name}>
