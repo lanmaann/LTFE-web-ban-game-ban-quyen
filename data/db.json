@@ -642,9 +642,14 @@
         "1245620",
         "1091500"
       ]
+    },
+    {
+      "name": "Anh Võ Lê Quỳnh",
+      "email": "23130015@st.hcmuaf.edu.vn",
+      "password": "Qanh1909",
+      "id": "Kds4tdLgsEI"
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json",
   "orders": [
     {
       "id": "ord-1001",
@@ -753,5 +758,6 @@
       "createdAt": "2026-10-27T09:00:00.000Z",
       "updatedAt": "2026-10-27T09:00:00.000Z"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
