@@ -6,6 +6,7 @@ import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice"
 import { formatPrice } from "../utils/format";
 import { selectCartCount } from "../store/cartSlice";
 import { useAuth } from "../auth/useAuth";
+import { addSearchHistory } from "../utils/searchHistory";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "header__link header__link--active" : "header__link";
@@ -80,7 +81,8 @@ export default function Header() {
     const showDropdown = isOpen && keyword.trim() !== "";
     const viewAllIndex = suggestions.length;
 
-    function goToGame(id: string) {
+    function goToGame(id: string, title?: string) {
+        if (title) addSearchHistory(title);
         setIsOpen(false);
         setActiveIndex(-1);
         navigate(`/games/${id}`);
@@ -105,13 +107,14 @@ export default function Header() {
             setActiveIndex((index) => (index <= 0 ? lastIndex : index - 1));
         } else if (event.key === "Enter" && activeIndex >= 0 && activeIndex < suggestions.length) {
             event.preventDefault();
-            goToGame(suggestions[activeIndex].id);
+            goToGame(suggestions[activeIndex].id, suggestions[activeIndex].title);
         }
     }
 
     function handleSearch(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const q = keyword.trim();
+        if (q) addSearchHistory(q);
         setIsOpen(false);
         setActiveIndex(-1);
         navigate(q ? `/store?q=${encodeURIComponent(q)}` : "/store");
@@ -164,7 +167,7 @@ export default function Header() {
                                     className={`search-suggest__item ${index === activeIndex ? "search-suggest__item--active" : ""}`}
                                     onMouseDown={(event) => event.preventDefault()}
                                     onMouseEnter={() => setActiveIndex(index)}
-                                    onClick={() => goToGame(game.id)}
+                                    onClick={() => goToGame(game.id, game.title)}
                                 >
                                     <img src={game.coverImage} alt="" className="search-suggest__thumb" loading="lazy" />
                                     <span className="search-suggest__info">
