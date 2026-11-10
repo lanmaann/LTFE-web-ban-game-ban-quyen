@@ -139,13 +139,12 @@ export default function Profile() {
                         <label className="profile-field"><span>Tên hiển thị</span><input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={60} required /></label>
                         <label className="profile-field"><span>Email</span><input value={user?.email ?? ""} type="email" disabled /></label>
                         <label className="profile-field"><span>Số điện thoại</span><input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} maxLength={20} placeholder="Nhập số điện thoại" /></label>
-                        <label className="profile-field"><span>Ngày sinh</span><input type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} /></label>
+                        <label className="profile-field"><span>Ngày sinh</span><input className="profile-date-input" type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} aria-label="Chọn ngày tháng năm sinh" /></label>
                         <label className="profile-field profile-field--wide"><span>Địa chỉ</span><input value={address} onChange={(event) => setAddress(event.target.value)} maxLength={160} placeholder="Nhập địa chỉ của bạn" /></label>
                     </div>
                 </div>
                 <div className="profile-section">
                     <h2><LockKeyhole size={18} /> Đổi mật khẩu</h2>
-                    <p className="profile-hint">Để trống nếu bạn không muốn thay đổi mật khẩu.</p>
                     <div className="profile-fields">
                         <label className="profile-field">
                             <span>Mật khẩu hiện tại</span>

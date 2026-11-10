@@ -11,6 +11,7 @@ import OrderHistory from "../components/OrderHistory";
 import AuthPage from "../components/AuthPage";
 import { useAuth } from "../auth/useAuth";
 import Profile from "../components/Profile";
+import Favorites from "../components/Favorites";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -54,6 +55,14 @@ export default function Router() {
                     element={
                         <RequireAuth>
                             <Profile />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/favorites"
+                    element={
+                        <RequireAuth>
+                            <Favorites />
                         </RequireAuth>
                     }
                 />
