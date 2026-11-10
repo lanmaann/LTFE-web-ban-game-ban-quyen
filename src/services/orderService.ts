@@ -1,17 +1,11 @@
-
 import { api } from "./api";
 import { reviewService } from "./reviewService";
-import type {
-    Order,
-    CreateOrderPayload,
-    OrderItem,
-} from "../types/order";
+import type { Order, CreateOrderPayload, OrderItem } from "../types/order";
 import type { Game } from "../types/game";
 import type { UserAccount } from "../types/review";
 import { generateCdKey } from "../utils/license";
 
 const ORDERS_STORAGE_KEY = "ata_orders";
-
 
 const SEED_ORDERS: Order[] = [
     {
@@ -40,7 +34,7 @@ const SEED_ORDERS: Order[] = [
                 cdKey: "ATA-4131-07AA-DEMO-KEY1",
             },
         ],
-        subtotal: 1709000,
+        subtotal: 2045000,
         discount: 0,
         fee: 0,
         totalAmount: 1709000,
@@ -89,18 +83,15 @@ const SEED_ORDERS: Order[] = [
     },
 ];
 
-
 function getStoredOrders(): Order[] {
     try {
         const raw = window.localStorage.getItem(ORDERS_STORAGE_KEY);
-
         if (!raw) {
             saveStoredOrders(SEED_ORDERS);
             return [...SEED_ORDERS];
         }
 
         const parsed: unknown = JSON.parse(raw);
-
         if (!Array.isArray(parsed)) {
             saveStoredOrders(SEED_ORDERS);
             return [...SEED_ORDERS];
@@ -114,19 +105,19 @@ function getStoredOrders(): Order[] {
 
 function saveStoredOrders(orders: Order[]): void {
     try {
-        window.localStorage.setItem(
-            ORDERS_STORAGE_KEY,
-            JSON.stringify(orders)
-        );
+        window.localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
     } catch {
         console.error("Không thể lưu đơn hàng vào localStorage.");
     }
 }
 
-function upsertStoredOrder(order: Order): void {
-    const orders = getStoredOrders();
-    const index = orders.findIndex((item) => item.id === order.id);
+function upsertStoredOrder(order: Order, removeOldId?: string): void {
+    let orders = getStoredOrders();
+    if (removeOldId && removeOldId !== order.id) {
+        orders = orders.filter((item) => item.id !== removeOldId);
+    }
 
+    const index = orders.findIndex((item) => item.id === order.id);
     if (index !== -1) {
         orders[index] = order;
     } else {
@@ -140,57 +131,64 @@ export const orderService = {
     async getUserOrders(userId: string): Promise<Order[]> {
         if (!userId) return [];
 
-        const localOrders = getStoredOrders().filter(
-            (order) => order.userId === userId
-        );
-
         let remoteOrders: Order[] = [];
-
         try {
             const res = await api.get<Order[]>("/orders", {
                 params: { userId },
             });
-
             if (Array.isArray(res.data)) {
-                remoteOrders = res.data.filter(
-                    (order) => order.userId === userId
-                );
+                remoteOrders = res.data.filter((order) => order.userId === userId);
             }
         } catch {
         }
-        const orderMap = new Map<string, Order>();
 
-        localOrders.forEach((order) => {
-            orderMap.set(order.id, order);
-        });
+        const localOrders = getStoredOrders().filter((order) => order.userId === userId);
+        const getOrderFingerprint = (o: Order) => {
+            const gamesKey = (o.gameIds || []).slice().sort().join(",");
+            const timeRounded = Math.floor(new Date(o.createdAt).getTime() / 15000); // sai số 15s
+            return `${o.userId}__${o.totalAmount}__${gamesKey}__${timeRounded}`;
+        };
+
+        const resultMap = new Map<string, Order>();
+        const seenFingerprints = new Set<string>();
 
         remoteOrders.forEach((order) => {
-            orderMap.set(order.id, order);
+            resultMap.set(order.id, order);
+            seenFingerprints.add(getOrderFingerprint(order));
         });
 
-        return Array.from(orderMap.values()).sort(
-            (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
+        localOrders.forEach((order) => {
+            const fp = getOrderFingerprint(order);
+            if (!resultMap.has(order.id) && !seenFingerprints.has(fp)) {
+                resultMap.set(order.id, order);
+                seenFingerprints.add(fp);
+            }
+        });
+
+        const dedupedList = Array.from(resultMap.values()).sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
+
+        if (remoteOrders.length > 0) {
+            const allStored = getStoredOrders();
+            const otherUsersOrders = allStored.filter((o) => o.userId !== userId);
+            saveStoredOrders([...otherUsersOrders, ...dedupedList]);
+        }
+
+        return dedupedList;
     },
-    async checkDuplicateOwnership(
-        userId: string,
-        gameIds: string[]
-    ): Promise<string[]> {
+
+    async checkDuplicateOwnership(userId: string, gameIds: string[]): Promise<string[]> {
         if (!userId || !gameIds.length) return [];
-
         try {
-            const ownedIds =
-                await reviewService.getPurchasedGameIds(userId);
-
+            const ownedIds = await reviewService.getPurchasedGameIds(userId);
             const ownedSet = new Set(ownedIds);
-
             return gameIds.filter((id) => ownedSet.has(id));
         } catch {
             return [];
         }
     },
+
     async validateCartAndPrices(
         items: { gameId: string; clientPrice: number }[],
         allGamesCatalog?: Game[]
@@ -201,11 +199,9 @@ export const orderService = {
         priceMismatches: string[];
     }> {
         let catalog = allGamesCatalog ?? [];
-
         if (!catalog.length) {
             try {
                 const res = await api.get<Game[]>("/games");
-
                 if (Array.isArray(res.data)) {
                     catalog = res.data;
                 }
@@ -219,10 +215,7 @@ export const orderService = {
             }
         }
 
-        const catalogMap = new Map(
-            catalog.map((game) => [game.id, game])
-        );
-
+        const catalogMap = new Map(catalog.map((game) => [game.id, game]));
         const validatedItems: OrderItem[] = [];
         const priceMismatches: string[] = [];
         let subtotal = 0;
@@ -239,7 +232,6 @@ export const orderService = {
             }
 
             const backendPrice = found.price;
-
             if (backendPrice !== item.clientPrice) {
                 priceMismatches.push(found.title);
             }
@@ -263,152 +255,98 @@ export const orderService = {
         };
     },
 
-
-    async processOrder(
-        payload: CreateOrderPayload
-    ): Promise<Order> {
-        const orderId = `ord-${Date.now()}`;
+    async processOrder(payload: CreateOrderPayload): Promise<Order> {
+        const tempOrderId = `ord-${Date.now()}`;
         const paidAt = new Date().toISOString();
-        const itemsWithKeys: OrderItem[] = payload.items.map(
-            (item) => ({
-                ...item,
-                cdKey: generateCdKey(
-                    item.gameId,
-                    payload.userId
-                ),
-            })
-        );
+        const itemsWithKeys: OrderItem[] = payload.items.map((item) => ({
+            ...item,
+            cdKey: generateCdKey(item.gameId, payload.userId),
+        }));
 
         const newOrder: Order = {
-            id: orderId,
+            id: tempOrderId,
             userId: payload.userId,
             userName: payload.userName,
             userEmail: payload.userEmail,
-            gameIds: payload.items.map(
-                (item) => item.gameId
-            ),
+            gameIds: payload.items.map((item) => item.gameId),
             items: itemsWithKeys,
             subtotal: payload.subtotal,
             discount: payload.discount,
             fee: payload.fee,
             totalAmount: payload.totalAmount,
             paymentMethod: payload.paymentMethod,
-
             paymentDetails: {
                 method: payload.paymentMethod,
-
-                cardLast4: payload.cardDetails
-                    ? payload.cardDetails.cardNumber.slice(-4)
-                    : undefined,
-
-                cardHolder:
-                    payload.cardDetails?.cardHolder.toUpperCase(),
-
+                cardLast4: payload.cardDetails ? payload.cardDetails.cardNumber.slice(-4) : undefined,
+                cardHolder: payload.cardDetails?.cardHolder.toUpperCase(),
                 qrTransactionCode:
                     payload.paymentMethod === "qr"
-                        ? `QR-${Math.floor(
-                            100000 + Math.random() * 900000
-                        )}`
+                        ? `QR-${Math.floor(100000 + Math.random() * 900000)}`
                         : undefined,
-
                 walletType: payload.walletType,
                 paidAt,
             },
-
             status: "completed",
             createdAt: paidAt,
         };
-        upsertStoredOrder(newOrder);
 
+        let savedOrder = newOrder;
+
+        // Gửi lên backend trước để lấy ID chuẩn từ json-server (tránh nhân đôi ID)
         try {
-            await api.post("/orders", newOrder);
-        } catch {
-            // Backend offline: giữ đơn hàng trong localStorage.
-            console.warn(
-                "Không thể đồng bộ đơn hàng lên Backend."
-            );
-        }
-        try {
-            const userRes = await api.get<UserAccount>(
-                `/users/${payload.userId}`
-            );
-
-            if (userRes.data) {
-                const existing = new Set(
-                    userRes.data.purchasedGames ?? []
-                );
-
-                payload.items.forEach((item) => {
-                    existing.add(item.gameId);
-                });
-
-                await api.patch(
-                    `/users/${payload.userId}`,
-                    {
-                        purchasedGames: Array.from(existing),
-                    }
-                );
+            const res = await api.post<Order>("/orders", newOrder);
+            if (res.data && res.data.id) {
+                savedOrder = res.data;
             }
         } catch {
-            console.warn(
-                "Không thể cập nhật danh sách game đã mua."
-            );
+            console.warn("Backend offline: Lưu đơn hàng vào localStorage.");
         }
 
-        return newOrder;
+        upsertStoredOrder(savedOrder, tempOrderId);
+
+        try {
+            const userRes = await api.get<UserAccount>(`/users/${payload.userId}`);
+            if (userRes.data) {
+                const existing = new Set(userRes.data.purchasedGames ?? []);
+                payload.items.forEach((item) => existing.add(item.gameId));
+
+                await api.patch(`/users/${payload.userId}`, {
+                    purchasedGames: Array.from(existing),
+                });
+            }
+        } catch {
+            console.warn("Không thể cập nhật danh sách game đã mua lên Backend.");
+        }
+
+        return savedOrder;
     },
 
-    async requestRefund(
-        orderId: string,
-        userId: string,
-        reason: string
-    ): Promise<Order> {
+    async requestRefund(orderId: string, userId: string, reason: string): Promise<Order> {
         if (!orderId || !userId) {
             throw new Error("Thông tin đơn hàng không hợp lệ.");
         }
 
         if (!reason.trim()) {
-            throw new Error("Vui lòng nhập lý do hoàn tiền.");
+            throw new Error("Vui lòng chọn hoặc nhập lý do hoàn tiền.");
         }
 
-        const localOrders = getStoredOrders();
-
-        let order = localOrders.find(
-            (item) =>
-                item.id === orderId &&
-                item.userId === userId
-        );
-        if (!order) {
-            try {
-                const res = await api.get<Order>(
-                    `/orders/${orderId}`
-                );
-
-                if (
-                    res.data &&
-                    res.data.id === orderId &&
-                    res.data.userId === userId
-                ) {
-                    order = res.data;
-                }
-            } catch {
-            }
-        }
+        const userOrders = await this.getUserOrders(userId);
+        const order = userOrders.find((item) => item.id === orderId && item.userId === userId);
 
         if (!order) {
-            throw new Error(
-                "Không tìm thấy đơn hàng cần xử lý hoàn tiền."
-            );
+            throw new Error("Không tìm thấy đơn hàng cần xử lý hoàn tiền.");
         }
 
         if (order.status === "refunded") {
-            throw new Error(
-                "Đơn hàng này đã được hoàn tiền trước đó."
-            );
+            throw new Error("Đơn hàng này đã được hoàn tiền trước đó.");
+        }
+        const orderTime = new Date(order.createdAt).getTime();
+        const daysElapsed = (Date.now() - orderTime) / (1000 * 60 * 60 * 24);
+        if (daysElapsed > 14) {
+            throw new Error("Đơn hàng đã quá thời hạn 14 ngày theo chính sách hoàn tiền.");
         }
 
         const refundedAt = new Date().toISOString();
-
         const refundedOrder: Order = {
             ...order,
             status: "refunded",
@@ -423,9 +361,32 @@ export const orderService = {
                 refundedAt,
             });
         } catch {
-            console.warn(
-                "Không thể đồng bộ trạng thái hoàn tiền lên Backend."
-            );
+            console.warn("Không thể đồng bộ trạng thái hoàn tiền lên Backend.");
+        }
+        const remainingCompletedOrders = userOrders.filter(
+            (o) => o.id !== orderId && o.status === "completed"
+        );
+        const retainedGameIds = new Set<string>();
+        remainingCompletedOrders.forEach((o) => {
+            o.gameIds.forEach((gid) => retainedGameIds.add(gid));
+        });
+
+        try {
+            const userRes = await api.get<UserAccount>(`/users/${userId}`);
+            if (userRes.data && Array.isArray(userRes.data.purchasedGames)) {
+                const updatedGames = userRes.data.purchasedGames.filter((gid) => {
+                    if (order.gameIds.includes(gid)) {
+                        return retainedGameIds.has(gid);
+                    }
+                    return true;
+                });
+
+                await api.patch(`/users/${userId}`, {
+                    purchasedGames: updatedGames,
+                });
+            }
+        } catch {
+            console.warn("Không thể cập nhật danh sách game đã mua sau khi hoàn tiền.");
         }
 
         return refundedOrder;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
     CreditCard,
@@ -10,8 +10,6 @@ import {
     ArrowRight,
     ArrowLeft,
     ShieldCheck,
-    Copy,
-    Check,
     Lock,
     RefreshCw,
     Clock,
@@ -64,16 +62,15 @@ export default function Checkout() {
     const [cardCvv, setCardCvv] = useState("");
     const [cardErrors, setCardErrors] = useState<Record<string, string>>({});
 
-
     const [simulateFail, setSimulateFail] = useState(false);
     const [processingStepText, setProcessingStepText] = useState("Đang kết nối cổng thanh toán an toàn...");
     const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
     const [paymentError, setPaymentError] = useState<string | null>(null);
+    const [isExecutingPayment, setIsExecutingPayment] = useState(false);
 
     // Duplicate check & Validated items
     const [ownedGameIds, setOwnedGameIds] = useState<string[]>([]);
     const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(true);
-    const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
 
     const [qrSecondsLeft, setQrSecondsLeft] = useState(900);
 
@@ -100,6 +97,7 @@ export default function Checkout() {
             isCurrent = false;
         };
     }, [user, cartGameIds]);
+
     useEffect(() => {
         if (paymentMethod !== "qr" && paymentMethod !== "ewallet") return;
         const timer = setInterval(() => {
@@ -144,12 +142,13 @@ export default function Checkout() {
     };
 
     const handleExecutePayment = async () => {
-        if (!user) return;
+        if (!user || isExecutingPayment) return;
 
         if (paymentMethod === "visa" && !validateCard()) {
             return;
         }
 
+        setIsExecutingPayment(true);
         setStep("processing");
         setPaymentError(null);
 
@@ -207,14 +206,10 @@ export default function Checkout() {
             const message = err instanceof Error ? err.message : "Đã có lỗi trong quá trình xử lý giao dịch.";
             setPaymentError(message);
             setStep("result");
+        } finally {
+            setIsExecutingPayment(false);
         }
     };
-
-    const handleCopyKey = useCallback((gameId: string, cdKey: string) => {
-        void navigator.clipboard.writeText(cdKey);
-        setCopiedKeyId(gameId);
-        setTimeout(() => setCopiedKeyId(null), 2500);
-    }, []);
 
     if (cartItems.length === 0 && step !== "result") {
         return (
@@ -248,7 +243,7 @@ export default function Checkout() {
                 <div className="checkout-stepper" aria-label="Tiến trình thanh toán">
                     <div className={`stepper-step ${step === "review" ? "stepper-step--active" : "stepper-step--done"}`}>
                         <div className="stepper-step__circle">
-                            {step !== "review" ? <Check size={14} /> : "1"}
+                            1
                         </div>
                         <span className="stepper-step__label">Rà soát</span>
                     </div>
@@ -263,7 +258,7 @@ export default function Checkout() {
                         }`}
                     >
                         <div className="stepper-step__circle">
-                            {step === "processing" || step === "result" ? <Check size={14} /> : "2"}
+                            2
                         </div>
                         <span className="stepper-step__label">Phương thức</span>
                     </div>
@@ -274,6 +269,7 @@ export default function Checkout() {
                     </div>
                 </div>
             </div>
+
             {step === "review" && (
                 <div className="checkout-layout">
                     <div className="checkout-main">
@@ -357,12 +353,13 @@ export default function Checkout() {
                                 })}
                             </ul>
                         </div>
+
                         <div className="checkout-notice">
                             <ShieldCheck size={20} className="checkout-notice__icon" />
                             <div className="checkout-notice__text">
                                 <strong>Cam kết quyền lợi game bản quyền:</strong>
                                 <ul>
-                                    <li>Mã kích hoạt (CD-Key) được tự động cấp và lưu trữ an toàn trong Thư viện của bạn ngay khi hoàn tất.</li>
+                                    <li>Mã kích hoạt (CD-Key) được tự động kích hoạt và lưu an toàn trong Thư viện game của bạn.</li>
                                     <li>Không mất phí giao dịch (Phí thanh toán 0₫).</li>
                                     <li>Chính sách hỗ trợ đổi trả / hoàn tiền trong vòng 14 ngày nếu chưa kích hoạt sử dụng.</li>
                                 </ul>
@@ -390,8 +387,8 @@ export default function Checkout() {
                                     <span className="checkout-summary-card__free">0₫ (Miễn phí)</span>
                                 </div>
                                 <div className="checkout-summary-card__row">
-                                    <span>Hình thức giao hàng</span>
-                                    <span>Trực tuyến (Cấp CD Key)</span>
+                                    <span>Hình thức nhận game</span>
+                                    <span>Trực tuyến (Thư viện game)</span>
                                 </div>
 
                                 <div className="checkout-summary-card__divider" />
@@ -428,7 +425,6 @@ export default function Checkout() {
                 </div>
             )}
 
-            {/* Step 2: Payment Method Selection */}
             {step === "payment_select" && (
                 <div className="checkout-layout">
                     <div className="checkout-main">
@@ -439,6 +435,7 @@ export default function Checkout() {
                                     <Lock size={13} /> Bảo mật Sandbox
                                 </span>
                             </div>
+
                             <div className="payment-methods-grid">
                                 <button
                                     type="button"
@@ -592,19 +589,15 @@ export default function Checkout() {
                                                     aria-label="Mã QR VietQR thanh toán game"
                                                 >
                                                     <rect width="200" height="200" fill="#ffffff" rx="10" />
-                                                    {/* Corner 1 */}
                                                     <rect x="20" y="20" width="45" height="45" fill="#0b1120" rx="4" />
                                                     <rect x="27" y="27" width="31" height="31" fill="#ffffff" />
                                                     <rect x="34" y="34" width="17" height="17" fill="#1674cf" />
-                                                    {/* Corner 2 */}
                                                     <rect x="135" y="20" width="45" height="45" fill="#0b1120" rx="4" />
                                                     <rect x="142" y="27" width="31" height="31" fill="#ffffff" />
                                                     <rect x="149" y="34" width="17" height="17" fill="#1674cf" />
-                                                    {/* Corner 3 */}
                                                     <rect x="20" y="135" width="45" height="45" fill="#0b1120" rx="4" />
                                                     <rect x="27" y="142" width="31" height="31" fill="#ffffff" />
                                                     <rect x="34" y="149" width="17" height="17" fill="#1674cf" />
-                                                    {/* Data pattern simulation */}
                                                     <rect x="75" y="25" width="12" height="12" fill="#0b1120" />
                                                     <rect x="95" y="35" width="18" height="12" fill="#0b1120" />
                                                     <rect x="75" y="55" width="20" height="15" fill="#1674cf" />
@@ -730,10 +723,11 @@ export default function Checkout() {
                             <button
                                 type="button"
                                 className="checkout-btn checkout-btn--success checkout-btn--full"
+                                disabled={isExecutingPayment}
                                 onClick={handleExecutePayment}
                             >
                                 <Lock size={16} />
-                                <span>Xác nhận & Thanh toán ngay</span>
+                                <span>{isExecutingPayment ? "Đang xử lý..." : "Xác nhận & Thanh toán ngay"}</span>
                             </button>
 
                             <button
@@ -748,7 +742,6 @@ export default function Checkout() {
                 </div>
             )}
 
-            {/* Step 3: Payment Processing Animation */}
             {step === "processing" && (
                 <div className="checkout-processing">
                     <div className="checkout-processing__card">
@@ -765,10 +758,8 @@ export default function Checkout() {
                 </div>
             )}
 
-            {/* Step 4: Payment Result Screen */}
             {step === "result" && (
                 <div className="checkout-result">
-                    {/* SUCCESS RESULT */}
                     {!paymentError && createdOrder && (
                         <div className="checkout-result-card checkout-result-card--success">
                             <div className="checkout-result-card__icon checkout-result-card__icon--success">
@@ -777,8 +768,8 @@ export default function Checkout() {
 
                             <h2 className="checkout-result-card__title">Thanh toán đơn hàng thành công!</h2>
                             <p className="checkout-result-card__desc">
-                                Cảm ơn bạn đã mua game bản quyền tại ATA Games. Mã bản quyền (CD-Key) đã được khởi tạo
-                                và kích hoạt quyền sở hữu cho tài khoản <strong>{user?.name}</strong>.
+                                Cảm ơn bạn đã mua game bản quyền tại ATA Games. Quyền sở hữu game đã được kích hoạt
+                                thành công cho tài khoản <strong>{user?.name}</strong>.
                             </p>
 
                             <div className="checkout-result-meta">
@@ -800,41 +791,37 @@ export default function Checkout() {
                                 </div>
                             </div>
 
-                            {/* CD-Keys Section */}
-                            <div className="order-keys-box">
-                                <h3 className="order-keys-box__title">
-                                    <Sparkles size={16} /> Mã bản quyền (CD-Key) của bạn:
+                            {/* Danh sách game đã kích hoạt - CD-Key chỉ hiển thị trong Thư viện */}
+                            <div className="order-games-box">
+                                <h3 className="order-games-box__title">
+                                    <CheckCircle2 size={18} /> Game bản quyền đã sẵn sàng trong Thư viện:
                                 </h3>
-                                <ul className="order-keys-list">
+                                <ul className="order-games-list">
                                     {createdOrder.items.map((item) => (
-                                        <li key={item.gameId} className="order-key-item">
-                                            <div className="order-key-item__info">
-                                                <strong className="order-key-item__name">{item.title}</strong>
-                                                <code className="order-key-item__code">{item.cdKey}</code>
+                                        <li key={item.gameId} className="order-game-item">
+                                            <div className="order-game-item__info">
+                                                <strong className="order-game-item__name">{item.title}</strong>
+                                                <span className="order-game-item__tag">
+                                                    Bản quyền kỹ thuật số · Số lượng: 1
+                                                </span>
                                             </div>
-                                            <button
-                                                type="button"
-                                                className="order-key-item__copy-btn"
-                                                onClick={() => handleCopyKey(item.gameId, item.cdKey || "")}
-                                            >
-                                                {copiedKeyId === item.gameId ? (
-                                                    <>
-                                                        <Check size={14} /> Đã chép
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Copy size={14} /> Sao chép Key
-                                                    </>
-                                                )}
-                                            </button>
+                                            <span className="order-game-item__badge">
+                                                <CheckCircle2 size={14} /> Đã thêm vào Thư viện
+                                            </span>
                                         </li>
                                     ))}
                                 </ul>
+                                <div className="order-license-hint">
+                                    <ShieldCheck size={18} />
+                                    <span>
+                                        Mã kích hoạt bản quyền (CD-Key) được lưu trữ bảo mật và hiển thị trực tiếp trong <strong>Thư viện game</strong> của bạn để cài đặt.
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="checkout-result-actions">
                                 <Link to="/library" className="checkout-btn checkout-btn--primary">
-                                    <CheckCircle2 size={18} /> Đi tới Thư viện game
+                                    <CheckCircle2 size={18} /> Đi tới Thư viện xem Key & Cài đặt
                                 </Link>
                                 <Link to="/orders" className="checkout-btn checkout-btn--secondary">
                                     Xem Lịch sử mua hàng
@@ -846,7 +833,6 @@ export default function Checkout() {
                         </div>
                     )}
 
-                    {/* FAILURE / CANCELLED RESULT */}
                     {paymentError && (
                         <div className="checkout-result-card checkout-result-card--error">
                             <div className="checkout-result-card__icon checkout-result-card__icon--error">
