@@ -8,6 +8,7 @@ import { formatPrice } from "../utils/format";
 import { useAuth } from "../auth/useAuth";
 import { favoriteService } from "../services/favoriteService";
 import { useNavigate } from "react-router-dom";
+import { salesService } from "../services/salesService";
 
 interface GameItemProps {
     game: Game;
@@ -44,6 +45,7 @@ export default function GameItem({ game }: GameItemProps) {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [isFavorite, setIsFavorite] = useState(() => !!user && favoriteService.isFavorite(user.id, game.id));
+    const salesCount = salesService.getSalesCount(game.id);
     const isInCart = useAppSelector(selectIsInCart(game.id));
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [toastType, setToastType] = useState<"success" | "warning">("success");
@@ -245,6 +247,9 @@ export default function GameItem({ game }: GameItemProps) {
                         <strong>
                             {isFree ? "Chơi miễn phí" : formatPrice(game.price)}
                         </strong>
+                        <span className="game-card__sales" aria-label={`Đã bán ${salesCount} bản`}>
+                            <ShoppingCart size={13} /> Đã bán {salesCount.toLocaleString("vi-VN")}
+                        </span>
                     </div>
 
                     <button
