@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type SubmitEvent } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
-import { Gamepad2, LogOut, Search, ShoppingCart, User } from "lucide-react";
+import { Gamepad2, Heart, LogOut, Search, ShoppingCart, User } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
 import { formatPrice } from "../utils/format";
@@ -219,13 +219,15 @@ export default function Header() {
                     </Link>
                     {user ? (
                         <div className="header__account">
-                            <Link to="/orders" className="header__orders-btn" title="Lịch sử đơn hàng">
-                                <span>Đơn hàng</span>
-                            </Link>
-                            <Link to="/profile" className="header__profile-link" title="Hồ sơ cá nhân">
+                            <button type="button" className="header__profile-link" aria-haspopup="true">
                                 {user.avatar ? <img src={user.avatar} alt="" /> : <User size={17} />}
                                 <span className="header__account-name">{user.name}</span>
-                            </Link>
+                            </button>
+                            <div className="header__account-menu">
+                                <Link to="/profile"><User size={17} /> Hồ sơ cá nhân</Link>
+                                <Link to="/favorites"><Heart size={17} /> Yêu thích</Link>
+                                <Link to="/orders"><ShoppingCart size={17} /> Đơn hàng</Link>
+                            </div>
                             <button
                                 type="button"
                                 className="header__logout"
