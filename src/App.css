@@ -257,6 +257,7 @@
 }
 
 .header__account {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -275,7 +276,11 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    padding: 0;
     color: #dce9fc;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
 }
 
 .header__profile-link > img {
@@ -284,6 +289,12 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+.header__account-menu { position: absolute; z-index: 120; top: calc(100% + 8px); right: 75px; display: none; min-width: 205px; padding: 6px; background: #111c2e; border: 1px solid var(--color-border); border-radius: 10px; box-shadow: 0 12px 30px rgb(0 0 0 / 35%); }
+.header__account-menu::before { position: absolute; top: -9px; right: 0; left: 0; height: 10px; content: ""; }
+.header__account:hover .header__account-menu, .header__account:focus-within .header__account-menu { display: grid; }
+.header__account-menu a { display: flex; align-items: center; gap: 10px; padding: 10px; color: #dce9fc; border-radius: 7px; font-size: 14px; }
+.header__account-menu a:hover, .header__account-menu a:focus-visible { color: #fff; background: #223653; outline: none; }
 
 .header__logout {
     display: inline-flex;
@@ -378,6 +389,8 @@
 .profile-field input { width: 100%; height: 42px; padding: 0 12px; color: var(--color-text); background: #0d1727; border: 1px solid var(--color-border); border-radius: 8px; outline: none; }
 .profile-field input:focus { border-color: var(--color-primary); }
 .profile-field input:disabled { color: var(--color-muted); cursor: not-allowed; }
+.profile-date-input { color-scheme: dark; }
+.profile-date-input::-webkit-calendar-picker-indicator { display: block; opacity: 1; cursor: pointer; }
 .profile-value { min-height: 42px; margin: 0; padding: 11px 12px; color: var(--color-text); background: #0d1727; border: 1px solid var(--color-border); border-radius: 8px; overflow-wrap: anywhere; }
 .profile-field--wide { grid-column: 1 / -1; }
 .profile-actions { display: flex; justify-content: flex-end; padding-top: 22px; }
@@ -389,8 +402,19 @@
 .profile-message--error { color: var(--color-danger); }
 .profile-message--success { color: var(--color-success); }
 
+.favorites-page { width: min(var(--container-width), calc(100% - 40px)); margin: 42px auto 64px; min-height: 420px; }
+.favorites-page__heading { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; color: #ff5d79; }
+.favorites-page__heading h1 { margin: 0 0 5px; color: var(--color-text); font-size: 28px; }
+.favorites-page__heading p { margin: 0; color: var(--color-muted); font-size: 14px; }
+.favorites-empty { display: flex; min-height: 300px; flex-direction: column; align-items: center; justify-content: center; padding: 28px; color: var(--color-muted); text-align: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 14px; }
+.favorites-empty > svg { color: #ff5d79; }
+.favorites-empty h2 { margin: 16px 0 4px; color: var(--color-text); font-size: 20px; }
+.favorites-empty p { margin: 0 0 16px; }
+.favorites-empty a { padding: 10px 14px; color: #fff; background: var(--color-primary); border-radius: 8px; font-weight: 600; }
+
 @media (max-width: 600px) {
     .profile-page { width: min(100% - 24px, var(--container-width)); margin-top: 28px; }
+    .favorites-page { width: min(100% - 24px, var(--container-width)); margin-top: 28px; }
     .profile-card { padding: 20px 16px; }
     .profile-fields { grid-template-columns: 1fr; }
     .profile-field--wide { grid-column: auto; }
@@ -959,6 +983,11 @@
     background: #1a2940;
     border-radius: 11px 11px 0 0;
 }
+
+.game-card__favorite { position: absolute; z-index: 3; top: 9px; right: 9px; display: grid; place-items: center; width: 34px; height: 34px; color: #fff; background: rgb(9 16 28 / 82%); border: 1px solid rgb(255 255 255 / 28%); border-radius: 50%; cursor: pointer; transition: color .15s, background .15s, transform .15s; }
+.game-card--hovered .game-card__favorite { right: 42px; }
+.game-card__favorite:hover { transform: scale(1.08); color: #ff5d79; }
+.game-card__favorite.is-favorite { color: #ff5d79; }
 
 .game-card__image {
     display: block;

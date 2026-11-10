@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, MoreHorizontal, ShoppingCart, Star } from "lucide-react";
+import { Check, Heart, MoreHorizontal, ShoppingCart, Star } from "lucide-react";
 import type { Game } from "../types/game";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addToCart, selectIsInCart } from "../store/cartSlice";
 import { formatPrice } from "../utils/format";
+import { useAuth } from "../auth/useAuth";
+import { favoriteService } from "../services/favoriteService";
+import { useNavigate } from "react-router-dom";
 
 interface GameItemProps {
     game: Game;
@@ -38,6 +41,9 @@ function getSteamReview(rating: number, gameId: string): { label: string; count:
 
 export default function GameItem({ game }: GameItemProps) {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const [isFavorite, setIsFavorite] = useState(() => !!user && favoriteService.isFavorite(user.id, game.id));
     const isInCart = useAppSelector(selectIsInCart(game.id));
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [toastType, setToastType] = useState<"success" | "warning">("success");
@@ -53,6 +59,21 @@ export default function GameItem({ game }: GameItemProps) {
 
     const hasDiscount = game.originalPrice > game.price && game.price > 0;
     const isFree = game.price === 0;
+
+    useEffect(() => {
+        setIsFavorite(!!user && favoriteService.isFavorite(user.id, game.id));
+    }, [user, game.id]);
+
+    function toggleFavorite(event: React.MouseEvent<HTMLButtonElement>) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+        favoriteService.toggleFavorite(user.id, game.id);
+        setIsFavorite(favoriteService.isFavorite(user.id, game.id));
+    }
 
     const cardImages = useMemo(() => {
         const list = [game.coverImage, game.bannerImage].filter(Boolean);
@@ -172,6 +193,10 @@ export default function GameItem({ game }: GameItemProps) {
                         event.currentTarget.src = FALLBACK_IMAGE;
                     }}
                 />
+
+                <button type="button" className={`game-card__favorite ${isFavorite ? "is-favorite" : ""}`} aria-label={isFavorite ? `Bỏ ${game.title} khỏi yêu thích` : `Thêm ${game.title} vào yêu thích`} title={isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"} onClick={toggleFavorite}>
+                    <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
+                </button>
 
                 {isHovered && (
                     <button
