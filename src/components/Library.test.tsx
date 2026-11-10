@@ -125,7 +125,7 @@ describe("Library Component", () => {
         );
 
         expect(await screen.findByText("Elden Ring")).toBeDefined();
-        expect(screen.getByText(/Mã kích hoạt CD-Key/i)).toBeDefined();
+        expect(screen.getByText(/Bản quyền chính hãng/i)).toBeDefined();
         expect(screen.getByRole("link", { name: /Đánh giá ngay/i })).toBeDefined();
         expect(screen.getByText(/Gợi ý game tương tự dành cho bạn/i)).toBeDefined();
         expect(screen.getByText("The Witcher 3: Wild Hunt")).toBeDefined();

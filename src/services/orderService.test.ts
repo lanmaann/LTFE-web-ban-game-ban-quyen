@@ -1,4 +1,4 @@
-
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { orderService } from "./orderService";
 import { reviewService } from "./reviewService";

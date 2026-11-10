@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
     Check,
     CheckCircle2,
-    Copy,
     Edit3,
     ExternalLink,
     Gamepad2,
@@ -27,7 +26,6 @@ import { favoriteService } from "../services/favoriteService";
 import type { Game } from "../types/game";
 import type { Review } from "../types/review";
 import { formatPrice } from "../utils/format";
-import { generateCdKey } from "../utils/license";
 
 
 export default function Library() {
@@ -45,7 +43,6 @@ export default function Library() {
 
     const [activeTab, setActiveTab] = useState<"all" | "favorites" | "reviewed" | "unreviewed">("all");
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
 
     useEffect(() => {
         if (gamesStatus === "idle") {
@@ -104,14 +101,6 @@ export default function Library() {
         }
         const updated = favoriteService.toggleFavorite(user.id, gameId);
         setFavorites(updated);
-    }
-
-    function handleCopyKey(gameId: string, cdKey: string) {
-        if (navigator.clipboard) {
-            void navigator.clipboard.writeText(cdKey);
-        }
-        setCopiedKeyId(gameId);
-        window.setTimeout(() => setCopiedKeyId(null), 2000);
     }
 
     const reviewsMap = useMemo(() => {
@@ -272,7 +261,7 @@ export default function Library() {
                         </div>
                         <h2>Đăng nhập để xem Thư viện game của bạn</h2>
                         <p>
-                            Quản lý toàn bộ game bản quyền đã mua, lấy mã kích hoạt CD-Key tức thì,
+                            Quản lý toàn bộ game bản quyền kỹ thuật số đã mua, kích hoạt tự động theo tài khoản,
                             đánh giá trải nghiệm và theo dõi danh sách trò chơi yêu thích.
                         </p>
                         <Link to="/login" className="library-page__auth-btn">
@@ -318,10 +307,8 @@ export default function Library() {
                         ) : (
                             <div className="library-page__grid">
                                 {filteredGames.map((game) => {
-                                    const cdKey = generateCdKey(game.id, user.id);
                                     const review = reviewsMap.get(game.id);
                                     const isFav = favorites.includes(game.id);
-                                    const isCopied = copiedKeyId === game.id;
 
                                     return (
                                         <article key={game.id} className="library-card">
@@ -355,22 +342,14 @@ export default function Library() {
                                                     <span className="library-card__developer">{game.developer}</span>
                                                 </div>
 
-                                                <div className="library-card__cdkey-box">
-                                                    <div className="library-card__cdkey-label">
-                                                        <span>Mã kích hoạt CD-Key:</span>
-                                                        <span className="library-card__cdkey-status">Đã kích hoạt</span>
-                                                    </div>
-                                                    <div className="library-card__cdkey-code-row">
-                                                        <code className="library-card__cdkey-code">{cdKey}</code>
-                                                        <button
-                                                            type="button"
-                                                            className="library-card__copy-btn"
-                                                            onClick={() => handleCopyKey(game.id, cdKey)}
-                                                            title="Sao chép CD-Key"
-                                                        >
-                                                            {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                                                            <span>{isCopied ? "Đã chép" : "Sao chép"}</span>
-                                                        </button>
+                                                <div className="library-card__license-box">
+                                                    <div className="library-card__license-status-row">
+                                                        <span className="library-card__license-tag">
+                                                            <ShieldCheck size={14} /> Bản quyền chính hãng
+                                                        </span>
+                                                        <span className="library-card__license-state">
+                                                            <CheckCircle2 size={13} /> Sẵn sàng chơi
+                                                        </span>
                                                     </div>
                                                 </div>
 
