@@ -222,9 +222,10 @@ export default function Header() {
                             <Link to="/orders" className="header__orders-btn" title="Lịch sử đơn hàng">
                                 <span>Đơn hàng</span>
                             </Link>
-                            <span className="header__account-name" title={user.name}>
-                                {user.name}
-                            </span>
+                            <Link to="/profile" className="header__profile-link" title="Hồ sơ cá nhân">
+                                {user.avatar ? <img src={user.avatar} alt="" /> : <User size={17} />}
+                                <span className="header__account-name">{user.name}</span>
+                            </Link>
                             <button
                                 type="button"
                                 className="header__logout"

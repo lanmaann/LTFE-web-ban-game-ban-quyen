@@ -7,6 +7,10 @@ export interface AuthUser {
     id: string;
     name: string;
     email: string;
+    avatar?: string;
+    phone?: string;
+    birthDate?: string;
+    address?: string;
 }
 
 interface StoredUser extends AuthUser {
@@ -29,7 +33,13 @@ function readSession(): AuthUser | null {
             "email" in user &&
             typeof user.email === "string"
         ) {
-            return { id: user.id, name: user.name, email: user.email };
+            return {
+                id: user.id, name: user.name, email: user.email,
+                ...( "avatar" in user && typeof user.avatar === "string" ? { avatar: user.avatar } : {} ),
+                ...( "phone" in user && typeof user.phone === "string" ? { phone: user.phone } : {} ),
+                ...( "birthDate" in user && typeof user.birthDate === "string" ? { birthDate: user.birthDate } : {} ),
+                ...( "address" in user && typeof user.address === "string" ? { address: user.address } : {} ),
+            };
         }
 
         window.localStorage.removeItem(SESSION_STORAGE_KEY);
@@ -48,7 +58,18 @@ function saveSession(user: AuthUser) {
 }
 
 function toAuthUser(user: StoredUser): AuthUser {
-    return { id: user.id, name: user.name, email: user.email };
+    const { id, name, email, avatar, phone, birthDate, address } = user;
+    return { id, name, email, avatar, phone, birthDate, address };
+}
+
+export interface ProfileUpdate {
+    name: string;
+    avatar?: string;
+    phone?: string;
+    birthDate?: string;
+    address?: string;
+    currentPassword?: string;
+    newPassword?: string;
 }
 
 function getApiError(error: unknown): Error {
@@ -100,6 +121,28 @@ export const authService = {
             }
 
             const authUser = toAuthUser(user);
+            saveSession(authUser);
+            return authUser;
+        } catch (error) {
+            throw getApiError(error);
+        }
+    },
+
+    async updateProfile(userId: string, updates: ProfileUpdate): Promise<AuthUser> {
+        try {
+            const response = await api.get<StoredUser>(`/users/${userId}`);
+            const stored = response.data;
+            if (updates.newPassword) {
+                if (!updates.currentPassword || stored.password !== updates.currentPassword) {
+                    throw new Error("Mật khẩu hiện tại không chính xác.");
+                }
+            }
+            const { currentPassword, newPassword, ...profile } = updates;
+            const updated = await api.patch<StoredUser>(`/users/${userId}`, {
+                ...profile,
+                ...(newPassword ? { password: newPassword } : {}),
+            });
+            const authUser = toAuthUser(updated.data);
             saveSession(authUser);
             return authUser;
         } catch (error) {
