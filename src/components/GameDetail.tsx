@@ -32,6 +32,7 @@ import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice"
 import GameItem from "./GameItem";
 import StateMessage from "./StateMessage";
 import ReviewSection from "./ReviewSection";
+import GameQuestions from "./GameQuestions";
 import { formatPrice } from "../utils/format";
 import { STEAM_TRAILERS } from "../data/trailers";
 
@@ -716,6 +717,7 @@ export default function GameDetail() {
                                         setDynamicReviewCount(totalReviews);
                                     }}
                                 />
+                                <GameQuestions gameId={game.id} gameTitle={game.title} />
                             </div>
                             <aside className="game-detail__sidebar">
                                 <div className="game-detail__purchase-card">
