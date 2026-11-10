@@ -6781,3 +6781,130 @@
         gap: 8px;
     }
 }
+
+
+/* ==========================================================================
+   ORDER GAMES & LICENSE LINK STYLING (CD-KEY ONLY IN LIBRARY)
+   ========================================================================== */
+
+.order-games-box {
+    text-align: left;
+    margin-bottom: 28px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.order-games-box__title {
+    font-size: 15px;
+    color: var(--color-accent);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-games-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.order-game-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #090f1a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.order-game-item__name {
+    display: block;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.order-game-item__tag {
+    font-size: 11px;
+    color: var(--color-muted);
+}
+
+.order-game-item__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.order-license-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #d1e5ff;
+    background: rgba(98, 181, 255, 0.1);
+    border: 1px dashed rgba(98, 181, 255, 0.35);
+    padding: 12px 16px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+.order-license-hint svg {
+    color: var(--color-accent);
+    flex-shrink: 0;
+}
+
+.order-license-hint strong {
+    color: #fff;
+}
+
+.order-license-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(98, 181, 255, 0.15);
+    border: 1px solid rgba(98, 181, 255, 0.35);
+    color: var(--color-accent);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.order-license-link:hover {
+    background: var(--color-accent);
+    color: #0b1120;
+}
+
+.order-license-status--revoked {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.order-refund-expired {
+    font-size: 12px;
+    color: var(--color-muted);
+    font-style: italic;
+}

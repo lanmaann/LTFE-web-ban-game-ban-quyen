@@ -9,10 +9,9 @@ import {
     CheckCircle2,
     RotateCcw,
     AlertCircle,
-    Copy,
-    Check,
     ArrowRight,
     Gamepad2,
+    ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../auth/useAuth";
 import { orderService } from "../services/orderService";
@@ -23,11 +22,8 @@ export default function OrderHistory() {
     const { user } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
-    const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
-
-    // Refund Modal State
     const [refundOrder, setRefundOrder] = useState<Order | null>(null);
-    const [refundReason, setRefundReason] = useState("Mua nhầm bản game");
+    const [refundReason, setRefundReason] = useState("Mua nhầm bản game / không muốn chơi nữa");
     const [refundSuccessMsg, setRefundSuccessMsg] = useState("");
     const [refundErrorMsg, setRefundErrorMsg] = useState("");
     const [isSubmittingRefund, setIsSubmittingRefund] = useState(false);
@@ -38,7 +34,9 @@ export default function OrderHistory() {
             setLoading(false);
             return;
         }
+
         setLoading(true);
+
         try {
             const list = await orderService.getUserOrders(user.id);
             setOrders(list);
@@ -53,27 +51,33 @@ export default function OrderHistory() {
         void loadOrders();
     }, [loadOrders]);
 
-    const handleCopyKey = (keyId: string, cdKey: string) => {
-        void navigator.clipboard.writeText(cdKey);
-        setCopiedKeyId(keyId);
-        setTimeout(() => setCopiedKeyId(null), 2500);
-    };
-
     const handleRefundSubmit = async () => {
         if (!refundOrder || !user) return;
+
         setIsSubmittingRefund(true);
         setRefundErrorMsg("");
         setRefundSuccessMsg("");
+
         try {
-            await orderService.requestRefund(refundOrder.id, user.id, refundReason);
-            setRefundSuccessMsg("Đã gửi yêu cầu hoàn tiền và hủy đơn hàng thành công!");
+            await orderService.requestRefund(
+                refundOrder.id,
+                user.id,
+                refundReason
+            );
+
+            setRefundSuccessMsg("Đã xử lý hoàn tiền thành công!");
             await loadOrders();
+
             setTimeout(() => {
                 setRefundOrder(null);
                 setRefundSuccessMsg("");
             }, 1800);
         } catch (err: unknown) {
-            setRefundErrorMsg(err instanceof Error ? err.message : "Không thể xử lý yêu cầu hoàn tiền.");
+            setRefundErrorMsg(
+                err instanceof Error
+                    ? err.message
+                    : "Không thể xử lý yêu cầu hoàn tiền."
+            );
         } finally {
             setIsSubmittingRefund(false);
         }
@@ -107,7 +111,9 @@ export default function OrderHistory() {
     if (loading) {
         return (
             <div className="orders-page">
-                <div className="orders-loading">Đang tải lịch sử mua hàng...</div>
+                <div className="orders-loading">
+                    Đang tải lịch sử mua hàng...
+                </div>
             </div>
         );
     }
@@ -120,9 +126,10 @@ export default function OrderHistory() {
                         <Package size={26} /> Lịch sử mua hàng bản quyền
                     </h1>
                     <p className="orders-header__desc">
-                        Toàn bộ các đơn hàng và mã bản quyền kỹ thuật số (CD-Key) gắn liền với tài khoản của bạn.
+                        Theo dõi danh sách đơn hàng đã mua. Mã CD-Key được bảo mật và kích hoạt tại Thư viện.
                     </p>
                 </div>
+
                 <Link to="/library" className="orders-header__lib-btn">
                     <Gamepad2 size={16} /> Đến Thư viện game
                 </Link>
@@ -141,21 +148,34 @@ export default function OrderHistory() {
                 <div className="orders-list">
                     {orders.map((order) => {
                         const isRefunded = order.status === "refunded";
+                        const orderDays =
+                            (Date.now() - new Date(order.createdAt).getTime()) /
+                            (1000 * 60 * 60 * 24);
+                        const isWithin14Days = orderDays <= 14;
+
                         return (
-                            <div key={order.id} className={`order-card ${isRefunded ? "order-card--refunded" : ""}`}>
+                            <div
+                                key={order.id}
+                                className={`order-card ${isRefunded ? "order-card--refunded" : ""}`}
+                            >
                                 <div className="order-card__header">
                                     <div className="order-card__meta-left">
-                                        <span className="order-card__id">{order.id}</span>
+                                        <span className="order-card__id">
+                                            {order.id}
+                                        </span>
                                         <span className="order-card__date">
                                             <Clock size={13} />
                                             {new Date(order.createdAt).toLocaleString("vi-VN")}
                                         </span>
                                         {getPaymentBadge(order.paymentMethod)}
                                     </div>
+
                                     <div className="order-card__meta-right">
                                         <span
                                             className={`order-status-badge ${
-                                                isRefunded ? "order-status-badge--refunded" : "order-status-badge--completed"
+                                                isRefunded
+                                                    ? "order-status-badge--refunded"
+                                                    : "order-status-badge--completed"
                                             }`}
                                         >
                                             {isRefunded ? (
@@ -174,41 +194,31 @@ export default function OrderHistory() {
                                 <div className="order-card__body">
                                     <div className="order-card__items">
                                         {order.items.map((item) => (
-                                            <div key={item.gameId} className="order-card__item-row">
+                                            <div
+                                                key={item.gameId}
+                                                className="order-card__item-row"
+                                            >
                                                 <div className="order-card__item-info">
-                                                    <strong className="order-card__item-title">{item.title}</strong>
-                                                    <span className="order-card__item-type">Bản quyền kỹ thuật số</span>
+                                                    <strong className="order-card__item-title">
+                                                        {item.title}
+                                                    </strong>
+                                                    <span className="order-card__item-type">
+                                                        Bản quyền kỹ thuật số · Số lượng: 1
+                                                    </span>
                                                 </div>
 
-                                                {/* CD-Key Display */}
                                                 <div className="order-card__key-zone">
-                                                    {item.cdKey && (
-                                                        <>
-                                                            <code className="order-card__key-code">
-                                                                {isRefunded ? "MÃ ĐÃ THU HỒI" : item.cdKey}
-                                                            </code>
-                                                            {!isRefunded && (
-                                                                <button
-                                                                    type="button"
-                                                                    className="order-card__key-copy"
-                                                                    onClick={() =>
-                                                                        handleCopyKey(`${order.id}-${item.gameId}`, item.cdKey || "")
-                                                                    }
-                                                                    title="Sao chép CD Key"
-                                                                >
-                                                                    {copiedKeyId === `${order.id}-${item.gameId}` ? (
-                                                                        <Check size={14} />
-                                                                    ) : (
-                                                                        <Copy size={14} />
-                                                                    )}
-                                                                </button>
-                                                            )}
-                                                        </>
+                                                    {isRefunded && (
+                                                        <span className="order-license-status order-license-status--revoked">
+                                                            Đã thu hồi bản quyền
+                                                        </span>
                                                     )}
                                                 </div>
 
                                                 <span className="order-card__item-price">
-                                                    {item.price === 0 ? "Miễn phí" : formatPrice(item.price)}
+                                                    {item.price === 0
+                                                        ? "Miễn phí"
+                                                        : formatPrice(item.price)}
                                                 </span>
                                             </div>
                                         ))}
@@ -217,7 +227,9 @@ export default function OrderHistory() {
                                     {isRefunded && order.refundReason && (
                                         <div className="order-card__refund-info">
                                             <AlertCircle size={14} />
-                                            <span>Lý do hoàn tiền: {order.refundReason}</span>
+                                            <span>
+                                                Lý do hoàn tiền: {order.refundReason}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
@@ -232,15 +244,25 @@ export default function OrderHistory() {
 
                                     <div className="order-card__actions">
                                         {!isRefunded && (
-                                            <button
-                                                type="button"
-                                                className="order-card__refund-btn"
-                                                onClick={() => setRefundOrder(order)}
-                                            >
-                                                <RotateCcw size={14} /> Yêu cầu hoàn tiền
-                                            </button>
+                                            isWithin14Days ? (
+                                                <button
+                                                    type="button"
+                                                    className="order-card__refund-btn"
+                                                    onClick={() => setRefundOrder(order)}
+                                                >
+                                                    <RotateCcw size={14} /> Yêu cầu hoàn tiền
+                                                </button>
+                                            ) : (
+                                                <span className="order-refund-expired">
+                                                    Hết hạn hoàn tiền (&gt;14 ngày)
+                                                </span>
+                                            )
                                         )}
-                                        <Link to="/library" className="order-card__view-lib-btn">
+
+                                        <Link
+                                            to="/library"
+                                            className="order-card__view-lib-btn"
+                                        >
                                             Xem trong Thư viện
                                         </Link>
                                     </div>
@@ -251,12 +273,14 @@ export default function OrderHistory() {
                 </div>
             )}
 
-            {/* Refund Modal */}
             {refundOrder && (
                 <div className="modal-overlay" role="dialog" aria-modal="true">
                     <div className="modal-box">
                         <div className="modal-box__header">
-                            <h3 className="modal-box__title">Yêu cầu hoàn tiền đơn hàng {refundOrder.id}</h3>
+                            <h3 className="modal-box__title">
+                                Yêu cầu hoàn tiền đơn hàng {refundOrder.id}
+                            </h3>
+
                             <button
                                 type="button"
                                 className="modal-box__close"
@@ -267,32 +291,62 @@ export default function OrderHistory() {
                         </div>
 
                         <div className="modal-box__body">
-                            <p className="modal-box__text">
-                                Theo chính sách ATA Games, bạn có thể yêu cầu hoàn tiền trong vòng 14 ngày đối với các
-                                tựa game chưa kích hoạt hoặc lỗi kỹ thuật. Mã bản quyền sẽ bị thu hồi sau khi hoàn tiền.
-                            </p>
+                            <div
+                                className="checkout-notice"
+                                style={{ marginBottom: 16 }}
+                            >
+                                <ShieldCheck
+                                    size={20}
+                                    className="checkout-notice__icon"
+                                />
+                                <div className="checkout-notice__text">
+                                    <strong>
+                                        Chính sách hoàn tiền game bản quyền:
+                                    </strong>
+                                    <ul>
+                                        <li>
+                                            Áp dụng hoàn tiền trong vòng 14 ngày kể từ thời điểm thanh toán đơn hàng.
+                                        </li>
+                                        <li>
+                                            Sau khi hoàn tiền, quyền sở hữu tựa game và mã bản quyền sẽ được thu hồi khỏi Thư viện game.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
 
                             <div className="form-group">
-                                <label className="form-label">Chọn lý do hoàn tiền:</label>
+                                <label className="form-label">
+                                    Chọn lý do hoàn tiền:
+                                </label>
+
                                 <select
                                     className="form-select"
                                     value={refundReason}
                                     onChange={(e) => setRefundReason(e.target.value)}
                                 >
-                                    <option value="Mua nhầm bản game">Mua nhầm bản game / không muốn chơi nữa</option>
+                                    <option value="Mua nhầm bản game / không muốn chơi nữa">
+                                        Mua nhầm bản game / không muốn chơi nữa
+                                    </option>
                                     <option value="Cấu hình máy tính không đáp ứng">
                                         Cấu hình máy tính không đáp ứng cấu hình tối thiểu
                                     </option>
-                                    <option value="Gặp lỗi kỹ thuật khi cài đặt">Gặp sự cố lỗi kỹ thuật khi cài đặt</option>
+                                    <option value="Gặp lỗi kỹ thuật khi cài đặt">
+                                        Gặp sự cố lỗi kỹ thuật khi cài đặt hoặc khởi động
+                                    </option>
                                     <option value="Lý do khác">Lý do khác</option>
                                 </select>
                             </div>
 
                             {refundSuccessMsg && (
-                                <div className="checkout-alert checkout-alert--success">{refundSuccessMsg}</div>
+                                <div className="checkout-alert checkout-alert--success">
+                                    {refundSuccessMsg}
+                                </div>
                             )}
+
                             {refundErrorMsg && (
-                                <div className="checkout-alert checkout-alert--danger">{refundErrorMsg}</div>
+                                <div className="checkout-alert checkout-alert--danger">
+                                    {refundErrorMsg}
+                                </div>
                             )}
                         </div>
 
@@ -305,13 +359,16 @@ export default function OrderHistory() {
                             >
                                 Hủy bỏ
                             </button>
+
                             <button
                                 type="button"
                                 className="checkout-btn checkout-btn--danger"
                                 onClick={handleRefundSubmit}
                                 disabled={isSubmittingRefund}
                             >
-                                {isSubmittingRefund ? "Đang xử lý..." : "Xác nhận hoàn tiền"}
+                                {isSubmittingRefund
+                                    ? "Đang xử lý..."
+                                    : "Xác nhận hoàn tiền"}
                             </button>
                         </div>
                     </div>

@@ -73,7 +73,8 @@ function getStoredReviews(): Review[] {
             return SEED_REVIEWS;
         }
         return JSON.parse(raw) as Review[];
-    } catch (_err) { void _err;
+    } catch (_err) {
+        void _err;
         return SEED_REVIEWS;
     }
 }
@@ -81,7 +82,8 @@ function getStoredReviews(): Review[] {
 function saveStoredReviews(reviews: Review[]): void {
     try {
         window.localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
-    } catch (_err) { void _err;
+    } catch (_err) {
+        void _err;
     }
 }
 
@@ -112,68 +114,81 @@ export const reviewService = {
                 saveStoredReviews([...getStoredReviews().filter((r) => r.gameId !== gameId), ...merged]);
                 return merged;
             }
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
         return getStoredReviews().filter((r) => r.gameId === gameId);
     },
 
     async checkUserPurchased(userId: string, gameId: string): Promise<boolean> {
         if (!userId || !gameId) return false;
+        const ownedIds = await this.getPurchasedGameIds(userId);
+        return ownedIds.includes(gameId);
+    },
 
-        try {
-            const userRes = await api.get<UserAccount>(`/users/${userId}`);
-            if (userRes.data?.purchasedGames && Array.isArray(userRes.data.purchasedGames)) {
-                if (userRes.data.purchasedGames.includes(gameId)) {
-                    return true;
-                }
-            }
-        } catch (_err) { void _err;
-        }
+    async getPurchasedGameIds(userId: string): Promise<string[]> {
+        if (!userId) return [];
 
+        let remoteOrders: Order[] = [];
         try {
             const ordersRes = await api.get<Order[]>("/orders", {
                 params: { userId },
             });
             if (Array.isArray(ordersRes.data)) {
-                const foundInOrders = ordersRes.data.some(
-                    (order) =>
-                        Array.isArray(order.gameIds) &&
-                        order.gameIds.includes(gameId)
-                );
-                if (foundInOrders) return true;
+                remoteOrders = ordersRes.data.filter((o) => o.userId === userId);
             }
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
 
-        if (DEFAULT_PURCHASES[userId]?.includes(gameId)) {
-            return true;
-        }
-
+        let localOrders: Order[] = [];
         try {
             const localOrdersRaw = window.localStorage.getItem(ORDERS_STORAGE_KEY);
             if (localOrdersRaw) {
-                const localOrders = JSON.parse(localOrdersRaw) as Order[];
-                if (Array.isArray(localOrders)) {
-                    const localFound = localOrders.some(
-                        (ord) => ord.userId === userId && ord.gameIds?.includes(gameId)
-                    );
-                    if (localFound) return true;
+                const parsed = JSON.parse(localOrdersRaw) as Order[];
+                if (Array.isArray(parsed)) {
+                    localOrders = parsed.filter((ord) => ord.userId === userId);
                 }
             }
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
 
-        return false;
-    },
+        // Merge orders to determine latest status
+        const ordersMap = new Map<string, Order>();
+        remoteOrders.forEach((o) => ordersMap.set(o.id, o));
+        localOrders.forEach((o) => {
+            if (ordersMap.has(o.id)) {
+                if (o.status === "refunded") {
+                    ordersMap.set(o.id, o);
+                }
+            } else {
+                ordersMap.set(o.id, o);
+            }
+        });
 
-    async getPurchasedGameIds(userId: string): Promise<string[]> {
-        if (!userId) return [];
+        const allUserOrders = Array.from(ordersMap.values());
+        const completedGameIds = new Set<string>();
+        const refundedGameIds = new Set<string>();
+
+        allUserOrders.forEach((order) => {
+            if (Array.isArray(order.gameIds)) {
+                if (order.status === "refunded") {
+                    order.gameIds.forEach((id) => refundedGameIds.add(id));
+                } else if (order.status === "completed" || !order.status) {
+                    order.gameIds.forEach((id) => completedGameIds.add(id));
+                }
+            }
+        });
+
         const ids = new Set<string>();
 
+        // Default seeds
         if (DEFAULT_PURCHASES[userId]) {
             DEFAULT_PURCHASES[userId].forEach((id) => ids.add(id));
         }
 
+        // Backend user record
         try {
             const userRes = await api.get<UserAccount>(`/users/${userId}`);
             if (Array.isArray(userRes.data?.purchasedGames)) {
@@ -183,36 +198,15 @@ export const reviewService = {
             void _err;
         }
 
-        try {
-            const ordersRes = await api.get<Order[]>("/orders", {
-                params: { userId },
-            });
-            if (Array.isArray(ordersRes.data)) {
-                ordersRes.data.forEach((order) => {
-                    if (Array.isArray(order.gameIds)) {
-                        order.gameIds.forEach((id) => ids.add(id));
-                    }
-                });
-            }
-        } catch (_err) {
-            void _err;
-        }
+        // Add completed orders
+        completedGameIds.forEach((id) => ids.add(id));
 
-        try {
-            const localOrdersRaw = window.localStorage.getItem(ORDERS_STORAGE_KEY);
-            if (localOrdersRaw) {
-                const localOrders = JSON.parse(localOrdersRaw) as Order[];
-                if (Array.isArray(localOrders)) {
-                    localOrders.forEach((ord) => {
-                        if (ord.userId === userId && Array.isArray(ord.gameIds)) {
-                            ord.gameIds.forEach((id) => ids.add(id));
-                        }
-                    });
-                }
+        // Revoke refunded games unless user holds another active completed order for it
+        refundedGameIds.forEach((id) => {
+            if (!completedGameIds.has(id)) {
+                ids.delete(id);
             }
-        } catch (_err) {
-            void _err;
-        }
+        });
 
         return Array.from(ids);
     },
@@ -251,7 +245,8 @@ export const reviewService = {
                 syncReviewToStorage(response.data);
                 return response.data;
             }
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
 
         syncReviewToStorage(newReview);
@@ -272,7 +267,8 @@ export const reviewService = {
                 syncReviewToStorage(response.data);
                 return response.data;
             }
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
 
         const list = getStoredReviews();
@@ -297,7 +293,8 @@ export const reviewService = {
     async deleteReview(id: string): Promise<void> {
         try {
             await api.delete(`/reviews/${id}`);
-        } catch (_err) { void _err;
+        } catch (_err) {
+            void _err;
         }
         const list = getStoredReviews().filter((r) => r.id !== id);
         saveStoredReviews(list);

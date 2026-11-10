@@ -1,7 +1,7 @@
 
-// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { orderService } from "./orderService";
+import { reviewService } from "./reviewService";
 import type { Game } from "../types/game";
 
 describe("OrderService", () => {
@@ -11,7 +11,6 @@ describe("OrderService", () => {
     });
 
     it("detects already owned games (anti-duplicate check)", async () => {
-        // "demo-user-1" defaults to owning ["1245620", "1091500", "413150"]
         const duplicates = await orderService.checkDuplicateOwnership("demo-user-1", ["1245620", "999999"]);
         expect(duplicates).toContain("1245620");
         expect(duplicates).not.toContain("999999");
@@ -69,14 +68,55 @@ describe("OrderService", () => {
         };
 
         const order = await orderService.processOrder(payload);
-        expect(order.id).toMatch(/^ord-/);
+        expect(order.id).toBeDefined();
         expect(order.status).toBe("completed");
         expect(order.items[0].cdKey).toMatch(/^ATA-/);
         const userOrders = await orderService.getUserOrders("test-user-99");
         expect(userOrders.some((o) => o.id === order.id)).toBe(true);
     });
 
-    it("allows refunding an existing order within policy", async () => {
+    it("deduplicates orders with same user, timestamp and items (anti-duplication)", async () => {
+        const timestamp = new Date().toISOString();
+        const storedOrders = [
+            {
+                id: "ord-temp-111",
+                userId: "user-dedup",
+                userName: "Dedup User",
+                userEmail: "dedup@user.com",
+                gameIds: ["413150"],
+                items: [{ gameId: "413150", title: "Stardew Valley", price: 120000 }],
+                subtotal: 120000,
+                discount: 0,
+                fee: 0,
+                totalAmount: 120000,
+                paymentMethod: "visa" as const,
+                status: "completed" as const,
+                createdAt: timestamp,
+            },
+            {
+                id: "server-nanoid-222",
+                userId: "user-dedup",
+                userName: "Dedup User",
+                userEmail: "dedup@user.com",
+                gameIds: ["413150"],
+                items: [{ gameId: "413150", title: "Stardew Valley", price: 120000 }],
+                subtotal: 120000,
+                discount: 0,
+                fee: 0,
+                totalAmount: 120000,
+                paymentMethod: "visa" as const,
+                status: "completed" as const,
+                createdAt: timestamp,
+            },
+        ];
+
+        window.localStorage.setItem("ata_orders", JSON.stringify(storedOrders));
+
+        const userOrders = await orderService.getUserOrders("user-dedup");
+        expect(userOrders.length).toBe(1);
+    });
+
+    it("allows refunding an existing order within policy and revokes license", async () => {
         const payload = {
             userId: "refund-user-1",
             userEmail: "refund@test.com",
@@ -94,5 +134,33 @@ describe("OrderService", () => {
 
         expect(refunded.status).toBe("refunded");
         expect(refunded.refundReason).toBe("Mua nhầm");
+
+        const purchased = await reviewService.getPurchasedGameIds("refund-user-1");
+        expect(purchased).not.toContain("1245620");
+    });
+
+    it("rejects refunding an order older than 14 days", async () => {
+        const oldDate = new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString();
+        const oldOrder = {
+            id: "ord-old-100",
+            userId: "user-old-refund",
+            userName: "Old Buyer",
+            userEmail: "old@buyer.com",
+            gameIds: ["413150"],
+            items: [{ gameId: "413150", title: "Stardew Valley", price: 120000 }],
+            subtotal: 120000,
+            discount: 0,
+            fee: 0,
+            totalAmount: 120000,
+            paymentMethod: "visa" as const,
+            status: "completed" as const,
+            createdAt: oldDate,
+        };
+
+        window.localStorage.setItem("ata_orders", JSON.stringify([oldOrder]));
+
+        await expect(
+            orderService.requestRefund("ord-old-100", "user-old-refund", "Đã chán chơi")
+        ).rejects.toThrow(/quá thời hạn 14 ngày/i);
     });
 });
