@@ -1,11 +1,17 @@
+
 import { api } from "./api";
 import { reviewService } from "./reviewService";
-import type { Order, CreateOrderPayload, OrderItem } from "../types/order";
+import type {
+    Order,
+    CreateOrderPayload,
+    OrderItem,
+} from "../types/order";
 import type { Game } from "../types/game";
 import type { UserAccount } from "../types/review";
 import { generateCdKey } from "../utils/license";
 
 const ORDERS_STORAGE_KEY = "ata_orders";
+
 
 const SEED_ORDERS: Order[] = [
     {
@@ -15,11 +21,26 @@ const SEED_ORDERS: Order[] = [
         userEmail: "demo@atagames.vn",
         gameIds: ["1245620", "1091500", "413150"],
         items: [
-            { gameId: "1245620", title: "Elden Ring", price: 899000, cdKey: "ATA-1245-09AC-DEMO-KEY1" },
-            { gameId: "1091500", title: "Cyberpunk 2077", price: 690000, cdKey: "ATA-1091-08BF-DEMO-KEY1" },
-            { gameId: "413150", title: "Stardew Valley", price: 120000, cdKey: "ATA-4131-07AA-DEMO-KEY1" },
+            {
+                gameId: "1245620",
+                title: "Elden Ring",
+                price: 899000,
+                cdKey: "ATA-1245-09AC-DEMO-KEY1",
+            },
+            {
+                gameId: "1091500",
+                title: "Cyberpunk 2077",
+                price: 690000,
+                cdKey: "ATA-1091-08BF-DEMO-KEY1",
+            },
+            {
+                gameId: "413150",
+                title: "Stardew Valley",
+                price: 120000,
+                cdKey: "ATA-4131-07AA-DEMO-KEY1",
+            },
         ],
-        subtotal: 2045000,
+        subtotal: 1709000,
         discount: 0,
         fee: 0,
         totalAmount: 1709000,
@@ -40,8 +61,18 @@ const SEED_ORDERS: Order[] = [
         userEmail: "tranhuynh.01102005@gmail.com",
         gameIds: ["1245620", "1091500"],
         items: [
-            { gameId: "1245620", title: "Elden Ring", price: 899000, cdKey: "ATA-1245-09AC-Y5BK-KEY1" },
-            { gameId: "1091500", title: "Cyberpunk 2077", price: 690000, cdKey: "ATA-1091-08BF-Y5BK-KEY1" },
+            {
+                gameId: "1245620",
+                title: "Elden Ring",
+                price: 899000,
+                cdKey: "ATA-1245-09AC-Y5BK-KEY1",
+            },
+            {
+                gameId: "1091500",
+                title: "Cyberpunk 2077",
+                price: 690000,
+                cdKey: "ATA-1091-08BF-Y5BK-KEY1",
+            },
         ],
         subtotal: 1589000,
         discount: 0,
@@ -58,76 +89,108 @@ const SEED_ORDERS: Order[] = [
     },
 ];
 
+
 function getStoredOrders(): Order[] {
     try {
         const raw = window.localStorage.getItem(ORDERS_STORAGE_KEY);
+
         if (!raw) {
-            window.localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(SEED_ORDERS));
-            return SEED_ORDERS;
+            saveStoredOrders(SEED_ORDERS);
+            return [...SEED_ORDERS];
         }
-        return JSON.parse(raw) as Order[];
+
+        const parsed: unknown = JSON.parse(raw);
+
+        if (!Array.isArray(parsed)) {
+            saveStoredOrders(SEED_ORDERS);
+            return [...SEED_ORDERS];
+        }
+
+        return parsed as Order[];
     } catch {
-        return SEED_ORDERS;
+        return [...SEED_ORDERS];
     }
 }
 
 function saveStoredOrders(orders: Order[]): void {
     try {
-        window.localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+        window.localStorage.setItem(
+            ORDERS_STORAGE_KEY,
+            JSON.stringify(orders)
+        );
     } catch {
-        // Ignore storage quota errors
+        console.error("Không thể lưu đơn hàng vào localStorage.");
     }
 }
 
+function upsertStoredOrder(order: Order): void {
+    const orders = getStoredOrders();
+    const index = orders.findIndex((item) => item.id === order.id);
+
+    if (index !== -1) {
+        orders[index] = order;
+    } else {
+        orders.unshift(order);
+    }
+
+    saveStoredOrders(orders);
+}
+
 export const orderService = {
-    /**
-     * Requirement #11: View user order history.
-     */
     async getUserOrders(userId: string): Promise<Order[]> {
         if (!userId) return [];
 
+        const localOrders = getStoredOrders().filter(
+            (order) => order.userId === userId
+        );
+
         let remoteOrders: Order[] = [];
+
         try {
             const res = await api.get<Order[]>("/orders", {
                 params: { userId },
             });
+
             if (Array.isArray(res.data)) {
-                remoteOrders = res.data;
+                remoteOrders = res.data.filter(
+                    (order) => order.userId === userId
+                );
             }
         } catch {
-            // Backend offline, fallback to local storage
         }
+        const orderMap = new Map<string, Order>();
 
-        const localOrders = getStoredOrders().filter((ord) => ord.userId === userId);
-        const map = new Map<string, Order>();
+        localOrders.forEach((order) => {
+            orderMap.set(order.id, order);
+        });
 
-        // Merge preferring local if updated or remote
-        remoteOrders.forEach((o) => map.set(o.id, o));
-        localOrders.forEach((o) => map.set(o.id, o));
+        remoteOrders.forEach((order) => {
+            orderMap.set(order.id, order);
+        });
 
-        return Array.from(map.values()).sort(
-            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        return Array.from(orderMap.values()).sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
         );
     },
-
-    /**
-     * Requirement #13: Anti-duplicate check.
-     * Returns list of game IDs that user already owns.
-     */
-    async checkDuplicateOwnership(userId: string, gameIds: string[]): Promise<string[]> {
+    async checkDuplicateOwnership(
+        userId: string,
+        gameIds: string[]
+    ): Promise<string[]> {
         if (!userId || !gameIds.length) return [];
+
         try {
-            const ownedIds = await reviewService.getPurchasedGameIds(userId);
+            const ownedIds =
+                await reviewService.getPurchasedGameIds(userId);
+
             const ownedSet = new Set(ownedIds);
+
             return gameIds.filter((id) => ownedSet.has(id));
         } catch {
             return [];
         }
     },
-
-    /**
-     * Requirement #2 & #3: Validate game existence and backend price verification.
-     */
     async validateCartAndPrices(
         items: { gameId: string; clientPrice: number }[],
         allGamesCatalog?: Game[]
@@ -138,18 +201,28 @@ export const orderService = {
         priceMismatches: string[];
     }> {
         let catalog = allGamesCatalog ?? [];
+
         if (!catalog.length) {
             try {
                 const res = await api.get<Game[]>("/games");
+
                 if (Array.isArray(res.data)) {
                     catalog = res.data;
                 }
             } catch {
-                // Ignore
+                return {
+                    valid: false,
+                    validatedItems: [],
+                    subtotal: 0,
+                    priceMismatches: [],
+                };
             }
         }
 
-        const catalogMap = new Map(catalog.map((g) => [g.id, g]));
+        const catalogMap = new Map(
+            catalog.map((game) => [game.id, game])
+        );
+
         const validatedItems: OrderItem[] = [];
         const priceMismatches: string[] = [];
         let subtotal = 0;
@@ -157,11 +230,16 @@ export const orderService = {
         for (const item of items) {
             const found = catalogMap.get(item.gameId);
             if (!found) {
-                // Game not in catalog or delisted
-                return { valid: false, validatedItems: [], subtotal: 0, priceMismatches: [] };
+                return {
+                    valid: false,
+                    validatedItems: [],
+                    subtotal: 0,
+                    priceMismatches: [],
+                };
             }
 
             const backendPrice = found.price;
+
             if (backendPrice !== item.clientPrice) {
                 priceMismatches.push(found.title);
             }
@@ -173,6 +251,7 @@ export const orderService = {
                 originalPrice: found.originalPrice,
                 coverImage: found.coverImage,
             });
+
             subtotal += backendPrice;
         }
 
@@ -184,110 +263,169 @@ export const orderService = {
         };
     },
 
-    /**
-     * Requirement #7, #8, #9, #10:
-     * Complete payment, issue digital license CD-Keys, and grant ownership.
-     */
-    async processOrder(payload: CreateOrderPayload): Promise<Order> {
+
+    async processOrder(
+        payload: CreateOrderPayload
+    ): Promise<Order> {
         const orderId = `ord-${Date.now()}`;
         const paidAt = new Date().toISOString();
-
-        // Generate digital CD-Keys for all items
-        const itemsWithKeys: OrderItem[] = payload.items.map((item) => ({
-            ...item,
-            cdKey: generateCdKey(item.gameId, payload.userId),
-        }));
+        const itemsWithKeys: OrderItem[] = payload.items.map(
+            (item) => ({
+                ...item,
+                cdKey: generateCdKey(
+                    item.gameId,
+                    payload.userId
+                ),
+            })
+        );
 
         const newOrder: Order = {
             id: orderId,
             userId: payload.userId,
             userName: payload.userName,
             userEmail: payload.userEmail,
-            gameIds: payload.items.map((i) => i.gameId),
+            gameIds: payload.items.map(
+                (item) => item.gameId
+            ),
             items: itemsWithKeys,
             subtotal: payload.subtotal,
             discount: payload.discount,
             fee: payload.fee,
             totalAmount: payload.totalAmount,
             paymentMethod: payload.paymentMethod,
+
             paymentDetails: {
                 method: payload.paymentMethod,
-                cardLast4: payload.cardDetails ? payload.cardDetails.cardNumber.slice(-4) : undefined,
-                cardHolder: payload.cardDetails?.cardHolder.toUpperCase(),
+
+                cardLast4: payload.cardDetails
+                    ? payload.cardDetails.cardNumber.slice(-4)
+                    : undefined,
+
+                cardHolder:
+                    payload.cardDetails?.cardHolder.toUpperCase(),
+
                 qrTransactionCode:
                     payload.paymentMethod === "qr"
-                        ? `QR-${Math.floor(100000 + Math.random() * 900000)}`
+                        ? `QR-${Math.floor(
+                            100000 + Math.random() * 900000
+                        )}`
                         : undefined,
+
                 walletType: payload.walletType,
                 paidAt,
             },
+
             status: "completed",
             createdAt: paidAt,
         };
+        upsertStoredOrder(newOrder);
 
-        // 1. Sync to local storage
-        const currentOrders = getStoredOrders();
-        currentOrders.unshift(newOrder);
-        saveStoredOrders(currentOrders);
-
-        // 2. Try posting to JSON server backend
         try {
             await api.post("/orders", newOrder);
         } catch {
-            // Offline / mock fallback
+            // Backend offline: giữ đơn hàng trong localStorage.
+            console.warn(
+                "Không thể đồng bộ đơn hàng lên Backend."
+            );
         }
-
-        // 3. Grant game ownership: update user's purchasedGames
         try {
-            const userRes = await api.get<UserAccount>(`/users/${payload.userId}`);
+            const userRes = await api.get<UserAccount>(
+                `/users/${payload.userId}`
+            );
+
             if (userRes.data) {
-                const existing = new Set(userRes.data.purchasedGames ?? []);
-                payload.items.forEach((item) => existing.add(item.gameId));
-                await api.patch(`/users/${payload.userId}`, {
-                    purchasedGames: Array.from(existing),
+                const existing = new Set(
+                    userRes.data.purchasedGames ?? []
+                );
+
+                payload.items.forEach((item) => {
+                    existing.add(item.gameId);
                 });
+
+                await api.patch(
+                    `/users/${payload.userId}`,
+                    {
+                        purchasedGames: Array.from(existing),
+                    }
+                );
             }
         } catch {
-            // Offline / mock fallback
+            console.warn(
+                "Không thể cập nhật danh sách game đã mua."
+            );
         }
 
         return newOrder;
     },
 
-    /**
-     * Requirement #14: Refund / cancel order within policy.
-     */
-    async requestRefund(orderId: string, userId: string, reason: string): Promise<Order> {
-        const currentOrders = getStoredOrders();
-        const orderIndex = currentOrders.findIndex((o) => o.id === orderId && o.userId === userId);
-
-        if (orderIndex === -1) {
-            throw new Error("Không tìm thấy đơn hàng cần xử lý hoàn tiền.");
+    async requestRefund(
+        orderId: string,
+        userId: string,
+        reason: string
+    ): Promise<Order> {
+        if (!orderId || !userId) {
+            throw new Error("Thông tin đơn hàng không hợp lệ.");
         }
 
-        const order = currentOrders[orderIndex];
+        if (!reason.trim()) {
+            throw new Error("Vui lòng nhập lý do hoàn tiền.");
+        }
+
+        const localOrders = getStoredOrders();
+
+        let order = localOrders.find(
+            (item) =>
+                item.id === orderId &&
+                item.userId === userId
+        );
+        if (!order) {
+            try {
+                const res = await api.get<Order>(
+                    `/orders/${orderId}`
+                );
+
+                if (
+                    res.data &&
+                    res.data.id === orderId &&
+                    res.data.userId === userId
+                ) {
+                    order = res.data;
+                }
+            } catch {
+            }
+        }
+
+        if (!order) {
+            throw new Error(
+                "Không tìm thấy đơn hàng cần xử lý hoàn tiền."
+            );
+        }
+
         if (order.status === "refunded") {
-            throw new Error("Đơn hàng này đã được hoàn tiền trước đó.");
+            throw new Error(
+                "Đơn hàng này đã được hoàn tiền trước đó."
+            );
         }
+
+        const refundedAt = new Date().toISOString();
 
         const refundedOrder: Order = {
             ...order,
             status: "refunded",
-            refundReason: reason,
-            refundedAt: new Date().toISOString(),
+            refundReason: reason.trim(),
+            refundedAt,
         };
-
-        currentOrders[orderIndex] = refundedOrder;
-        saveStoredOrders(currentOrders);
-
+        upsertStoredOrder(refundedOrder);
         try {
             await api.patch(`/orders/${orderId}`, {
                 status: "refunded",
-                refundReason: reason,
-                refundedAt: refundedOrder.refundedAt,
+                refundReason: reason.trim(),
+                refundedAt,
             });
         } catch {
-            // Offline fallback
+            console.warn(
+                "Không thể đồng bộ trạng thái hoàn tiền lên Backend."
+            );
         }
 
         return refundedOrder;

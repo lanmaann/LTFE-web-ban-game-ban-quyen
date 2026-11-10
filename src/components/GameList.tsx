@@ -1,14 +1,6 @@
+import { useCallback, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-    type KeyboardEvent,
-} from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-    Clock,
     Gamepad2,
     RefreshCw,
     Search,
@@ -22,17 +14,8 @@ import {
     selectGamesError,
     selectGamesStatus,
 } from "../store/gamesSlice";
-import type { Game } from "../types/game";
 import GameItem from "./GameItem";
 import Pagination from "./Pagination";
-import { formatPrice } from "../utils/format";
-import {
-    addSearchHistory,
-    clearSearchHistory,
-    getSearchHistory,
-    onSearchHistoryChange,
-    removeSearchHistoryItem,
-} from "../utils/searchHistory";
 
 type SortOption =
     | "featured"
@@ -65,7 +48,6 @@ const normalize = (text: string) =>
         .trim();
 
 export default function GameList() {
-    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);
     const status = useAppSelector(selectGamesStatus);
@@ -74,7 +56,7 @@ export default function GameList() {
     const error =
         status === "failed" ? storeError ?? "Không thể tải danh sách game." : "";
 
-    // 15. URL Search Params: Đọc các điều kiện lọc và từ khóa trực tiếp từ URL
+    // 15. URL Search Params: Nhận từ khóa tìm kiếm (từ Header) và các tiêu chí lọc từ URL
     const [searchParams, setSearchParams] = useSearchParams();
 
     const urlKeyword = searchParams.get("q") ?? "";
@@ -87,48 +69,14 @@ export default function GameList() {
         parseInt(searchParams.get("page") ?? "1", 10) || 1
     );
 
-    // State nội bộ cho ô input tìm kiếm để người dùng gõ mượt mà
-    const [inputKeyword, setInputKeyword] = useState(urlKeyword);
-
-    // Dropdown gợi ý Autocomplete & Search History
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(-1);
-    const searchContainerRef = useRef<HTMLDivElement>(null);
-
-    // 14. Search History: Lấy lịch sử từ localStorage
-    const [history, setHistory] = useState<string[]>(getSearchHistory);
-
-    useEffect(() => {
-        return onSearchHistoryChange(() => setHistory(getSearchHistory()));
-    }, []);
-
-    // Đồng bộ input khi URL thay đổi (ví dụ người dùng tìm từ Header hoặc Back/Forward)
-    useEffect(() => {
-        setInputKeyword(urlKeyword);
-    }, [urlKeyword]);
-
-    // Tải danh sách game nếu chưa có
+    // Tải danh sách game khi mount
     useEffect(() => {
         if (status === "idle") {
             void dispatch(fetchGames());
         }
     }, [dispatch, status]);
 
-    // Đóng dropdown khi click ra ngoài
-    useEffect(() => {
-        function handleClickOutside(e: MouseEvent) {
-            if (
-                searchContainerRef.current &&
-                !searchContainerRef.current.contains(e.target as Node)
-            ) {
-                setIsDropdownOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    // 15. Hàm cập nhật URL Search Params
+    // 15. Cập nhật các tham số trên URL
     const updateParams = useCallback(
         (newParams: Record<string, string | number | null | undefined>) => {
             setSearchParams(
@@ -156,16 +104,6 @@ export default function GameList() {
         [setSearchParams]
     );
 
-    // Debounce tìm kiếm: khi người dùng gõ, sau 300ms tự động cập nhật URL
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (inputKeyword.trim() !== urlKeyword.trim()) {
-                updateParams({ q: inputKeyword.trim(), page: 1 });
-            }
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [inputKeyword, urlKeyword, updateParams]);
-
     // Danh sách thể loại động từ dữ liệu game
     const genres = useMemo(
         () => [...new Set(games.map((game) => game.genre).filter(Boolean))].sort(),
@@ -181,29 +119,6 @@ export default function GameList() {
         [games]
     );
 
-    // 13. Autocomplete: Danh sách gợi ý game khi đang gõ từ khóa
-    const suggestions = useMemo(() => {
-        const q = normalize(inputKeyword);
-        if (!q) return [];
-
-        return games
-            .map((game) => {
-                const title = normalize(String(game.title ?? ""));
-                const developer = normalize(String(game.developer ?? ""));
-                const genre = normalize(String(game.genre ?? ""));
-                let rank = -1;
-                if (title.startsWith(q)) rank = 0;
-                else if (title.includes(q)) rank = 1;
-                else if (genre.includes(q)) rank = 2;
-                else if (developer.includes(q)) rank = 3;
-                return { game, rank };
-            })
-            .filter((item) => item.rank >= 0)
-            .sort((a, b) => a.rank - b.rank)
-            .slice(0, 5)
-            .map((item) => item.game);
-    }, [games, inputKeyword]);
-
     // 2, 6, 7, 8, 9: Lọc và sắp xếp danh sách game
     const filteredGames = useMemo(() => {
         const keyword = normalize(urlKeyword);
@@ -213,7 +128,7 @@ export default function GameList() {
             const genre = normalize(String(game.genre ?? ""));
             const developer = normalize(String(game.developer ?? ""));
 
-            // 2. Tìm kiếm tên/thể loại/nhà phát triển bằng includes()
+            // 2. Lọc theo từ khóa tìm kiếm (nhập từ Header)
             const matchesSearch =
                 !keyword ||
                 title.includes(keyword) ||
@@ -298,88 +213,26 @@ export default function GameList() {
         );
     }, [filteredGames, safePage]);
 
-    // Chuyển trang và cuộn nhẹ lên đầu danh sách
+    // Chuyển trang và cuộn mượt lên đầu danh sách
     const handlePageChange = (newPage: number) => {
         updateParams({ page: newPage });
-        document.querySelector(".store-heading")?.scrollIntoView({ behavior: "smooth" });
+        document
+            .querySelector(".store-heading")
+            ?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // 3. Xóa từ khóa tìm kiếm
-    const handleClearSearch = () => {
-        setInputKeyword("");
+    // 3. Xóa từ khóa tìm kiếm (đang nhận từ Header)
+    const handleClearKeyword = () => {
         updateParams({ q: "", page: 1 });
-        setIsDropdownOpen(false);
     };
 
     // 10. Reset toàn bộ bộ lọc
     const handleResetAllFilters = () => {
-        setInputKeyword("");
         setSearchParams({}, { replace: true });
-        setIsDropdownOpen(false);
-    };
-
-    // Xử lý chọn một từ khóa từ lịch sử tìm kiếm
-    const handleSelectHistoryItem = (term: string) => {
-        setInputKeyword(term);
-        addSearchHistory(term);
-        updateParams({ q: term, page: 1 });
-        setIsDropdownOpen(false);
-    };
-
-    // Xử lý click chọn một gợi ý game (Autocomplete)
-    const handleSelectSuggestion = (game: Game) => {
-        addSearchHistory(game.title);
-        setIsDropdownOpen(false);
-        navigate(`/games/${game.id}`);
-    };
-
-    // Xử lý submit tìm kiếm khi nhấn Enter
-    const handleSubmitSearch = (term: string) => {
-        const q = term.trim();
-        if (q) addSearchHistory(q);
-        updateParams({ q, page: 1 });
-        setIsDropdownOpen(false);
-    };
-
-    // Điều hướng bằng bàn phím trong Autocomplete dropdown
-    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Escape") {
-            setIsDropdownOpen(false);
-            return;
-        }
-
-        if (!isDropdownOpen) {
-            if (e.key === "ArrowDown") setIsDropdownOpen(true);
-            return;
-        }
-
-        const isViewingSuggestions = inputKeyword.trim() !== "";
-        const maxLen = isViewingSuggestions ? suggestions.length : history.length;
-
-        if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActiveIndex((prev) => (prev >= maxLen - 1 ? 0 : prev + 1));
-        } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActiveIndex((prev) => (prev <= 0 ? maxLen - 1 : prev - 1));
-        } else if (e.key === "Enter") {
-            e.preventDefault();
-            if (isViewingSuggestions) {
-                if (activeIndex >= 0 && activeIndex < suggestions.length) {
-                    handleSelectSuggestion(suggestions[activeIndex]);
-                } else {
-                    handleSubmitSearch(inputKeyword);
-                }
-            } else if (activeIndex >= 0 && activeIndex < history.length) {
-                handleSelectHistoryItem(history[activeIndex]);
-            } else {
-                handleSubmitSearch(inputKeyword);
-            }
-        }
     };
 
     const hasActiveFilters =
-        urlKeyword ||
+        Boolean(urlKeyword) ||
         selectedGenre !== "all" ||
         selectedPlatform !== "all" ||
         priceFilter !== "all" ||
@@ -453,7 +306,11 @@ export default function GameList() {
                 </div>
 
                 {/* 6. Thanh chọn nhanh thể loại (Popular Genre Pills) */}
-                <div className="store-genre-pills" role="toolbar" aria-label="Lọc nhanh thể loại">
+                <div
+                    className="store-genre-pills"
+                    role="toolbar"
+                    aria-label="Lọc nhanh thể loại"
+                >
                     {POPULAR_GENRES.map((g) => {
                         const isAll = g === "Tất cả";
                         const isActive = isAll
@@ -464,7 +321,9 @@ export default function GameList() {
                             <button
                                 key={g}
                                 type="button"
-                                className={`store-genre-pill ${isActive ? "store-genre-pill--active" : ""}`}
+                                className={`store-genre-pill ${
+                                    isActive ? "store-genre-pill--active" : ""
+                                }`}
                                 onClick={() =>
                                     updateParams({
                                         genre: isAll ? "all" : g,
@@ -478,163 +337,27 @@ export default function GameList() {
                     })}
                 </div>
 
-                {/* Toolbar: Tìm kiếm (2), Xóa từ khóa (3), Autocomplete (13), Search History (14), Reset (10) */}
+                {/* Thanh trạng thái từ khóa tìm kiếm (từ Header) & Nút Reset bộ lọc (10) */}
                 <div className="store-toolbar">
-                    <div className="store-search-container" ref={searchContainerRef}>
-                        <div className="store-search">
-                            <Search size={19} />
-                            <input
-                                type="text"
-                                placeholder="Tìm tên game, thể loại, nhà phát triển..."
-                                value={inputKeyword}
-                                onChange={(e) => {
-                                    setInputKeyword(e.target.value);
-                                    setIsDropdownOpen(true);
-                                    setActiveIndex(-1);
-                                }}
-                                onFocus={() => {
-                                    setIsDropdownOpen(true);
-                                    setActiveIndex(-1);
-                                }}
-                                onKeyDown={handleKeyDown}
-                                aria-label="Tìm kiếm game"
-                                autoComplete="off"
-                            />
-
+                    {urlKeyword ? (
+                        <div className="store-search-tag">
+                            <span>
+                                Tìm kiếm: <strong>"{urlKeyword}"</strong>
+                            </span>
                             {/* 3. Nút X để xóa từ khóa tìm kiếm */}
-                            {inputKeyword && (
-                                <button
-                                    type="button"
-                                    className="store-search__clear-btn"
-                                    onClick={handleClearSearch}
-                                    title="Xóa từ khóa tìm kiếm"
-                                    aria-label="Xóa từ khóa tìm kiếm"
-                                >
-                                    <X size={16} />
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                className="store-search-tag__clear"
+                                onClick={handleClearKeyword}
+                                title="Xóa từ khóa tìm kiếm"
+                                aria-label="Xóa từ khóa tìm kiếm"
+                            >
+                                <X size={14} />
+                            </button>
                         </div>
-
-                        {/* Dropdown: 13. Autocomplete hoặc 14. Search History */}
-                        {isDropdownOpen && (
-                            <div className="store-search-dropdown">
-                                {inputKeyword.trim() === "" ? (
-                                    /* 14. Search History: Hiển thị lịch sử tìm kiếm khi ô input trống */
-                                    history.length > 0 ? (
-                                        <div className="search-history">
-                                            <div className="search-history__header">
-                                                <span className="search-history__title">
-                                                    <Clock size={13} /> Lịch sử tìm kiếm
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    className="search-history__clear-all"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        clearSearchHistory();
-                                                    }}
-                                                >
-                                                    Xóa tất cả
-                                                </button>
-                                            </div>
-                                            <ul className="search-history__list">
-                                                {history.map((term, index) => (
-                                                    <li
-                                                        key={term}
-                                                        className={`search-history__item ${
-                                                            index === activeIndex
-                                                                ? "search-history__item--active"
-                                                                : ""
-                                                        }`}
-                                                        onClick={() => handleSelectHistoryItem(term)}
-                                                    >
-                                                        <span className="search-history__keyword">
-                                                            <Clock size={13} color="#62758f" />
-                                                            {term}
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            className="search-history__remove-btn"
-                                                            title={`Xóa "${term}" khỏi lịch sử`}
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                removeSearchHistoryItem(term);
-                                                            }}
-                                                        >
-                                                            <X size={13} />
-                                                        </button>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ) : (
-                                        <div className="search-suggest__empty">
-                                            Nhập tên game để tìm kiếm và xem gợi ý...
-                                        </div>
-                                    )
-                                ) : (
-                                    /* 13. Autocomplete: Gợi ý các tựa game phù hợp realtime */
-                                    <div>
-                                        {suggestions.length > 0 ? (
-                                            suggestions.map((game, index) => (
-                                                <div
-                                                    key={game.id}
-                                                    className={`search-suggest__item ${
-                                                        index === activeIndex
-                                                            ? "search-suggest__item--active"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() => handleSelectSuggestion(game)}
-                                                >
-                                                    <img
-                                                        src={game.coverImage}
-                                                        alt={game.title}
-                                                        className="search-suggest__thumb"
-                                                        loading="lazy"
-                                                    />
-                                                    <div className="search-suggest__info">
-                                                        <span className="search-suggest__title">
-                                                            {game.title}
-                                                        </span>
-                                                        <span className="search-suggest__meta">
-                                                            {game.genre}
-                                                            {game.developer
-                                                                ? ` · ${game.developer}`
-                                                                : ""}
-                                                        </span>
-                                                    </div>
-                                                    <div className="search-suggest__price">
-                                                        {game.discountPercent > 0 && (
-                                                            <span className="search-suggest__discount">
-                                                                -{game.discountPercent}%
-                                                            </span>
-                                                        )}
-                                                        <span>
-                                                            {game.price === 0
-                                                                ? "Miễn phí"
-                                                                : formatPrice(game.price)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="search-suggest__empty">
-                                                Không tìm thấy gợi ý cho “{inputKeyword.trim()}”
-                                            </div>
-                                        )}
-
-                                        <div
-                                            className="search-suggest__all"
-                                            onClick={() => handleSubmitSearch(inputKeyword)}
-                                        >
-                                            Tìm kiếm tất cả kết quả cho “{inputKeyword.trim()}”
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                    ) : (
+                        <div />
+                    )}
 
                     {/* 10. Nút Xóa bộ lọc */}
                     {hasActiveFilters && (
@@ -726,8 +449,8 @@ export default function GameList() {
                         <div className="store-filter-note">
                             <Gamepad2 size={20} />
                             <p>
-                                Chọn kết hợp các bộ lọc và từ khóa để tìm nhanh tựa game
-                                ưng ý nhất.
+                                Chọn kết hợp các bộ lọc để tìm nhanh tựa game ưng ý
+                                nhất.
                             </p>
                         </div>
                     </aside>
