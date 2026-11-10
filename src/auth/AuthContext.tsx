@@ -1,5 +1,5 @@
 import { useState, type PropsWithChildren } from "react";
-import { authService, type AuthUser } from "../services/authService";
+import { authService, type AuthUser, type ProfileUpdate } from "../services/authService";
 import { AuthContext } from "./context";
 
 export function AuthProvider({ children }: PropsWithChildren) {
@@ -15,13 +15,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
         return authService.register(name, email, password);
     }
 
+    async function updateProfile(updates: ProfileUpdate) {
+        if (!user) throw new Error("Bạn cần đăng nhập để cập nhật hồ sơ.");
+        const updatedUser = await authService.updateProfile(user.id, updates);
+        setUser(updatedUser);
+        return updatedUser;
+    }
+
     function logout() {
         authService.logout();
         setUser(null);
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout }}>
+        <AuthContext.Provider value={{ user, login, register, updateProfile, logout }}>
             {children}
         </AuthContext.Provider>
     );

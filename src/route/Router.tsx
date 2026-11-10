@@ -10,6 +10,7 @@ import Checkout from "../components/Checkout";
 import OrderHistory from "../components/OrderHistory";
 import AuthPage from "../components/AuthPage";
 import { useAuth } from "../auth/useAuth";
+import Profile from "../components/Profile";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -45,6 +46,14 @@ export default function Router() {
                     element={
                         <RequireAuth>
                             <OrderHistory />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <RequireAuth>
+                            <Profile />
                         </RequireAuth>
                     }
                 />
