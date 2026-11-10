@@ -1,4 +1,5 @@
 
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { orderService } from "./orderService";
 import type { Game } from "../types/game";
@@ -71,8 +72,6 @@ describe("OrderService", () => {
         expect(order.id).toMatch(/^ord-/);
         expect(order.status).toBe("completed");
         expect(order.items[0].cdKey).toMatch(/^ATA-/);
-
-        // Check it appears in getUserOrders
         const userOrders = await orderService.getUserOrders("test-user-99");
         expect(userOrders.some((o) => o.id === order.id)).toBe(true);
     });
