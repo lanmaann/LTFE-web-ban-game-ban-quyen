@@ -10,11 +10,15 @@ import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
     Bell,
     BookOpen,
+    CheckCircle2,
     Clock,
     Gamepad2,
+    Gift,
     Heart,
     LifeBuoy,
     LogOut,
+    MessageCircle,
+    MessageSquareText,
     Search,
     ShoppingCart,
     User,
@@ -62,8 +66,53 @@ export default function Header() {
     const games = useAppSelector(selectGames);
     const gamesStatus = useAppSelector(selectGamesStatus);
     const [isOpen, setIsOpen] = useState(false);
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const [readNotificationIds, setReadNotificationIds] = useState<string[]>([]);
     const [activeIndex, setActiveIndex] = useState(-1);
     const searchRef = useRef<HTMLFormElement>(null);
+    const notificationsRef = useRef<HTMLDivElement>(null);
+
+    const notifications = [
+        {
+            id: "purchase",
+            title: "Mua game thành công",
+            message: "Đơn hàng của bạn đã hoàn tất. Game đã có trong Thư viện.",
+            time: "15 phút trước",
+            href: "/orders",
+            icon: CheckCircle2,
+            className: "notification-item__icon--purchase",
+        },
+        {
+            id: "community",
+            title: "Có phản hồi mới trong Cộng đồng",
+            message: "Minh Anh đã trả lời một bài thảo luận về game.",
+            time: "1 giờ trước",
+            href: "/community",
+            icon: MessageCircle,
+            className: "notification-item__icon--community",
+        },
+        {
+            id: "question",
+            title: "Câu hỏi của bạn có phản hồi",
+            message: "Có người chơi vừa trả lời câu hỏi game của bạn.",
+            time: "Hôm nay",
+            href: "/games/1245620",
+            icon: MessageSquareText,
+            className: "notification-item__icon--question",
+        },
+        {
+            id: "voucher",
+            title: "Bạn nhận được voucher",
+            message: "ATAWELCOME — mã minh họa, chưa áp dụng khi thanh toán.",
+            time: "Hôm qua",
+            href: "/cart",
+            icon: Gift,
+            className: "notification-item__icon--voucher",
+        },
+    ];
+    const unreadNotificationCount = notifications.filter(
+        (notification) => !readNotificationIds.includes(notification.id)
+    ).length;
 
     const [history, setHistory] = useState<string[]>(getSearchHistory);
 
@@ -87,6 +136,35 @@ export default function Header() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (
+                notificationsRef.current &&
+                !notificationsRef.current.contains(event.target as Node)
+            ) {
+                setNotificationsOpen(false);
+            }
+        }
+        function handleEscape(event: globalThis.KeyboardEvent) {
+            if (event.key === "Escape") setNotificationsOpen(false);
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleEscape);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscape);
+        };
+    }, []);
+
+    function markAllNotificationsRead() {
+        setReadNotificationIds(notifications.map((notification) => notification.id));
+    }
+
+    function markNotificationRead(id: string) {
+        setReadNotificationIds((current) => current.includes(id) ? current : [...current, id]);
+        setNotificationsOpen(false);
+    }
 
     const { suggestions, totalMatches } = useMemo(() => {
         const q = normalize(keyword);
@@ -481,13 +559,51 @@ export default function Header() {
                             <span className="header__badge">{cartCount}</span>
                         )}
                     </Link>
-                    <button
-                        type="button"
-                        className="header__icon-button"
-                        aria-label="Thông báo (sắp ra mắt)"
-                    >
-                        <Bell size={20} />
-                    </button>
+                    <div className="header__notifications" ref={notificationsRef}>
+                        <button
+                            type="button"
+                            className="header__icon-button"
+                            aria-label={`Thông báo (${unreadNotificationCount} chưa đọc)`}
+                            aria-expanded={notificationsOpen}
+                            aria-controls="header-notifications-menu"
+                            onClick={() => setNotificationsOpen((open) => !open)}
+                        >
+                            <Bell size={20} />
+                            {unreadNotificationCount > 0 && (
+                                <span className="header__badge">{unreadNotificationCount}</span>
+                            )}
+                        </button>
+                        {notificationsOpen && (
+                            <section className="header-notifications" id="header-notifications-menu" aria-label="Thông báo">
+                                <div className="header-notifications__heading">
+                                    <div><strong>Thông báo</strong><span>{unreadNotificationCount} chưa đọc</span></div>
+                                    <button type="button" onClick={markAllNotificationsRead} disabled={unreadNotificationCount === 0}>Đọc tất cả</button>
+                                </div>
+                                <div className="header-notifications__list">
+                                    {notifications.map((notification) => {
+                                        const NotificationIcon = notification.icon;
+                                        const isRead = readNotificationIds.includes(notification.id);
+                                        return (
+                                            <Link
+                                                to={notification.href}
+                                                className={`header-notification${isRead ? " header-notification--read" : ""}`}
+                                                key={notification.id}
+                                                onClick={() => markNotificationRead(notification.id)}
+                                            >
+                                                <span className={`header-notification__icon ${notification.className}`}><NotificationIcon size={17} /></span>
+                                                <span className="header-notification__copy">
+                                                    <strong>{notification.title}</strong>
+                                                    <span>{notification.message}</span>
+                                                    <small>{notification.time}</small>
+                                                </span>
+                                                {!isRead && <span className="header-notification__unread" aria-label="Chưa đọc" />}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        )}
+                    </div>
                     {user ? (
                         <div className="header__account">
                             <button
