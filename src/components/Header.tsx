@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
+    Bell,
     BookOpen,
     Clock,
     Gamepad2,
@@ -221,6 +222,9 @@ export default function Header() {
                     <NavLink to="/library" className={navClass}>
                         Thư viện
                     </NavLink>
+                    <NavLink to="/community" className={navClass}>
+                        Cộng đồng
+                    </NavLink>
                     <div className="header__support">
                         <button type="button" className="header__link header__support-trigger" aria-haspopup="true">
                             Hỗ trợ
@@ -247,7 +251,7 @@ export default function Header() {
                     <Search size={17} />
                     <input
                         type="text"
-                        placeholder="Tìm game theo tên..."
+                        placeholder="Tìm kiếm..."
                         value={keyword}
                         onChange={(event) => {
                             setKeyword(event.target.value);
@@ -477,21 +481,27 @@ export default function Header() {
                             <span className="header__badge">{cartCount}</span>
                         )}
                     </Link>
+                    <button
+                        type="button"
+                        className="header__icon-button"
+                        aria-label="Thông báo (sắp ra mắt)"
+                    >
+                        <Bell size={20} />
+                    </button>
                     {user ? (
                         <div className="header__account">
                             <button
                                 type="button"
                                 className="header__profile-link"
                                 aria-haspopup="true"
+                                aria-label={`Tài khoản của ${user.name}`}
+                                title={user.name}
                             >
                                 {user.avatar ? (
                                     <img src={user.avatar} alt="" />
                                 ) : (
-                                    <User size={17} />
+                                    <User size={20} />
                                 )}
-                                <span className="header__account-name">
-                                    {user.name}
-                                </span>
                             </button>
                             <div className="header__account-menu">
                                 <Link to="/profile">
