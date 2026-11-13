@@ -14,6 +14,7 @@ import Profile from "../components/Profile";
 import Favorites from "../components/Favorites";
 import PurchaseGuide from "../components/PurchaseGuide";
 import Policies from "../components/Policies";
+import Community from "../components/Community";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -35,6 +36,7 @@ export default function Router() {
                 <Route path="/support" element={<Navigate to="/support/purchase-guide" replace />} />
                 <Route path="/support/purchase-guide" element={<PurchaseGuide />} />
                 <Route path="/support/policies" element={<Policies />} />
+                <Route path="/community" element={<Community />} />
                 <Route path="/store" element={<GameList />} />
                 <Route path="/games/:id" element={<GameDetail />} />
                 <Route path="/library" element={<Library />} />
