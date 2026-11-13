@@ -8,9 +8,11 @@ import {
 } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
+    BookOpen,
     Clock,
     Gamepad2,
     Heart,
+    LifeBuoy,
     LogOut,
     Search,
     ShoppingCart,
@@ -62,7 +64,6 @@ export default function Header() {
     const [activeIndex, setActiveIndex] = useState(-1);
     const searchRef = useRef<HTMLFormElement>(null);
 
-    // 14. Search History: Lấy lịch sử tìm kiếm từ localStorage
     const [history, setHistory] = useState<string[]>(getSearchHistory);
 
     useEffect(() => {
@@ -86,7 +87,6 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // 13. Autocomplete: Tính toán danh sách game gợi ý khi đang gõ từ khóa
     const { suggestions, totalMatches } = useMemo(() => {
         const q = normalize(keyword);
         if (!q) return { suggestions: [], totalMatches: 0 };
@@ -125,7 +125,6 @@ export default function Header() {
         navigate(`/games/${id}`);
     }
 
-    // 3. Xóa từ khóa: Nút X xóa nội dung tìm kiếm
     function handleClearKeyword() {
         setKeyword("");
         setIsOpen(false);
@@ -169,7 +168,7 @@ export default function Header() {
                 );
             }
         } else {
-            // Đang hiển thị lịch sử tìm kiếm
+
             if (event.key === "ArrowDown") {
                 event.preventDefault();
                 setActiveIndex((index) =>
@@ -195,7 +194,6 @@ export default function Header() {
         }
     }
 
-    // 2 & 15. Tìm kiếm game và điều hướng đến /store?q=...
     function handleSearch(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const q = keyword.trim();
@@ -223,9 +221,23 @@ export default function Header() {
                     <NavLink to="/library" className={navClass}>
                         Thư viện
                     </NavLink>
+                    <div className="header__support">
+                        <button type="button" className="header__link header__support-trigger" aria-haspopup="true">
+                            Hỗ trợ
+                        </button>
+                        <div className="header__support-menu">
+                            <Link to="/support/purchase-guide" role="menuitem">
+                                <BookOpen size={17} />
+                                <span><strong>Hướng dẫn mua hàng</strong></span>
+                            </Link>
+                            <Link to="/support/policies" role="menuitem">
+                                <LifeBuoy size={17} />
+                                <span><strong>Chính sách &amp; Điều khoản</strong></span>
+                            </Link>
+                        </div>
+                    </div>
                 </nav>
 
-                {/* THANH TÌM KIẾM DUY NHẤT Ở HEADER (Chức năng 2, 3, 13, 14, 15) */}
                 <form
                     className="header__search"
                     onSubmit={handleSearch}
@@ -260,7 +272,6 @@ export default function Header() {
                         autoComplete="off"
                     />
 
-                    {/* 3. Nút X xóa nội dung tìm kiếm */}
                     {keyword && (
                         <button
                             type="button"
@@ -273,7 +284,6 @@ export default function Header() {
                         </button>
                     )}
 
-                    {/* Dropdown: 14. Lịch sử tìm kiếm & 13. Autocomplete gợi ý */}
                     {showDropdown && (
                         <ul
                             className="search-suggest"
@@ -281,7 +291,6 @@ export default function Header() {
                             role="listbox"
                         >
                             {keyword.trim() === "" ? (
-                                /* 14. Lịch sử tìm kiếm (Search History) */
                                 <li className="search-history">
                                     <div className="search-history__header">
                                         <span className="search-history__title">
@@ -353,7 +362,6 @@ export default function Header() {
                                     </ul>
                                 </li>
                             ) : (
-                                /* 13. Gợi ý game Autocomplete */
                                 <>
                                     {suggestions.map((game, index) => (
                                         <li

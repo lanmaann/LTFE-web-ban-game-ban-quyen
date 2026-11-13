@@ -12,6 +12,8 @@ import AuthPage from "../components/AuthPage";
 import { useAuth } from "../auth/useAuth";
 import Profile from "../components/Profile";
 import Favorites from "../components/Favorites";
+import PurchaseGuide from "../components/PurchaseGuide";
+import Policies from "../components/Policies";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -30,6 +32,9 @@ export default function Router() {
             <Route element={<Layout />}>
                 <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/support" element={<Navigate to="/support/purchase-guide" replace />} />
+                <Route path="/support/purchase-guide" element={<PurchaseGuide />} />
+                <Route path="/support/policies" element={<Policies />} />
                 <Route path="/store" element={<GameList />} />
                 <Route path="/games/:id" element={<GameDetail />} />
                 <Route path="/library" element={<Library />} />
