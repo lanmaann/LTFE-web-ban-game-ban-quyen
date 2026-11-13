@@ -1437,6 +1437,7 @@
 .store-hero h1 {
     max-width: 760px;
     margin: 18px 0 14px;
+    font-family: Arial, sans-serif;
     font-size: clamp(32px, 4vw, 52px);
     line-height: 1.12;
     letter-spacing: -1.4px;
@@ -7745,4 +7746,31 @@
     .community-post__type { gap: 4px; padding: 4px 6px; font-size: 10px; }
     .community-sidebar { grid-template-columns: minmax(0, 1fr); }
     .community-sidebar__foot { grid-column: 1; }
+}
+
+.library-page__container,
+.orders-page,
+.community-page,
+.support-page,
+.library-page__container button,
+.orders-page button,
+.community-page button,
+.support-page button,
+.community-page input,
+.community-page select,
+.community-page textarea,
+.support-page input,
+.support-page select,
+.support-page textarea {
+    font-family: Arial, sans-serif;
+}
+
+.store-hero h1,
+.library-page__title,
+.orders-header__title,
+.community-hero h1,
+.support-hero h1 {
+    font-family: Arial, sans-serif !important;
+    font-weight: 700;
+    font-synthesis: none;
 }
