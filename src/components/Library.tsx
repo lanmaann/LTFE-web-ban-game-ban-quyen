@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
     Check,
-    CheckCircle2,
     Edit3,
     ExternalLink,
     Gamepad2,
@@ -175,14 +174,7 @@ export default function Library() {
                     <div className="library-page__header-title-row">
                         <div className="library-page__title-box">
                             <Gamepad2 size={32} className="library-page__icon" />
-                            <div>
-                                <h1 className="library-page__title">Thư viện trò chơi</h1>
-                                <p className="library-page__subtitle">
-                                    {user
-                                        ? `Xin chào ${user.name}! Quản lý game bản quyền, mã CD-Key và viết đánh giá.`
-                                        : "Nền tảng quản lý bản quyền game chính hãng và đánh giá trải nghiệm."}
-                                </p>
-                            </div>
+                            <h1 className="library-page__title">Thư viện trò chơi</h1>
                         </div>
 
                         {user && (
@@ -328,9 +320,6 @@ export default function Library() {
                                                 >
                                                     <Heart size={16} fill={isFav ? "currentColor" : "none"} />
                                                 </button>
-                                                <span className="library-card__badge-owned">
-                                                    <CheckCircle2 size={13} /> Bản quyền
-                                                </span>
                                             </div>
 
                                             <div className="library-card__body">
@@ -340,17 +329,6 @@ export default function Library() {
                                                         <Link to={`/games/${game.id}`}>{game.title}</Link>
                                                     </h3>
                                                     <span className="library-card__developer">{game.developer}</span>
-                                                </div>
-
-                                                <div className="library-card__license-box">
-                                                    <div className="library-card__license-status-row">
-                                                        <span className="library-card__license-tag">
-                                                            <ShieldCheck size={14} /> Bản quyền chính hãng
-                                                        </span>
-                                                        <span className="library-card__license-state">
-                                                            <CheckCircle2 size={13} /> Sẵn sàng chơi
-                                                        </span>
-                                                    </div>
                                                 </div>
 
                                                 <div className="library-card__review-status">
