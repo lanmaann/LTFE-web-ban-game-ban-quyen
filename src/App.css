@@ -3747,6 +3747,12 @@
     padding: 32px 20px 60px;
     box-sizing: border-box;
     min-height: 60vh;
+    font-family: inherit;
+}
+
+.cart-page,
+.cart-page * {
+    font-family: inherit;
 }
 
 .cart-page__header {
@@ -3761,10 +3767,10 @@
 
 .cart-page__header h1 {
     margin: 0;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    letter-spacing: -0.4px;
-    color: #f0f5ff;
+    line-height: 1.2;
+    color: #fff;
 }
 
 .cart-page__header svg {
@@ -5835,6 +5841,12 @@
 .checkout-page {
     width: min(1200px, 94%);
     margin: 32px auto 60px;
+    font-family: inherit;
+}
+
+.checkout-page,
+.checkout-page * {
+    font-family: inherit;
 }
 
 .checkout-header {
@@ -5849,8 +5861,9 @@
 }
 
 .checkout-header__title {
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
     color: #fff;
     margin: 0 0 6px;
 }
@@ -6858,6 +6871,12 @@
 .orders-page {
     width: min(1000px, 94%);
     margin: 32px auto 60px;
+    font-family: inherit;
+}
+
+.orders-page,
+.orders-page * {
+    font-family: inherit;
 }
 
 .orders-header {
@@ -6873,10 +6892,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
     color: #fff;
-    margin: 0 0 6px;
+    margin: 0;
 }
 
 .orders-header__desc {
@@ -8207,12 +8227,22 @@
     .community-sidebar__foot { grid-column: 1; }
 }
 
+.cart-page,
+.checkout-page,
 .orders-page,
+.library-page,
 .community-page,
 .support-page,
+.favorites-page,
+.profile-page,
+.cart-page button,
+.checkout-page button,
 .orders-page button,
 .community-page button,
 .support-page button,
+.cart-page input,
+.checkout-page input,
+.orders-page input,
 .community-page input,
 .community-page select,
 .community-page textarea,
@@ -8223,7 +8253,10 @@
 }
 
 .store-hero h1,
+.cart-page__header h1,
+.checkout-header__title,
 .orders-header__title,
+.library-page__title,
 .community-hero h1,
 .support-hero h1 {
     font-family: Arial, sans-serif !important;

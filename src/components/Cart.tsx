@@ -288,9 +288,6 @@ export default function Cart() {
                         <ArrowRight size={18} />
                     </button>
 
-                    <p className="cart-summary__note">
-                        Giá đã bao gồm thuế. Backend sẽ xác nhận lại giá trước khi tạo đơn hàng.
-                    </p>
                 </aside>
             </div>
             {showClearConfirm && (

@@ -62,13 +62,11 @@ export default function Checkout() {
     const [cardCvv, setCardCvv] = useState("");
     const [cardErrors, setCardErrors] = useState<Record<string, string>>({});
 
-    const [simulateFail, setSimulateFail] = useState(false);
+    const [simulateFail] = useState(false);
     const [processingStepText, setProcessingStepText] = useState("Đang kết nối cổng thanh toán an toàn...");
     const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
     const [paymentError, setPaymentError] = useState<string | null>(null);
     const [isExecutingPayment, setIsExecutingPayment] = useState(false);
-
-    // Duplicate check & Validated items
     const [ownedGameIds, setOwnedGameIds] = useState<string[]>([]);
     const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(true);
 
@@ -307,9 +305,6 @@ export default function Checkout() {
                                 <h2 className="checkout-card__title">
                                     Danh sách game kỹ thuật số ({cartItems.length})
                                 </h2>
-                                <span className="checkout-badge checkout-badge--digital">
-                                    <Sparkles size={13} /> Bản quyền trọn đời
-                                </span>
                             </div>
 
                             <ul className="checkout-items-list" role="list">
@@ -431,9 +426,6 @@ export default function Checkout() {
                         <div className="checkout-card">
                             <div className="checkout-card__header">
                                 <h2 className="checkout-card__title">Chọn phương thức thanh toán</h2>
-                                <span className="checkout-badge checkout-badge--secure">
-                                    <Lock size={13} /> Bảo mật Sandbox
-                                </span>
                             </div>
 
                             <div className="payment-methods-grid">
@@ -679,17 +671,6 @@ export default function Checkout() {
                                     </div>
                                 )}
                             </div>
-
-                            <div className="sandbox-tester-bar">
-                                <label className="sandbox-tester-bar__label">
-                                    <input
-                                        type="checkbox"
-                                        checked={simulateFail}
-                                        onChange={(e) => setSimulateFail(e.target.checked)}
-                                    />
-                                    <span>[Kiểm thử đồ án] Giả lập kịch bản thanh toán Thất bại / Lỗi ngân hàng</span>
-                                </label>
-                            </div>
                         </div>
                     </div>
 
@@ -767,11 +748,6 @@ export default function Checkout() {
                             </div>
 
                             <h2 className="checkout-result-card__title">Thanh toán đơn hàng thành công!</h2>
-                            <p className="checkout-result-card__desc">
-                                Cảm ơn bạn đã mua game bản quyền tại ATA Games. Quyền sở hữu game đã được kích hoạt
-                                thành công cho tài khoản <strong>{user?.name}</strong>.
-                            </p>
-
                             <div className="checkout-result-meta">
                                 <div>
                                     <span className="checkout-result-meta__label">Mã đơn hàng:</span>
@@ -790,11 +766,9 @@ export default function Checkout() {
                                     </strong>
                                 </div>
                             </div>
-
-                            {/* Danh sách game đã kích hoạt - CD-Key chỉ hiển thị trong Thư viện */}
                             <div className="order-games-box">
                                 <h3 className="order-games-box__title">
-                                    <CheckCircle2 size={18} /> Game bản quyền đã sẵn sàng trong Thư viện:
+                                  Game bản quyền đã sẵn sàng trong Thư viện:
                                 </h3>
                                 <ul className="order-games-list">
                                     {createdOrder.items.map((item) => (
@@ -806,17 +780,11 @@ export default function Checkout() {
                                                 </span>
                                             </div>
                                             <span className="order-game-item__badge">
-                                                <CheckCircle2 size={14} /> Đã thêm vào Thư viện
+                                                Đã thêm vào Thư viện
                                             </span>
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="order-license-hint">
-                                    <ShieldCheck size={18} />
-                                    <span>
-                                        Mã kích hoạt bản quyền (CD-Key) được lưu trữ bảo mật và hiển thị trực tiếp trong <strong>Thư viện game</strong> của bạn để cài đặt.
-                                    </span>
-                                </div>
                             </div>
 
                             <div className="checkout-result-actions">

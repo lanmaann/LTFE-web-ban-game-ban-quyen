@@ -75,8 +75,6 @@ export default function OrderHistory() {
 
             setRefundSuccessMsg("Đã xử lý hoàn tiền thành công!");
             await loadOrders();
-
-            // Cập nhật selectedDetailOrder nếu đang mở
             if (selectedDetailOrder && selectedDetailOrder.id === refundOrder.id) {
                 const updatedList = await orderService.getUserOrders(user.id);
                 const found = updatedList.find((o) => o.id === refundOrder.id);
@@ -106,7 +104,6 @@ export default function OrderHistory() {
                 setCopiedKeyId(null);
             }, 2000);
         } catch {
-            // Clipboard fallback
         }
     };
 
@@ -150,15 +147,12 @@ export default function OrderHistory() {
             <div className="orders-header">
                 <div className="orders-header__title-group">
                     <h1 className="orders-header__title">
-                        <Package size={26} /> Lịch sử mua hàng bản quyền
+                      Lịch sử mua hàng bản quyền
                     </h1>
-                    <p className="orders-header__desc">
-                        Theo dõi danh sách các đơn hàng đã mua. Bản quyền game kỹ thuật số được cấp tự động và quản lý tại Thư viện.
-                    </p>
                 </div>
 
                 <Link to="/library" className="orders-header__lib-btn">
-                    <Gamepad2 size={16} /> Đến Thư viện game
+                     Đến Thư viện game
                 </Link>
             </div>
 
@@ -230,7 +224,7 @@ export default function OrderHistory() {
                                                         {item.title}
                                                     </strong>
                                                     <span className="order-card__item-type">
-                                                        Bản quyền kỹ thuật số · Số lượng: 1
+                                                        Số lượng: 1
                                                     </span>
                                                 </div>
 
