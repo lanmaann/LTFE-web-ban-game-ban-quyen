@@ -4750,6 +4750,12 @@
     background: radial-gradient(circle at 15% 15%, #132238 0%, #0a101d 60%, #070b14 100%);
     padding: 36px 0 64px;
     color: #e2e8f0;
+    font-family: inherit;
+}
+
+.library-page,
+.library-page * {
+    font-family: inherit;
 }
 
 .library-page__container {
@@ -4788,17 +4794,11 @@
 }
 
 .library-page__title {
-    font-size: 26px;
-    font-weight: 850;
+    font-size: 24px;
+    font-weight: 700;
     color: #fff;
-    margin: 0 0 4px;
-    letter-spacing: -0.5px;
-}
-
-.library-page__subtitle {
-    font-size: 14px;
-    color: #94a3b8;
     margin: 0;
+    line-height: 1.2;
 }
 
 .library-page__stats-row {
@@ -4970,7 +4970,7 @@
 
 .library-page__shelf-header h2 {
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 700;
     color: #fff;
     margin: 0;
     display: flex;
@@ -5132,16 +5132,16 @@
 .library-card__genre {
     font-size: 11px;
     color: #62b5ff;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .library-card__title {
-    font-size: 17px;
-    font-weight: 800;
+    font-size: 15px;
+    font-weight: 700;
     margin: 0;
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
 .library-card__title a {
@@ -5156,7 +5156,8 @@
 
 .library-card__developer {
     font-size: 12px;
-    color: #64748b;
+    color: #92a5c0;
+    margin: 4px 0 8px;
 }
 
 .library-card__cdkey-box {
@@ -7887,11 +7888,9 @@
     .community-sidebar__foot { grid-column: 1; }
 }
 
-.library-page__container,
 .orders-page,
 .community-page,
 .support-page,
-.library-page__container button,
 .orders-page button,
 .community-page button,
 .support-page button,
@@ -7905,7 +7904,6 @@
 }
 
 .store-hero h1,
-.library-page__title,
 .orders-header__title,
 .community-hero h1,
 .support-hero h1 {

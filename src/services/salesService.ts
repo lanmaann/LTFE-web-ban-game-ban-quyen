@@ -1,4 +1,4 @@
-/** Returns a stable demo sales figure for a game. */
+
 export const salesService = {
     getSalesCount(gameId: string): number {
         let hash = 0;
