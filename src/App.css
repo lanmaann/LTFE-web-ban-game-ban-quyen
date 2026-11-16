@@ -3266,6 +3266,48 @@
     font-size: 12px;
 }
 
+.game-detail__chat-support-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    background: rgba(22, 116, 207, 0.08);
+    color: #62b5ff;
+    border: 1.5px solid rgba(98, 181, 255, 0.38);
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.game-detail__chat-support-btn:hover {
+    background: rgba(98, 181, 255, 0.18);
+    border-color: #62b5ff;
+    color: #9cd5ff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(98, 181, 255, 0.25);
+}
+
+.game-detail__chat-support-btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(98, 181, 255, 0.35);
+    border-color: #62b5ff;
+}
+
+.game-detail__chat-support-btn svg {
+    color: #62b5ff;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.game-detail__chat-support-btn:hover svg {
+    transform: scale(1.1);
+}
+
 .game-detail__specs h3 {
     margin: 0 0 14px;
     color: #fff;
