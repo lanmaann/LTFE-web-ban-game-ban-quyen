@@ -12,6 +12,7 @@ import {
     Headphones,
     Layers,
     Maximize,
+    MessageSquare,
     Monitor,
     Pause,
     Play,
@@ -33,6 +34,8 @@ import GameItem from "./GameItem";
 import StateMessage from "./StateMessage";
 import ReviewSection from "./ReviewSection";
 import GameQuestions from "./GameQuestions";
+import SupportPopup, { type SupportData } from "./SupportPopup";
+import { api } from "../services/api";
 import { formatPrice } from "../utils/format";
 import { STEAM_TRAILERS } from "../data/trailers";
 
@@ -96,6 +99,9 @@ export default function GameDetail() {
     const [videoError, setVideoError] = useState(false);
     const [showVolumeToast, setShowVolumeToast] = useState(false);
     const [volumeToastMessage, setVolumeToastMessage] = useState("");
+    const [isSupportOpen, setIsSupportOpen] = useState(false);
+    const [supportData, setSupportData] = useState<SupportData | undefined>(undefined);
+    const supportBtnRef = useRef<HTMLButtonElement>(null);
 
     const [dynamicRating, setDynamicRating] = useState<number | null>(null);
     const [dynamicReviewCount, setDynamicReviewCount] = useState<number | null>(null);
@@ -122,6 +128,20 @@ export default function GameDetail() {
     useEffect(() => {
         void dispatch(fetchGames());
     }, [dispatch]);
+
+    useEffect(() => {
+        let isMounted = true;
+        api.get<SupportData>("/support")
+            .then((res) => {
+                if (isMounted && res.data) {
+                    setSupportData(res.data);
+                }
+            })
+            .catch(() => {});
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -833,6 +853,18 @@ export default function GameDetail() {
                                             </div>
                                         </div>
                                     </div>
+                                    <button
+                                        ref={supportBtnRef}
+                                        type="button"
+                                        className="game-detail__chat-support-btn"
+                                        onClick={() => setIsSupportOpen(true)}
+                                        aria-label="Hỗ trợ qua chat"
+                                        aria-haspopup="dialog"
+                                        aria-expanded={isSupportOpen}
+                                    >
+                                        <MessageSquare size={18} />
+                                        <span>Hỗ trợ qua chat</span>
+                                    </button>
                                     <div className="game-detail__specs">
                                         <h3>Thông tin sản phẩm</h3>
                                         <div className="game-detail__specs-list">
@@ -920,6 +952,13 @@ export default function GameDetail() {
                     </>
                 )}
             </div>
+
+            <SupportPopup
+                isOpen={isSupportOpen}
+                onClose={() => setIsSupportOpen(false)}
+                supportData={supportData}
+                triggerRef={supportBtnRef}
+            />
         </div>
     );
 }
