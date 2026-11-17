@@ -15,6 +15,7 @@ import Favorites from "../components/Favorites";
 import PurchaseGuide from "../components/PurchaseGuide";
 import Policies from "../components/Policies";
 import Community from "../components/Community";
+import LuckyWheelPage from "../components/LuckyWheelPage";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -64,6 +65,26 @@ export default function Router() {
                             <Profile />
                         </RequireAuth>
                     }
+                />
+                <Route
+                    path="/profile/vouchers"
+                    element={
+                        <RequireAuth>
+                            <LuckyWheelPage initialTab="vouchers" />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/profile/lucky-wheel"
+                    element={
+                        <RequireAuth>
+                            <LuckyWheelPage initialTab="wheel" />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/lucky-wheel"
+                    element={<Navigate to="/profile/lucky-wheel" replace />}
                 />
                 <Route
                     path="/favorites"

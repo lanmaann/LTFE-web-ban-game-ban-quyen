@@ -21,6 +21,7 @@ import {
     MessageSquareText,
     Search,
     ShoppingCart,
+    Ticket,
     User,
     X,
 } from "lucide-react";
@@ -102,10 +103,10 @@ export default function Header() {
         },
         {
             id: "voucher",
-            title: "Bạn nhận được voucher",
-            message: "ATAWELCOME — mã minh họa, chưa áp dụng khi thanh toán.",
-            time: "Hôm qua",
-            href: "/cart",
+            title: "Kho voucher của bạn",
+            message: "Kiểm tra mã giảm giá và quay thưởng hằng ngày tại đây.",
+            time: "Hôm nay",
+            href: "/profile/vouchers",
             icon: Gift,
             className: "notification-item__icon--voucher",
         },
@@ -623,11 +624,14 @@ export default function Header() {
                                 <Link to="/profile">
                                     <User size={17} /> Hồ sơ cá nhân
                                 </Link>
-                                <Link to="/favorites">
-                                    <Heart size={17} /> Yêu thích
+                                <Link to="/profile/vouchers">
+                                    <Ticket size={17} /> Kho voucher của tôi
                                 </Link>
                                 <Link to="/orders">
-                                    <ShoppingCart size={17} /> Đơn hàng
+                                    <ShoppingCart size={17} /> Lịch sử đơn hàng
+                                </Link>
+                                <Link to="/favorites">
+                                    <Heart size={17} /> Yêu thích
                                 </Link>
                             </div>
                             <button
