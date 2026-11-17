@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
     CreditCard,
     QrCode,
@@ -17,8 +17,11 @@ import {
     ShoppingBag,
     Trash2,
     CheckCircle,
+    Ticket,
 } from "lucide-react";
 import { useAuth } from "../auth/useAuth";
+import { luckyWheelService } from "../services/luckyWheelService";
+import type { UserVoucher } from "../types/voucher";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
     selectCartItems,
@@ -45,12 +48,39 @@ const TEST_CARDS = {
 export default function Checkout() {
     const dispatch = useAppDispatch();
     const { user } = useAuth();
+    const location = useLocation();
 
     const cartItems = useAppSelector(selectCartItems);
     const cartTotal = useAppSelector(selectCartTotal);
     const originalTotal = useAppSelector(selectCartOriginalTotal);
     const savings = useAppSelector(selectCartSavings);
     const allGames = useAppSelector(selectGames);
+
+    const [appliedVoucher, setAppliedVoucher] = useState<UserVoucher | null>(() => {
+        const stateVoucher = (location.state as { appliedVoucher?: UserVoucher } | null)?.appliedVoucher;
+        if (stateVoucher) return stateVoucher;
+        try {
+            const raw = localStorage.getItem("ata-applied-voucher");
+            return raw ? JSON.parse(raw) : null;
+        } catch {
+            return null;
+        }
+    });
+    const [voucherCodeInput, setVoucherCodeInput] = useState("");
+    const [voucherError, setVoucherError] = useState("");
+
+    const voucherDiscount = useMemo(() => {
+        if (!appliedVoucher) return 0;
+        if (appliedVoucher.type === "PERCENT") {
+            return Math.round((cartTotal * appliedVoucher.value) / 100);
+        }
+        if (appliedVoucher.type === "FIXED") {
+            return Math.min(cartTotal, appliedVoucher.value);
+        }
+        return 0;
+    }, [appliedVoucher, cartTotal]);
+
+    const finalTotal = Math.max(0, cartTotal - voucherDiscount);
 
     const [step, setStep] = useState<CheckoutStep>("review");
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("visa");
@@ -179,9 +209,9 @@ export default function Checkout() {
                 userName: user.name,
                 items: validation.validatedItems,
                 subtotal: originalTotal,
-                discount: savings,
+                discount: savings + voucherDiscount,
                 fee: 0,
-                totalAmount: cartTotal,
+                totalAmount: finalTotal,
                 paymentMethod,
                 cardDetails:
                     paymentMethod === "visa"
@@ -197,6 +227,10 @@ export default function Checkout() {
 
             const order = await orderService.processOrder(orderPayload);
             setCreatedOrder(order);
+            if (appliedVoucher?.id) {
+                luckyWheelService.markVoucherUsed(appliedVoucher.id);
+            }
+            localStorage.removeItem("ata-applied-voucher");
             dispatch(clearCart());
 
             setStep("result");
@@ -386,14 +420,71 @@ export default function Checkout() {
                                     <span>Trực tuyến (Thư viện game)</span>
                                 </div>
 
+                                {voucherDiscount > 0 && (
+                                    <div className="checkout-summary-card__row checkout-summary-card__row--saving">
+                                        <span>Voucher ({appliedVoucher?.code})</span>
+                                        <span>- {formatPrice(voucherDiscount)}</span>
+                                    </div>
+                                )}
+
                                 <div className="checkout-summary-card__divider" />
 
                                 <div className="checkout-summary-card__row checkout-summary-card__row--total">
                                     <span>Tổng thanh toán</span>
                                     <span className="checkout-summary-card__total-amount">
-                                        {formatPrice(cartTotal)}
+                                        {formatPrice(finalTotal)}
                                     </span>
                                 </div>
+                            </div>
+                            <div className="checkout-voucher-section">
+                                {appliedVoucher ? (
+                                    <div className="checkout-voucher-applied-box">
+                                        <div className="voucher-applied-title">
+                                            <Ticket size={15} />
+                                            <span>Voucher: <strong>{appliedVoucher.code}</strong> (-{formatPrice(voucherDiscount)})</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="voucher-remove-link"
+                                            onClick={() => {
+                                                setAppliedVoucher(null);
+                                                localStorage.removeItem("ata-applied-voucher");
+                                            }}
+                                        >
+                                            Gỡ
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="checkout-voucher-form">
+                                        <input
+                                            type="text"
+                                            placeholder="Mã voucher..."
+                                            value={voucherCodeInput}
+                                            onChange={(e) => {
+                                                setVoucherCodeInput(e.target.value);
+                                                setVoucherError("");
+                                            }}
+                                            className="checkout-voucher-input"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="checkout-voucher-btn"
+                                            onClick={() => {
+                                                const res = luckyWheelService.validateAndApplyVoucher(voucherCodeInput, cartTotal, user?.id);
+                                                if (res.success && res.voucher) {
+                                                    setAppliedVoucher(res.voucher);
+                                                    setVoucherError("");
+                                                    localStorage.setItem("ata-applied-voucher", JSON.stringify(res.voucher));
+                                                } else {
+                                                    setVoucherError(res.error || "Mã không hợp lệ.");
+                                                }
+                                            }}
+                                        >
+                                            Áp dụng
+                                        </button>
+                                    </div>
+                                )}
+                                {voucherError && <p className="checkout-voucher-error-msg">{voucherError}</p>}
                             </div>
 
                             <button
@@ -627,7 +718,7 @@ export default function Checkout() {
                                             <div className="qr-info-table__row">
                                                 <span className="qr-info-table__label">Số tiền:</span>
                                                 <strong className="qr-info-table__value text-primary">
-                                                    {formatPrice(cartTotal)}
+                                                    {formatPrice(finalTotal)}
                                                 </strong>
                                             </div>
                                             <div className="qr-info-table__row">
@@ -689,6 +780,12 @@ export default function Checkout() {
                                         <span>- {formatPrice(savings)}</span>
                                     </div>
                                 )}
+                                {voucherDiscount > 0 && (
+                                    <div className="checkout-summary-card__row checkout-summary-card__row--saving">
+                                        <span>Voucher</span>
+                                        <span>- {formatPrice(voucherDiscount)}</span>
+                                    </div>
+                                )}
                                 <div className="checkout-summary-card__row">
                                     <span>Phí giao dịch</span>
                                     <span className="checkout-summary-card__free">0₫</span>
@@ -696,7 +793,7 @@ export default function Checkout() {
                                 <div className="checkout-summary-card__row checkout-summary-card__row--total">
                                     <span>Tổng số tiền</span>
                                     <span className="checkout-summary-card__total-amount">
-                                        {formatPrice(cartTotal)}
+                                        {formatPrice(finalTotal)}
                                     </span>
                                 </div>
                             </div>

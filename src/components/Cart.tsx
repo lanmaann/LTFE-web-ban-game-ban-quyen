@@ -1,6 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Trash2, ArrowRight, ShoppingBag, AlertCircle, X } from "lucide-react";
+import { ShoppingCart, Trash2, ArrowRight, ShoppingBag, AlertCircle, X, Ticket, Check } from "lucide-react";
+import { useAuth } from "../auth/useAuth";
+import { luckyWheelService } from "../services/luckyWheelService";
+import type { UserVoucher } from "../types/voucher";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
     selectCartItems,
@@ -17,6 +20,7 @@ const FALLBACK_IMAGE = "https://placehold.co/120x68/18243A/FFFFFF?text=ATA";
 export default function Cart() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const items = useAppSelector(selectCartItems);
     const total = useAppSelector(selectCartTotal);
     const originalTotal = useAppSelector(selectCartOriginalTotal);
@@ -26,7 +30,27 @@ export default function Cart() {
     const [showClearConfirm, setShowClearConfirm] = useState(false);
     const [couponCode, setCouponCode] = useState("");
     const [couponError, setCouponError] = useState("");
-    const [couponApplied, setCouponApplied] = useState(false);
+    const [couponSuccess, setCouponSuccess] = useState("");
+    const [appliedVoucher, setAppliedVoucher] = useState<UserVoucher | null>(null);
+    const [showVoucherList, setShowVoucherList] = useState(false);
+
+    const availableVouchers = useMemo(() => {
+        if (!user) return [];
+        return luckyWheelService.getUserVouchers(user.id).filter((v) => !v.isUsed);
+    }, [user]);
+
+    const voucherDiscount = useMemo(() => {
+        if (!appliedVoucher) return 0;
+        if (appliedVoucher.type === "PERCENT") {
+            return Math.round((total * appliedVoucher.value) / 100);
+        }
+        if (appliedVoucher.type === "FIXED") {
+            return Math.min(total, appliedVoucher.value);
+        }
+        return 0;
+    }, [appliedVoucher, total]);
+
+    const payableTotal = Math.max(0, total - voucherDiscount);
 
     const handleRemove = useCallback(
         (gameId: string) => {
@@ -44,19 +68,37 @@ export default function Cart() {
         dispatch(clearCart());
     }, [dispatch]);
 
-    const handleApplyCoupon = useCallback(() => {
-        if (!couponCode.trim()) {
-            setCouponError("Vui lòng nhập mã giảm giá.");
-            return;
-        }
-        setCouponError("Mã giảm giá không hợp lệ hoặc chưa được hỗ trợ.");
-        setCouponApplied(false);
-    }, [couponCode]);
+    const handleApplyCoupon = useCallback(
+        (codeToApply?: string) => {
+            const code = (codeToApply ?? couponCode).trim();
+            if (!code) {
+                setCouponError("Vui lòng nhập mã giảm giá.");
+                setCouponSuccess("");
+                return;
+            }
+
+            const res = luckyWheelService.validateAndApplyVoucher(code, total, user?.id);
+            if (!res.success || !res.voucher) {
+                setCouponError(res.error || "Mã giảm giá không hợp lệ.");
+                setCouponSuccess("");
+                setAppliedVoucher(null);
+                return;
+            }
+
+            setAppliedVoucher(res.voucher);
+            setCouponCode(res.voucher.code);
+            setCouponError("");
+            setCouponSuccess(`Đã áp dụng ${res.voucher.name} (-${formatPrice(res.discountAmount)})`);
+            setShowVoucherList(false);
+        },
+        [couponCode, total, user]
+    );
 
     const handleRemoveCoupon = useCallback(() => {
         setCouponCode("");
         setCouponError("");
-        setCouponApplied(false);
+        setCouponSuccess("");
+        setAppliedVoucher(null);
     }, []);
 
     if (items.length === 0) {
@@ -216,10 +258,10 @@ export default function Cart() {
                             </div>
                         )}
 
-                        {couponApplied && (
+                        {voucherDiscount > 0 && (
                             <div className="cart-summary__row cart-summary__row--coupon">
-                                <span>Mã giảm giá</span>
-                                <span>- 0₫</span>
+                                <span>Voucher ({appliedVoucher?.code})</span>
+                                <span>- {formatPrice(voucherDiscount)}</span>
                             </div>
                         )}
 
@@ -228,29 +270,65 @@ export default function Cart() {
                         <div className="cart-summary__row cart-summary__row--total">
                             <span>Tổng thanh toán</span>
                             <span className="cart-summary__total-amount">
-                                {formatPrice(total)}
+                                {formatPrice(payableTotal)}
                             </span>
                         </div>
                     </div>
                     <div className="cart-coupon">
-                        <label htmlFor="coupon-input" className="cart-coupon__label">
-                            Mã giảm giá
-                        </label>
+                        <div className="cart-coupon__header-row">
+                            <label htmlFor="coupon-input" className="cart-coupon__label">
+                                Mã giảm giá / Voucher
+                            </label>
+                            {availableVouchers.length > 0 && (
+                                <button
+                                    type="button"
+                                    className="cart-voucher-toggle-btn"
+                                    onClick={() => setShowVoucherList((prev) => !prev)}
+                                >
+                                    <Ticket size={14} />
+                                    <span>Chọn từ kho ({availableVouchers.length})</span>
+                                </button>
+                            )}
+                        </div>
+
+                        {showVoucherList && availableVouchers.length > 0 && (
+                            <div className="cart-voucher-quick-list">
+                                {availableVouchers.map((v) => (
+                                    <div
+                                        key={v.id}
+                                        className={`cart-voucher-quick-item ${
+                                            appliedVoucher?.id === v.id ? "active" : ""
+                                        }`}
+                                        onClick={() => handleApplyCoupon(v.code)}
+                                    >
+                                        <div className="voucher-quick-info">
+                                            <strong>{v.name}</strong>
+                                            <code>{v.code}</code>
+                                        </div>
+                                        <button type="button" className="voucher-select-pill">
+                                            {appliedVoucher?.id === v.id ? <Check size={14} /> : "Dùng"}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         <div className="cart-coupon__row">
                             <input
                                 id="coupon-input"
                                 type="text"
                                 className="cart-coupon__input"
-                                placeholder="Nhập mã..."
+                                placeholder="Nhập mã voucher..."
                                 value={couponCode}
                                 onChange={(e) => {
                                     setCouponCode(e.target.value);
                                     setCouponError("");
+                                    setCouponSuccess("");
                                 }}
-                                disabled={couponApplied}
+                                disabled={Boolean(appliedVoucher)}
                                 aria-describedby={couponError ? "coupon-error" : undefined}
                             />
-                            {couponApplied ? (
+                            {appliedVoucher ? (
                                 <button
                                     type="button"
                                     id="remove-coupon-btn"
@@ -264,7 +342,7 @@ export default function Cart() {
                                     type="button"
                                     id="apply-coupon-btn"
                                     className="cart-coupon__btn"
-                                    onClick={handleApplyCoupon}
+                                    onClick={() => handleApplyCoupon()}
                                 >
                                     Áp dụng
                                 </button>
@@ -276,13 +354,31 @@ export default function Cart() {
                                 {couponError}
                             </p>
                         )}
+                        {couponSuccess && (
+                            <p className="cart-coupon__success" role="status">
+                                <Check size={13} />
+                                {couponSuccess}
+                            </p>
+                        )}
                     </div>
                     <button
                         type="button"
                         id="checkout-btn"
                         className="cart-checkout-btn"
-                        onClick={() => navigate("/checkout")}
-                        aria-label={`Tiến hành thanh toán — Tổng ${formatPrice(total)}`}
+                        onClick={() => {
+                            if (appliedVoucher) {
+                                localStorage.setItem("ata-applied-voucher", JSON.stringify(appliedVoucher));
+                            } else {
+                                localStorage.removeItem("ata-applied-voucher");
+                            }
+                            navigate("/checkout", {
+                                state: {
+                                    appliedVoucher,
+                                    voucherDiscount,
+                                },
+                            });
+                        }}
+                        aria-label={`Tiến hành thanh toán — Tổng ${formatPrice(payableTotal)}`}
                     >
                         Tiến hành thanh toán
                         <ArrowRight size={18} />

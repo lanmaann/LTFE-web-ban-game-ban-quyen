@@ -95,6 +95,19 @@ export default function Home() {
                 {!loading && !error && (
                     <>
                         <HeroCarousel games={sections.hero} />
+                        <div className="lucky-wheel-mini-banner">
+                            <div className="lucky-wheel-mini-banner__content">
+                                <span className="lucky-wheel-mini-banner__badge">SỰ KIỆN MỖI NGÀY</span>
+                                <div className="lucky-wheel-mini-banner__text">
+                                    <h3>Vòng Quay May Mắn Hằng Ngày</h3>
+                                    <p>Mỗi ngày 1 lượt quay miễn phí – Nhận voucher giảm giá tới 50.000₫ &amp; 20%</p>
+                                </div>
+                            </div>
+                            <Link to="/profile/lucky-wheel" className="lucky-wheel-mini-banner__btn">
+                                <span>Quay ngay</span>
+                                <ArrowRight size={16} />
+                            </Link>
+                        </div>
 
                         <GameSection
                             title="Đang giảm giá"
