@@ -78,8 +78,8 @@ export default function Policies() {
             <div className="support-layout support-layout--policy">
                 <aside className="support-sidebar">
                     <span className="support-sidebar__label">TRUNG TÂM HỖ TRỢ</span>
-                    <Link className="support-sidebar__link" to="/support/purchase-guide"><BookOpen size={17} /> Hướng dẫn mua hàng</Link>
-                    <a className="support-sidebar__link support-sidebar__link--active" href="#policy-document"><ShieldCheck size={17} /> Chính sách &amp; Điều khoản</a>
+                    <Link className="support-sidebar__link" to="/support/purchase-guide"><BookOpen size={17} /><span>Hướng dẫn mua hàng</span></Link>
+                    <a className="support-sidebar__link support-sidebar__link--active" href="#policy-document"><ShieldCheck size={17} /><span>Chính sách &amp; Điều khoản</span></a>
                     <div className="support-sidebar__divider" />
                     <span className="support-sidebar__label">DANH MỤC CHÍNH SÁCH</span>
                     <nav className="policy-nav" aria-label="Danh mục chính sách">

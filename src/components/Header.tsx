@@ -434,11 +434,11 @@ export default function Header() {
                         <div className="header__support-menu">
                             <Link to="/support/purchase-guide" role="menuitem">
                                 <BookOpen size={17} />
-                                <span><strong>Hướng dẫn mua hàng</strong></span>
+                                <span>Hướng dẫn mua hàng</span>
                             </Link>
                             <Link to="/support/policies" role="menuitem">
                                 <LifeBuoy size={17} />
-                                <span><strong>Chính sách &amp; Điều khoản</strong></span>
+                                <span>Chính sách &amp; Điều khoản</span>
                             </Link>
                         </div>
                     </div>
