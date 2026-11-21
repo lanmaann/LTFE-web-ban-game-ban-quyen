@@ -1,4 +1,5 @@
 import type { CommunityPost, CommunityReply, CreateCommunityPostPayload } from "../types/community";
+import { dispatchNotificationsUpdated } from "../utils/notificationEvents";
 
 const STORAGE_KEY = "ata_community_posts";
 
@@ -150,6 +151,7 @@ export const communityService = {
         if (!saveLocalPosts(mergePosts(localPosts.filter((item) => item.id !== post.id), [updated]))) {
             throw new Error("Không thể lưu câu trả lời trên thiết bị.");
         }
+        dispatchNotificationsUpdated();
         return updated;
     },
 };

@@ -1,5 +1,6 @@
 import type { SpinPrize, SpinResult, SpinStatus, UserVoucher, SpinHistoryItem } from "../types/voucher";
 import { loadFromStorage, saveToStorage } from "../utils/storage";
+import { dispatchNotificationsUpdated } from "../utils/notificationEvents";
 
 const STORAGE_KEYS = {
     HISTORY: "ata-games:spin-history-v1",
@@ -215,6 +216,7 @@ export const luckyWheelService = {
 
         history.unshift(historyRecord);
         saveToStorage(STORAGE_KEYS.HISTORY, history);
+        dispatchNotificationsUpdated();
 
         return {
             prize: selectedPrize,

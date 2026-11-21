@@ -4,6 +4,7 @@ import type { Order, CreateOrderPayload, OrderItem } from "../types/order";
 import type { Game } from "../types/game";
 import type { UserAccount } from "../types/review";
 import { generateCdKey } from "../utils/license";
+import { dispatchNotificationsUpdated } from "../utils/notificationEvents";
 
 const ORDERS_STORAGE_KEY = "ata_orders";
 
@@ -318,6 +319,7 @@ export const orderService = {
             console.warn("Không thể cập nhật danh sách game đã mua lên Backend.");
         }
 
+        dispatchNotificationsUpdated();
         return savedOrder;
     },
 
@@ -389,6 +391,7 @@ export const orderService = {
             console.warn("Không thể cập nhật danh sách game đã mua sau khi hoàn tiền.");
         }
 
+        dispatchNotificationsUpdated();
         return refundedOrder;
     },
 };

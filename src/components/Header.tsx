@@ -18,7 +18,6 @@ import {
     LifeBuoy,
     LogOut,
     MessageCircle,
-    MessageSquareText,
     Search,
     ShoppingCart,
     Ticket,
@@ -30,6 +29,13 @@ import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice"
 import { formatPrice } from "../utils/format";
 import { selectCartCount } from "../store/cartSlice";
 import { useAuth } from "../auth/useAuth";
+import { communityService } from "../services/communityService";
+import { luckyWheelService } from "../services/luckyWheelService";
+import { orderService } from "../services/orderService";
+import type { Order } from "../types/order";
+import type { CommunityPost } from "../types/community";
+import type { SpinHistoryItem } from "../types/voucher";
+import { NOTIFICATIONS_UPDATED_EVENT } from "../utils/notificationEvents";
 import {
     addSearchHistory,
     clearSearchHistory,
@@ -37,11 +43,98 @@ import {
     onSearchHistoryChange,
     removeSearchHistoryItem,
 } from "../utils/searchHistory";
+import { loadFromStorage, saveToStorage } from "../utils/storage";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "header__link header__link--active" : "header__link";
 
 const MAX_SUGGESTIONS = 6;
+const READ_NOTIFICATIONS_STORAGE_KEY = "ata-games:read-notifications";
+
+type HeaderNotification = {
+    id: string;
+    createdAt: string;
+    title: string;
+    message: string;
+    time: string;
+    href: string;
+    icon: typeof CheckCircle2;
+    className: string;
+};
+
+function getNotificationTime(dateString: string): string {
+    const timestamp = new Date(dateString).getTime();
+    if (!Number.isFinite(timestamp)) return "";
+
+    const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+    if (seconds < 60) return "Vừa xong";
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} phút trước`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} giờ trước`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)} ngày trước`;
+    return new Date(timestamp).toLocaleDateString("vi-VN");
+}
+
+function buildNotifications(
+    orders: Order[],
+    posts: CommunityPost[],
+    spins: SpinHistoryItem[],
+    userId: string
+): HeaderNotification[] {
+    const notifications: HeaderNotification[] = [];
+
+    orders.forEach((order) => {
+        if (order.status !== "completed" && order.status !== "refunded") return;
+        const isRefunded = order.status === "refunded";
+        const date = isRefunded ? order.refundedAt ?? order.createdAt : order.createdAt;
+        notifications.push({
+            id: `order:${order.id}:${order.status}`,
+            createdAt: date,
+            title: isRefunded ? "Đơn hàng đã được hoàn tiền" : "Mua game thành công",
+            message: isRefunded
+                ? `Đơn hàng ${order.items.map((item) => item.title).join(", ")} đã được hoàn tiền.`
+                : `Bạn đã mua ${order.items.map((item) => item.title).join(", ")}.`,
+            time: getNotificationTime(date),
+            href: "/orders",
+            icon: isRefunded ? Clock : CheckCircle2,
+            className: "notification-item__icon--purchase",
+        });
+    });
+
+    posts.forEach((post) => {
+        if (post.userId !== userId) return;
+        post.replies.forEach((reply) => {
+            if (reply.userId === userId) return;
+            notifications.push({
+                id: `reply:${reply.id}`,
+                createdAt: reply.createdAt,
+                title: "Có phản hồi mới trong Cộng đồng",
+                message: `${reply.userName} đã trả lời bài viết “${post.title}”.`,
+                time: getNotificationTime(reply.createdAt),
+                href: "/community",
+                icon: MessageCircle,
+                className: "notification-item__icon--community",
+            });
+        });
+    });
+
+    spins.forEach((spin) => {
+        if (!spin.voucherCode) return;
+        notifications.push({
+            id: `spin:${spin.id}`,
+            createdAt: spin.createdAt,
+            title: "Bạn vừa nhận được voucher",
+            message: `Bạn nhận được ${spin.prizeName} với mã ${spin.voucherCode}.`,
+            time: getNotificationTime(spin.createdAt),
+            href: "/profile/vouchers",
+            icon: Gift,
+            className: "notification-item__icon--voucher",
+        });
+    });
+
+    return notifications.sort(
+        (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
+    );
+}
 
 const normalize = (text: string) =>
     text
@@ -68,54 +161,76 @@ export default function Header() {
     const gamesStatus = useAppSelector(selectGamesStatus);
     const [isOpen, setIsOpen] = useState(false);
     const [notificationsOpen, setNotificationsOpen] = useState(false);
-    const [readNotificationIds, setReadNotificationIds] = useState<string[]>([]);
+    const [notifications, setNotifications] = useState<{
+        userId: string;
+        items: HeaderNotification[];
+    } | null>(null);
+    const [notificationsError, setNotificationsError] = useState<{
+        userId: string;
+        message: string;
+    } | null>(null);
+    const [, setReadNotificationVersion] = useState(0);
     const [activeIndex, setActiveIndex] = useState(-1);
     const searchRef = useRef<HTMLFormElement>(null);
     const notificationsRef = useRef<HTMLDivElement>(null);
 
-    const notifications = [
-        {
-            id: "purchase",
-            title: "Mua game thành công",
-            message: "Đơn hàng của bạn đã hoàn tất. Game đã có trong Thư viện.",
-            time: "15 phút trước",
-            href: "/orders",
-            icon: CheckCircle2,
-            className: "notification-item__icon--purchase",
-        },
-        {
-            id: "community",
-            title: "Có phản hồi mới trong Cộng đồng",
-            message: "Minh Anh đã trả lời một bài thảo luận về game.",
-            time: "1 giờ trước",
-            href: "/community",
-            icon: MessageCircle,
-            className: "notification-item__icon--community",
-        },
-        {
-            id: "question",
-            title: "Câu hỏi của bạn có phản hồi",
-            message: "Có người chơi vừa trả lời câu hỏi game của bạn.",
-            time: "Hôm nay",
-            href: "/games/1245620",
-            icon: MessageSquareText,
-            className: "notification-item__icon--question",
-        },
-        {
-            id: "voucher",
-            title: "Kho voucher của bạn",
-            message: "Kiểm tra mã giảm giá và quay thưởng hằng ngày tại đây.",
-            time: "Hôm nay",
-            href: "/profile/vouchers",
-            icon: Gift,
-            className: "notification-item__icon--voucher",
-        },
-    ];
-    const unreadNotificationCount = notifications.filter(
-        (notification) => !readNotificationIds.includes(notification.id)
+    const notificationsForUser = user && notifications?.userId === user.id
+        ? notifications.items
+        : [];
+    const readNotificationIds = user
+        ? loadFromStorage<unknown>(`${READ_NOTIFICATIONS_STORAGE_KEY}:${user.id}`, [])
+        : [];
+    const readIds = Array.isArray(readNotificationIds)
+        ? readNotificationIds.filter((id): id is string => typeof id === "string")
+        : [];
+    const currentNotificationsError = user?.id === notificationsError?.userId
+        ? notificationsError.message
+        : "";
+    const unreadNotificationCount = notificationsForUser.filter(
+        (notification) => !readIds.includes(notification.id)
     ).length;
+    const currentUserId = user?.id;
 
     const [history, setHistory] = useState<string[]>(getSearchHistory);
+
+    useEffect(() => {
+        if (!currentUserId) return;
+        const userId = currentUserId;
+
+        let active = true;
+        async function loadNotifications() {
+            try {
+                const [orders, posts, spins] = await Promise.all([
+                    orderService.getUserOrders(userId),
+                    communityService.getPosts(),
+                    Promise.resolve(luckyWheelService.getSpinHistory(userId)),
+                ]);
+                if (!active) return;
+                setNotifications({
+                    userId,
+                    items: buildNotifications(orders, posts, spins, userId),
+                });
+                setNotificationsError(null);
+            } catch (error) {
+                if (!active) return;
+                setNotificationsError(
+                    {
+                        userId,
+                        message: error instanceof Error
+                            ? error.message
+                            : "Không thể tải thông báo.",
+                    }
+                );
+            }
+        }
+
+        window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
+        void loadNotifications();
+        return () => {
+            active = false;
+            window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
+        };
+    }, [currentUserId]);
 
     useEffect(() => {
         return onSearchHistoryChange(() => setHistory(getSearchHistory()));
@@ -159,11 +274,19 @@ export default function Header() {
     }, []);
 
     function markAllNotificationsRead() {
-        setReadNotificationIds(notifications.map((notification) => notification.id));
+        const ids = notificationsForUser.map((notification) => notification.id);
+        if (user) {
+            saveToStorage(`${READ_NOTIFICATIONS_STORAGE_KEY}:${user.id}`, ids);
+            setReadNotificationVersion((version) => version + 1);
+        }
     }
 
     function markNotificationRead(id: string) {
-        setReadNotificationIds((current) => current.includes(id) ? current : [...current, id]);
+        if (user && !readIds.includes(id)) {
+            const nextIds = [...readIds, id];
+            saveToStorage(`${READ_NOTIFICATIONS_STORAGE_KEY}:${user.id}`, nextIds);
+            setReadNotificationVersion((version) => version + 1);
+        }
         setNotificationsOpen(false);
     }
 
@@ -581,9 +704,16 @@ export default function Header() {
                                     <button type="button" onClick={markAllNotificationsRead} disabled={unreadNotificationCount === 0}>Đọc tất cả</button>
                                 </div>
                                 <div className="header-notifications__list">
-                                    {notifications.map((notification) => {
+                                    {currentNotificationsError ? (
+                                        <p className="header-notifications__note" role="alert">{currentNotificationsError}</p>
+                                    ) : notificationsForUser.length === 0 ? (
+                                        <p className="header-notifications__note">
+                                            {user ? "Chưa có sự kiện mới." : "Đăng nhập để xem thông báo của bạn."}
+                                        </p>
+                                    ) : null}
+                                    {notificationsForUser.map((notification) => {
                                         const NotificationIcon = notification.icon;
-                                        const isRead = readNotificationIds.includes(notification.id);
+                                        const isRead = readIds.includes(notification.id);
                                         return (
                                             <Link
                                                 to={notification.href}
