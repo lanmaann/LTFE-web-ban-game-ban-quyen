@@ -8,72 +8,74 @@ import { Link } from "react-router-dom";
 const steps = [
     {
         title: "Tìm kiếm game",
-        summary: "Khám phá cửa hàng và chọn tựa game phù hợp với bạn.",
+        summary: "Chọn đúng phiên bản và nền tảng trước khi mua.",
         image: "/images/games/hdmg_1.png",
         details: [
-            "Nhập tên game vào thanh tìm kiếm hoặc duyệt danh sách trong Cửa hàng.",
-            "Duyệt theo danh mục, thể loại và nền tảng để tìm game nhanh hơn.",
-            "Mở trang chi tiết để xem hình ảnh, mô tả, giá bán, nền tảng và đánh giá.",
+            "Dùng thanh tìm kiếm hoặc duyệt danh sách trong Cửa hàng để tìm tựa game bạn muốn.",
+            "Mở trang chi tiết để xem giá, mô tả, nền tảng hỗ trợ và các thông tin của phiên bản game.",
+            "Kiểm tra kỹ nền tảng và khu vực áp dụng trước khi thêm game vào giỏ.",
         ],
     },
     {
         title: "Thêm game vào giỏ hàng",
-        summary: "Kiểm tra lựa chọn và chi phí trước khi thanh toán.",
+        summary: "Rà soát sản phẩm và ưu đãi trước khi thanh toán.",
         image: "/images/games/hdmg_2.png",
         details: [
-            "Chọn game bạn muốn mua rồi nhấn Thêm vào giỏ hàng.",
-            "Mở biểu tượng giỏ hàng để kiểm tra các sản phẩm và số lượng.",
-            "Nhập voucher nếu có; xem lại tổng tiền trước khi tiếp tục.",
+            "Tại trang game, chọn Thêm vào giỏ hàng; bạn có thể tiếp tục chọn thêm game khác.",
+            "Mở Giỏ hàng để kiểm tra các game đã chọn. Nếu chưa muốn mua game nào, hãy xóa game đó khỏi giỏ.",
+            "Nhập mã voucher nếu có, áp dụng và kiểm tra lại số tiền cần thanh toán trước khi tiếp tục.",
         ],
     },
     {
         title: "Tiến hành thanh toán",
-        summary: "Xác nhận đơn hàng và hoàn tất thanh toán.",
+        summary: "Đăng nhập, xác nhận đơn và làm theo hướng dẫn thanh toán.",
         image: "/images/games/hdmg_3.png",
-        imageAlt: "Hình ảnh minh họa game Baldur's Gate 3 tại bước thanh toán",
+        imageAlt: "Hình minh họa bước thanh toán",
         details: [
-            "Kiểm tra lại danh sách game, giá và thông tin đơn hàng.",
-            "Chọn phương thức đang khả dụng trên trang thanh toán.",
-            "Làm theo hướng dẫn của phương thức đã chọn và chờ xác nhận.",
+            "Đăng nhập tài khoản để tiếp tục. Trước khi xác nhận, kiểm tra lại game, tổng tiền và thông tin đơn hàng.",
+            "Chọn một trong các phương thức đang hiển thị: thẻ Visa/Mastercard, chuyển khoản QR hoặc ví điện tử.",
+            "Làm theo hướng dẫn trên màn hình để hoàn tất. Tránh gửi lại thanh toán khi chưa kiểm tra trạng thái đơn hàng.",
+            "Khi giao dịch thành công, đơn hàng sẽ được ghi nhận trong mục Đơn hàng.",
         ],
     },
     {
         title: "Nhận game bản quyền",
-        summary: "Mã game đã mua được lưu trong thư viện cá nhân.",
+        summary: "Xem mã kích hoạt và dùng đúng nền tảng.",
         image: "/images/games/hdmg_4.png",
         details: [
-            "Sau khi thanh toán thành công, mở Đơn hàng để xem mã kích hoạt.",
-            "Chọn game để xem mã kích hoạt trong chi tiết đơn hàng.",
-            "Mở ứng dụng nền tảng tương ứng, tìm mục kích hoạt sản phẩm và nhập mã theo hướng dẫn của nền tảng.",
-            "Kiểm tra nền tảng và khu vực áp dụng của game trước khi kích hoạt.",
+            "Mở menu tài khoản, chọn Đơn hàng rồi mở đơn vừa hoàn tất để xem thông tin game và mã kích hoạt.",
+            "Đọc yêu cầu nền tảng/khu vực của game; mở ứng dụng tương ứng và dùng chức năng kích hoạt sản phẩm.",
+            "Nhập mã theo hướng dẫn của nền tảng. Không chia sẻ hoặc đăng công khai mã kích hoạt.",
+            "Game đã mua cũng có thể xuất hiện trong Thư viện game của tài khoản.",
         ],
     },
     {
         title: "Hỗ trợ sau mua hàng",
-        summary: "Tra cứu đơn hàng hoặc liên hệ khi cần trợ giúp.",
+        summary: "Kiểm tra giao dịch và chuẩn bị thông tin khi cần trợ giúp.",
         image: "/images/games/hdmg_5.png",
-        imageAlt: "Hình ảnh minh họa thư viện và hỗ trợ sau khi mua game",
+        imageAlt: "Hình minh họa thư viện và hỗ trợ sau khi mua game",
         details: [
-            "Vào Đơn hàng để xem trạng thái và thông tin các giao dịch trước đây.",
-            "Nếu chưa thấy mã game, kiểm tra trạng thái thanh toán rồi tải lại Đơn hàng.",
-            "Nếu vấn đề vẫn tiếp diễn, gửi mã đơn hàng và mô tả sự cố qua kênh hỗ trợ.",
+            "Nếu chưa thấy game hoặc mã kích hoạt, kiểm tra trạng thái đơn hàng và tải lại trang Đơn hàng.",
+            "Nếu đơn đã hoàn tất nhưng vẫn gặp lỗi, ghi lại mã đơn hàng, tên game và thông báo lỗi để tiện đối chiếu.",
+            "Không gửi mật khẩu, mã OTP hoặc toàn bộ thông tin thẻ khi yêu cầu hỗ trợ.",
+            "Dùng kênh liên hệ được công bố trên website để gửi yêu cầu.",
         ],
     },
 ];
 
 const faqs = [
-    ["Tôi tìm game muốn mua bằng cách nào?", "Dùng thanh tìm kiếm ở Header hoặc duyệt Cửa hàng. Trang chi tiết hiển thị thông tin, giá, nền tảng và đánh giá."],
-    ["Mã game nằm ở đâu sau khi thanh toán?", "Mã kích hoạt được lưu trong Thư viện game cá nhân. Bạn cũng có thể kiểm tra đơn hàng trong mục Đơn hàng."],
-    ["Tôi đã thanh toán nhưng chưa thấy mã kích hoạt?", "Kiểm tra trạng thái đơn hàng trước. Nếu đơn đã hoàn tất mà mã chưa xuất hiện, chuẩn bị mã đơn hàng và gửi yêu cầu hỗ trợ để được kiểm tra."],
-    ["Làm sao để sử dụng mã kích hoạt?", "Mở ứng dụng của nền tảng được ghi trên trang game, tìm chức năng kích hoạt sản phẩm và làm theo hướng dẫn của nền tảng."],
-    ["Tôi xem lịch sử mua hàng ở đâu?", "Chọn Đơn hàng trong menu tài khoản sau khi đăng nhập để xem lịch sử và chi tiết giao dịch."],
-    ["Mã kích hoạt có dùng được ở mọi khu vực không?", "Không phải mã nào cũng áp dụng cho mọi khu vực. Hãy xem thông tin khu vực và nền tảng trên trang sản phẩm trước khi mua."],
+    ["Tôi tìm game muốn mua bằng cách nào?", "Dùng thanh tìm kiếm hoặc duyệt Cửa hàng. Trước khi mua, mở trang game để kiểm tra giá, nền tảng và khu vực áp dụng."],
+    ["Tôi có cần đăng nhập để mua game không?", "Có. Hãy đăng nhập tài khoản trước khi thanh toán để đơn hàng và game đã mua được ghi nhận đúng tài khoản."],
+    ["Tôi có thể dùng voucher ở đâu?", "Nhập mã voucher tại Giỏ hàng nếu có, nhấn Áp dụng và kiểm tra số tiền sau giảm trước khi chuyển sang thanh toán."],
+    ["Mã game nằm ở đâu sau khi thanh toán?", "Mở menu tài khoản, vào Đơn hàng và chọn đơn đã hoàn tất để xem mã kích hoạt. Game cũng có thể xuất hiện trong Thư viện."],
+    ["Tôi đã thanh toán nhưng chưa thấy mã?", "Kiểm tra trạng thái đơn hàng và tải lại trang. Nếu đơn đã hoàn tất mà mã chưa hiển thị, liên hệ hỗ trợ kèm mã đơn và tên game."],
+    ["Làm sao để kích hoạt mã?", "Dùng ứng dụng của nền tảng ghi trên trang game, chọn chức năng kích hoạt sản phẩm rồi làm theo hướng dẫn. Kiểm tra khu vực hỗ trợ trước khi nhập mã."],
 ];
 
 const stepIcons = [Search, ShoppingCart, CreditCard, KeyRound, Headset];
 
 export default function PurchaseGuide() {
-    const [expanded, setExpanded] = useState<number[]>([0]);
+    const [expanded, setExpanded] = useState<number[]>([]);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [query, setQuery] = useState("");
     const [showTop, setShowTop] = useState(false);
@@ -93,6 +95,7 @@ export default function PurchaseGuide() {
                 <div className="support-hero__copy">
                     <span className="support-eyebrow"><Gamepad2 size={16} /> ATA GAMES / HỖ TRỢ</span>
                     <h1>Hướng dẫn mua hàng</h1>
+                    <p>Từ chọn game, thanh toán đến xem mã kích hoạt — làm theo các bước dưới đây để hoàn tất đơn hàng.</p>
                     <a className="support-primary-button" href="#guide-steps"><BookOpen size={17} /> Xem hướng dẫn</a>
                 </div>
                 <div className="support-hero__image" aria-label="Một số tựa game trong cửa hàng">
@@ -105,23 +108,21 @@ export default function PurchaseGuide() {
             <div className="support-layout">
                 <aside className="support-sidebar">
                     <span className="support-sidebar__label">TRUNG TÂM HỖ TRỢ</span>
-                    <a className="support-sidebar__link support-sidebar__link--active" href="#guide-steps"><ShoppingCart size={17} /> Hướng dẫn mua hàng</a>
-                    <Link className="support-sidebar__link" to="/support/policies"><BookOpen size={17} /> Chính sách &amp; Điều khoản</Link>
+                    <a className="support-sidebar__link support-sidebar__link--active" href="#guide-steps"><ShoppingCart size={17} /><span>Hướng dẫn mua hàng</span></a>
+                    <Link className="support-sidebar__link" to="/support/policies"><BookOpen size={17} /><span>Chính sách &amp; Điều khoản</span></Link>
                     <div className="support-sidebar__divider" />
                     <span className="support-sidebar__label">NỘI DUNG</span>
                     <a className="support-sidebar__sub-link" href="#guide-steps">Các bước mua hàng</a>
                     <a className="support-sidebar__sub-link" href="#guide-faq">Câu hỏi thường gặp</a>
                     <a className="support-sidebar__sub-link" href="#support-contact">Liên hệ hỗ trợ</a>
-                    <div className="support-sidebar__note"><CircleHelp size={18} /><p>Cần trợ giúp? Tìm câu trả lời nhanh trong mục FAQ bên dưới.</p></div>
                 </aside>
 
                 <main className="support-content">
                     <section id="guide-steps" className="guide-section">
                         <div className="support-heading">
                             <span className="support-heading__icon"><ShoppingCart size={20} /></span>
-                            <div><h2>Các bước mua hàng</h2></div>
+                            <div><h2>Các bước mua hàng</h2><p className="support-section-intro">Mở từng bước để xem chi tiết và hình minh họa.</p></div>
                         </div>
-                        <p className="support-lead">  </p>
                         <div className="guide-steps">
                             {steps.map((step, index) => {
                                 const Icon = stepIcons[index];
@@ -137,7 +138,7 @@ export default function PurchaseGuide() {
                                         {isOpen && (
                                             <div className="guide-step__details">
                                                 <div className="guide-step__visual">
-                                                    <img src={step.image} alt={step.imageAlt} loading="lazy" />
+                                                    <img src={step.image} alt={step.imageAlt ?? `Minh họa: ${step.title}`} loading="lazy" />
                                                     <span><Icon size={15} /> BƯỚC {index + 1} · ATA GAMES</span>
                                                 </div>
                                                 <div className="guide-step__instructions">
