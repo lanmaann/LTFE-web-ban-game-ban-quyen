@@ -497,7 +497,6 @@ export default function LuckyWheelPage({ initialTab = "wheel" }: LuckyWheelPageP
     return (
         <div className="lucky-page-container">
             <div className="lucky-page-header">
-                <div className="lucky-badge"> SỰ KIỆN HẰNG NGÀY</div>
                 <h1 className="lucky-page-title">VÒNG QUAY MAY MẮN</h1>
                 <p className="lucky-page-subtitle">
                     Đăng nhập mỗi ngày để nhận ngay 1 lượt quay miễn phí. Cơ hội sở hữu voucher giảm tới <strong>50.000₫</strong> hoặc <strong>20%</strong> cho kho game bản quyền!
@@ -576,7 +575,6 @@ export default function LuckyWheelPage({ initialTab = "wheel" }: LuckyWheelPageP
                 <div className="lucky-card-section">
                     <div className="section-head">
                         <h2>Kho Voucher Của Bạn</h2>
-                        <p>Các voucher nhận được từ vòng quay sẽ được tự động lưu tại đây</p>
                     </div>
 
                     {!user ? (
@@ -648,7 +646,6 @@ export default function LuckyWheelPage({ initialTab = "wheel" }: LuckyWheelPageP
                 <div className="lucky-card-section">
                     <div className="section-head">
                         <h2>Lịch Sử Quay Thưởng</h2>
-                        <p>Danh sách các lượt quay đã thực hiện của tài khoản</p>
                     </div>
 
                     {!user ? (
@@ -696,7 +693,6 @@ export default function LuckyWheelPage({ initialTab = "wheel" }: LuckyWheelPageP
                 <div className="lucky-card-section">
                     <div className="section-head">
                         <h2>Thể Lệ & Tỷ Lệ Trúng Thưởng</h2>
-                        <p>Quy định chi tiết và tính minh bạch của chương trình</p>
                     </div>
 
                     <div className="rules-content">

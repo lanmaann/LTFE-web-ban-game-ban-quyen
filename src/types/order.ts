@@ -1,4 +1,4 @@
-export type PaymentMethod = "visa" | "qr" | "ewallet";
+export type PaymentMethod = "visa" | "qr" | "ewallet" | "free";
 
 export type OrderStatus = "completed" | "pending" | "failed" | "refunded";
 
