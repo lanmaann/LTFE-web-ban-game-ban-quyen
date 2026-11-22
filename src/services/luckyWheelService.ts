@@ -1,6 +1,5 @@
 import type { SpinPrize, SpinResult, SpinStatus, UserVoucher, SpinHistoryItem } from "../types/voucher";
 import { loadFromStorage, saveToStorage } from "../utils/storage";
-import { dispatchNotificationsUpdated } from "../utils/notificationEvents";
 
 const STORAGE_KEYS = {
     HISTORY: "ata-games:spin-history-v1",
@@ -193,9 +192,12 @@ export const luckyWheelService = {
                 type: selectedPrize.type,
                 value: selectedPrize.value,
                 minOrderValue: selectedPrize.type === "FIXED" ? selectedPrize.value * 2 : 100000,
+                maxDiscountAmount: selectedPrize.type === "PERCENT" ? 100000 : undefined,
+                startDate: now.toISOString(),
                 createdAt: now.toISOString(),
                 expiresAt,
                 isUsed: false,
+                isRevoked: false,
             };
 
             userVouchers.unshift(newVoucher);
@@ -216,7 +218,6 @@ export const luckyWheelService = {
 
         history.unshift(historyRecord);
         saveToStorage(STORAGE_KEYS.HISTORY, history);
-        dispatchNotificationsUpdated();
 
         return {
             prize: selectedPrize,
@@ -245,8 +246,11 @@ export const luckyWheelService = {
             return { success: false, discountAmount: 0, error: "Vui lòng nhập mã voucher." };
         }
 
+        const now = new Date().toISOString();
+
         if (cleanCode === "ATAWELCOME") {
-            const discount = Math.round((currentTotal * 10) / 100);
+            const rawDiscount = Math.round((currentTotal * 10) / 100);
+            const discount = Math.min(rawDiscount, 100000);
             return {
                 success: true,
                 discountAmount: discount,
@@ -258,48 +262,81 @@ export const luckyWheelService = {
                     type: "PERCENT",
                     value: 10,
                     minOrderValue: 0,
-                    createdAt: new Date().toISOString(),
+                    maxDiscountAmount: 100000,
+                    startDate: now,
+                    createdAt: now,
                     expiresAt: new Date(Date.now() + 30 * 86400000).toISOString(),
                     isUsed: false,
+                    isRevoked: false,
                 },
             };
         }
 
         const vouchers = loadFromStorage<UserVoucher[]>(STORAGE_KEYS.VOUCHERS, []);
-        const found = vouchers.find(
-            (v) =>
-                v.code.toUpperCase() === cleanCode &&
-                (!userId || v.userId === userId)
-        );
+        const anyUserVoucher = vouchers.find((v) => v.code.toUpperCase() === cleanCode);
 
-        if (!found) {
+        if (!anyUserVoucher) {
             return {
                 success: false,
                 discountAmount: 0,
-                error: "Mã giảm giá không tồn tại hoặc không thuộc tài khoản của bạn.",
+                error: "Mã voucher không tồn tại trong hệ thống.",
+            };
+        }
+
+        if (userId && anyUserVoucher.userId !== userId) {
+            return {
+                success: false,
+                discountAmount: 0,
+                error: "Mã voucher không thuộc tài khoản của bạn.",
+            };
+        }
+
+        const found = anyUserVoucher;
+
+        if (found.isRevoked) {
+            return {
+                success: false,
+                discountAmount: 0,
+                error: "Voucher này đã bị thu hồi hoặc tạm khóa.",
             };
         }
 
         if (found.isUsed) {
-            return { success: false, discountAmount: 0, error: "Mã giảm giá này đã được sử dụng." };
+            return {
+                success: false,
+                discountAmount: 0,
+                error: "Voucher này đã được sử dụng trước đó.",
+            };
         }
 
-        const now = new Date().toISOString();
+        if (found.startDate && now < found.startDate) {
+            return {
+                success: false,
+                discountAmount: 0,
+                error: "Voucher chưa đến thời gian có hiệu lực sử dụng.",
+            };
+        }
+
         if (found.expiresAt < now) {
-            return { success: false, discountAmount: 0, error: "Mã giảm giá này đã hết hạn sử dụng." };
+            return {
+                success: false,
+                discountAmount: 0,
+                error: "Voucher đã hết hạn sử dụng.",
+            };
         }
 
         if (found.minOrderValue && currentTotal < found.minOrderValue) {
             return {
                 success: false,
                 discountAmount: 0,
-                error: `Đơn hàng chưa đạt giá trị tối thiểu ${found.minOrderValue.toLocaleString("vi-VN")}₫.`,
+                error: `Đơn hàng chưa đạt giá trị tối thiểu ${found.minOrderValue.toLocaleString("vi-VN")}₫ (Hiện tại: ${currentTotal.toLocaleString("vi-VN")}₫).`,
             };
         }
 
         let discount = 0;
         if (found.type === "PERCENT") {
-            discount = Math.round((currentTotal * found.value) / 100);
+            const rawDiscount = Math.round((currentTotal * found.value) / 100);
+            discount = found.maxDiscountAmount ? Math.min(rawDiscount, found.maxDiscountAmount) : rawDiscount;
         } else if (found.type === "FIXED") {
             discount = Math.min(currentTotal, found.value);
         }
@@ -315,7 +352,7 @@ export const luckyWheelService = {
         if (!voucherId || voucherId === "vch_atawelcome") return;
         const vouchers = loadFromStorage<UserVoucher[]>(STORAGE_KEYS.VOUCHERS, []);
         const updated = vouchers.map((v) =>
-            v.id === voucherId ? { ...v, isUsed: true } : v
+            v.id === voucherId ? { ...v, isUsed: true, usedAt: new Date().toISOString() } : v
         );
         saveToStorage(STORAGE_KEYS.VOUCHERS, updated);
     },

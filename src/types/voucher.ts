@@ -34,9 +34,13 @@ export interface UserVoucher {
     type: PrizeType;
     value: number;
     minOrderValue: number;
+    maxDiscountAmount?: number;
+    startDate?: string;
     createdAt: string;
     expiresAt: string;
     isUsed: boolean;
+    isRevoked?: boolean;
+    usedAt?: string;
 }
 
 export interface SpinHistoryItem {

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 import { luckyWheelService } from "../services/luckyWheelService";
-import type { SpinPrize, SpinResult, SpinStatus, UserVoucher, SpinHistoryItem } from "../types/voucher";
+import type { SpinPrize, SpinResult } from "../types/voucher";
 
 interface LuckyWheelProps {
     prizes: SpinPrize[];
@@ -260,38 +260,30 @@ interface SpinCountdownProps {
 }
 
 function SpinCountdown({ nextSpinAt, onCountdownEnd }: SpinCountdownProps) {
-    const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
+    const calculateTime = useCallback(() => {
+        if (!nextSpinAt) return null;
+        const diff = new Date(nextSpinAt).getTime() - Date.now();
+        if (diff <= 0) return { hours: 0, minutes: 0, seconds: 0 };
+        return {
+            hours: Math.floor(diff / (1000 * 60 * 60)),
+            minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((diff % (1000 * 60)) / 1000),
+        };
+    }, [nextSpinAt]);
+
+    const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(calculateTime);
 
     useEffect(() => {
-        if (!nextSpinAt) {
-            setTimeLeft(null);
-            return;
-        }
-
-        const target = new Date(nextSpinAt).getTime();
-
-        const updateTimer = () => {
-            const now = Date.now();
-            const diff = target - now;
-
-            if (diff <= 0) {
-                setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        if (!nextSpinAt) return;
+        const interval = setInterval(() => {
+            const next = calculateTime();
+            setTimeLeft(next);
+            if (next && next.hours === 0 && next.minutes === 0 && next.seconds === 0) {
                 if (onCountdownEnd) onCountdownEnd();
-                return;
             }
-
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            setTimeLeft({ hours, minutes, seconds });
-        };
-
-        updateTimer();
-        const interval = setInterval(updateTimer, 1000);
-
+        }, 1000);
         return () => clearInterval(interval);
-    }, [nextSpinAt, onCountdownEnd]);
+    }, [nextSpinAt, calculateTime, onCountdownEnd]);
 
     if (!timeLeft) return null;
 
@@ -436,39 +428,24 @@ export default function LuckyWheelPage({ initialTab = "wheel" }: LuckyWheelPageP
     const [, startTransition] = useTransition();
 
     const [prizes] = useState<SpinPrize[]>(() => luckyWheelService.getPrizes());
-    const [status, setStatus] = useState<SpinStatus>(() => luckyWheelService.getSpinStatus(user?.id));
     const [isSpinning, setIsSpinning] = useState(false);
     const [rotation, setRotation] = useState(0);
     const [pendingResult, setPendingResult] = useState<SpinResult | null>(null);
     const [resultModal, setResultModal] = useState<SpinResult | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const [activeTab, setActiveTab] = useState<"wheel" | "vouchers" | "history" | "rules">(initialTab);
-    const [userVouchers, setUserVouchers] = useState<UserVoucher[]>([]);
-    const [history, setHistory] = useState<SpinHistoryItem[]>([]);
+    const [tabOverride, setTabOverride] = useState<"wheel" | "vouchers" | "history" | "rules" | null>(null);
+    const activeTab = tabOverride ?? initialTab;
+    const setActiveTab = (tab: "wheel" | "vouchers" | "history" | "rules") => setTabOverride(tab);
 
-    useEffect(() => {
-        if (initialTab) {
-            setActiveTab(initialTab);
-        }
-    }, [initialTab]);
+    const [, setRefreshTick] = useState(0);
+    const status = luckyWheelService.getSpinStatus(user?.id);
+    const userVouchers = user ? luckyWheelService.getUserVouchers(user.id) : [];
+    const history = user ? luckyWheelService.getSpinHistory(user.id) : [];
 
     const loadUserData = useCallback(() => {
-        if (user) {
-            const currentStatus = luckyWheelService.getSpinStatus(user.id);
-            setStatus(currentStatus);
-            setUserVouchers(luckyWheelService.getUserVouchers(user.id));
-            setHistory(luckyWheelService.getSpinHistory(user.id));
-        } else {
-            setStatus(luckyWheelService.getSpinStatus(undefined));
-            setUserVouchers([]);
-            setHistory([]);
-        }
-    }, [user]);
-
-    useEffect(() => {
-        loadUserData();
-    }, [loadUserData]);
+        setRefreshTick((t) => t + 1);
+    }, []);
 
     const handleSpin = async () => {
         if (!user) {
