@@ -266,7 +266,7 @@ export default function Checkout() {
         <div className="checkout-page">
             <div className="checkout-header">
                 <div className="checkout-header__title-group">
-                    <h1 className="checkout-header__title">Thanh toán đơn hàng bản quyền</h1>
+                    <h1 className="checkout-header__title">Thanh toán đơn hàng</h1>
                     <p className="checkout-header__subtitle">
                         Tài khoản thụ hưởng: <strong>{user?.name}</strong> ({user?.email})
                     </p>
@@ -829,9 +829,6 @@ export default function Checkout() {
                         <div className="checkout-processing__progress-bar">
                             <div className="checkout-processing__progress-fill" />
                         </div>
-                        <span className="checkout-processing__security">
-                            <ShieldCheck size={14} /> Giao dịch được bảo mật bởi cổng thanh toán Sandbox 256-bit
-                        </span>
                     </div>
                 </div>
             )}
