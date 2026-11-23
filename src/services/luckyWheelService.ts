@@ -4,6 +4,7 @@ import { loadFromStorage, saveToStorage } from "../utils/storage";
 const STORAGE_KEYS = {
     HISTORY: "ata-games:spin-history-v1",
     VOUCHERS: "ata-games:user-vouchers-v1",
+    USED_SYSTEM_CODES: "ata-games:used-system-codes-v1",
 };
 
 export const DEFAULT_PRIZES: SpinPrize[] = [
@@ -69,7 +70,7 @@ export const DEFAULT_PRIZES: SpinPrize[] = [
     },
     {
         id: 7,
-        name: "Chúc may mắn",
+        name: "May mắn",
         type: "NONE",
         value: 0,
         probability: 10,
@@ -79,7 +80,7 @@ export const DEFAULT_PRIZES: SpinPrize[] = [
     },
     {
         id: 8,
-        name: "Thêm may mắn",
+        name: "Thử lại",
         type: "NONE",
         value: 0,
         probability: 5,
@@ -249,6 +250,18 @@ export const luckyWheelService = {
         const now = new Date().toISOString();
 
         if (cleanCode === "ATAWELCOME") {
+            if (userId) {
+                const usedMap = loadFromStorage<Record<string, string[]>>(STORAGE_KEYS.USED_SYSTEM_CODES, {});
+                const list = usedMap[userId] || [];
+                if (list.includes("ATAWELCOME")) {
+                    return {
+                        success: false,
+                        discountAmount: 0,
+                        error: "Bạn đã sử dụng mã chào mừng ATAWELCOME ở đơn hàng trước rồi.",
+                    };
+                }
+            }
+
             const rawDiscount = Math.round((currentTotal * 10) / 100);
             const discount = Math.min(rawDiscount, 100000);
             return {
@@ -326,10 +339,11 @@ export const luckyWheelService = {
         }
 
         if (found.minOrderValue && currentTotal < found.minOrderValue) {
+            const missing = found.minOrderValue - currentTotal;
             return {
                 success: false,
                 discountAmount: 0,
-                error: `Đơn hàng chưa đạt giá trị tối thiểu ${found.minOrderValue.toLocaleString("vi-VN")}₫ (Hiện tại: ${currentTotal.toLocaleString("vi-VN")}₫).`,
+                error: `Mua thêm ${missing.toLocaleString("vi-VN")}₫ để áp dụng mã này (Đơn tối thiểu ${found.minOrderValue.toLocaleString("vi-VN")}₫).`,
             };
         }
 
@@ -348,7 +362,17 @@ export const luckyWheelService = {
         };
     },
 
-    markVoucherUsed(voucherId: string) {
+    markVoucherUsed(voucherId: string, userId?: string, voucherCode?: string) {
+        if (userId && (voucherId === "vch_atawelcome" || voucherCode === "ATAWELCOME")) {
+            const usedMap = loadFromStorage<Record<string, string[]>>(STORAGE_KEYS.USED_SYSTEM_CODES, {});
+            const list = usedMap[userId] || [];
+            if (!list.includes("ATAWELCOME")) {
+                list.push("ATAWELCOME");
+                usedMap[userId] = list;
+                saveToStorage(STORAGE_KEYS.USED_SYSTEM_CODES, usedMap);
+            }
+        }
+
         if (!voucherId || voucherId === "vch_atawelcome") return;
         const vouchers = loadFromStorage<UserVoucher[]>(STORAGE_KEYS.VOUCHERS, []);
         const updated = vouchers.map((v) =>
