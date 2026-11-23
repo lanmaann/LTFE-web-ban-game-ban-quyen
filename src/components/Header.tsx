@@ -183,7 +183,7 @@ export default function Header() {
     const readIds = Array.isArray(readNotificationIds)
         ? readNotificationIds.filter((id): id is string => typeof id === "string")
         : [];
-    const currentNotificationsError = user?.id === notificationsError?.userId
+    const currentNotificationsError = notificationsError && user?.id === notificationsError.userId
         ? notificationsError.message
         : "";
     const unreadNotificationCount = notificationsForUser.filter(
