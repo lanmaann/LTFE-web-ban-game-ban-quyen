@@ -5219,6 +5219,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.library-page__empty-card * {
+    font-family: Arial, sans-serif;
 }
 
 .library-page__auth-icon,
@@ -5236,14 +5241,18 @@
 
 .library-page__auth-card h2,
 .library-page__empty-card h2 {
-    font-size: 22px;
-    font-weight: 800;
+    font-family: Arial, sans-serif !important;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
     color: #fff;
     margin: 0 0 10px;
+    font-synthesis: none;
 }
 
 .library-page__auth-card p,
 .library-page__empty-card p {
+    font-family: Arial, sans-serif !important;
     font-size: 14px;
     color: #94a3b8;
     max-width: 520px;
@@ -5253,6 +5262,7 @@
 
 .library-page__auth-btn,
 .library-page__primary-btn {
+    font-family: Arial, sans-serif !important;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -5261,11 +5271,16 @@
     border: 1px solid #62b5ff;
     color: #fff;
     font-size: 14px;
-    font-weight: 750;
+    font-weight: 700;
     border-radius: 8px;
     text-decoration: none;
     transition: all 0.2s ease;
     box-shadow: 0 4px 18px rgba(22, 116, 207, 0.4);
+}
+
+.library-page__primary-btn * {
+    font-family: Arial, sans-serif !important;
+    font-weight: 700;
 }
 
 .library-page__auth-btn:hover,
@@ -8442,11 +8457,16 @@
 .support-page,
 .favorites-page,
 .profile-page,
+.lucky-page-container,
+.spin-modal-card,
+.spin-modal-overlay,
 .cart-page button,
 .checkout-page button,
 .orders-page button,
 .community-page button,
 .support-page button,
+.lucky-page-container button,
+.spin-modal-card button,
 .cart-page input,
 .checkout-page input,
 .orders-page input,
@@ -8464,6 +8484,8 @@
 .checkout-header__title,
 .orders-header__title,
 .library-page__title,
+.library-page__empty-card h2,
+.spin-modal__title,
 .community-hero h1,
 .support-hero h1 {
     font-family: Arial, sans-serif !important;
@@ -8794,6 +8816,7 @@
     padding: 20px;
     z-index: 1000;
     animation: fadeIn 0.2s ease;
+    font-family: Arial, sans-serif;
 }
 .spin-modal-card {
     position: relative;
@@ -8806,6 +8829,10 @@
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     border: 1px solid #1e3a8a;
     animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: Arial, sans-serif;
+}
+.spin-modal-card * {
+    font-family: Arial, sans-serif;
 }
 .spin-modal--win {
     border-color: #f59e0b;
@@ -8826,14 +8853,16 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    font-family: Arial, sans-serif;
 }
 .spin-modal__close:hover {
     background: rgba(255, 255, 255, 0.15);
     color: #fff;
 }
 .spin-modal__badge {
+    font-family: Arial, sans-serif !important;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.5px;
     color: #fde047;
     margin-bottom: 8px;
@@ -8843,12 +8872,16 @@
     margin: 10px 0;
 }
 .spin-modal__title {
+    font-family: Arial, sans-serif !important;
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 700;
+    line-height: 1.25;
     margin: 0 0 12px;
     color: #ffffff;
+    font-synthesis: none;
 }
 .spin-modal__desc {
+    font-family: Arial, sans-serif !important;
     font-size: 14px;
     line-height: 1.6;
     color: #94a3b8;
@@ -8862,6 +8895,7 @@
     margin-bottom: 24px;
 }
 .voucher-code-label {
+    font-family: Arial, sans-serif !important;
     display: block;
     font-size: 11px;
     font-weight: 700;
@@ -8875,20 +8909,21 @@
     gap: 10px;
 }
 .voucher-code-text {
-    font-family: monospace;
+    font-family: monospace !important;
     font-size: 18px;
     font-weight: 700;
     color: #fde047;
     letter-spacing: 1px;
 }
 .voucher-copy-btn {
+    font-family: Arial, sans-serif !important;
     padding: 6px 14px;
     background: #1d4ed8;
     border: none;
     border-radius: 6px;
     color: #ffffff;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
 }
 .voucher-copy-btn:hover {
@@ -8900,6 +8935,7 @@
     justify-content: center;
 }
 .spin-modal-btn {
+    font-family: Arial, sans-serif !important;
     padding: 12px 24px;
     border: none;
     border-radius: 10px;
