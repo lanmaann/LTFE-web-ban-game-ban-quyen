@@ -82,6 +82,140 @@ const SEED_ORDERS: Order[] = [
         status: "completed",
         createdAt: "2026-10-20T14:20:00.000Z",
     },
+    {
+        id: "ord-RF-8821",
+        userId: "y5BKcs7bzMc",
+        userName: "Ngọc Trân Huỳnh Thị",
+        userEmail: "tranhuynh.01102005@gmail.com",
+        gameIds: ["413080"],
+        items: [
+            {
+                gameId: "413080",
+                title: "Hades",
+                price: 180000,
+                originalPrice: 240000,
+                coverImage: "/images/games/413080-cover.jpg",
+                cdKey: "ATA-4130-REVOKED-REFUND",
+            },
+        ],
+        subtotal: 240000,
+        discount: 60000,
+        fee: 0,
+        totalAmount: 180000,
+        paymentMethod: "visa",
+        paymentDetails: {
+            method: "visa",
+            cardLast4: "4242",
+            cardHolder: "HUYNH TRAN",
+            paidAt: "2026-11-16T08:30:00.000Z",
+        },
+        status: "refunded",
+        createdAt: "2026-11-16T08:30:00.000Z",
+        refundReason: "Cấu hình máy tính không đáp ứng cấu hình tối thiểu",
+        refundRequestedAt: "2026-11-17T09:10:00.000Z",
+        refundedAt: "2026-11-17T11:20:00.000Z",
+        refundResponseNote: "Yêu cầu hoàn tiền đã được CHẤP NHẬN. Số tiền 180.000 đ đã được hoàn tất thủ tục hoàn trả về tài khoản thanh toán ban đầu.",
+    },
+    {
+        id: "ord-RJ-9934",
+        userId: "y5BKcs7bzMc",
+        userName: "Ngọc Trân Huỳnh Thị",
+        userEmail: "tranhuynh.01102005@gmail.com",
+        gameIds: ["413150"],
+        items: [
+            {
+                gameId: "413150",
+                title: "Stardew Valley",
+                price: 120000,
+                originalPrice: 150000,
+                coverImage: "/images/games/413150-cover.jpg",
+                cdKey: "ATA-4131-07AA-Y5BK-VALID",
+            },
+        ],
+        subtotal: 150000,
+        discount: 30000,
+        fee: 0,
+        totalAmount: 120000,
+        paymentMethod: "ewallet",
+        paymentDetails: {
+            method: "ewallet",
+            walletType: "momo",
+            paidAt: "2026-11-14T10:15:00.000Z",
+        },
+        status: "refund_rejected",
+        createdAt: "2026-11-14T10:15:00.000Z",
+        refundReason: "Mua nhầm bản game / không muốn chơi nữa",
+        refundRequestedAt: "2026-11-15T09:00:00.000Z",
+        refundRejectedAt: "2026-11-15T15:30:00.000Z",
+        refundRejectReason: "Mã CD-Key đã được kích hoạt thành công trên hệ thống Steam và ghi nhận thời gian chơi đạt 4.8 giờ (vượt quá giới hạn tối đa 2 giờ theo chính sách hoàn tiền).",
+    },
+    {
+        id: "ord-RF-1003",
+        userId: "demo-user-1",
+        userName: "Nguyễn Văn A",
+        userEmail: "demo@atagames.vn",
+        gameIds: ["413080"],
+        items: [
+            {
+                gameId: "413080",
+                title: "Hades",
+                price: 180000,
+                originalPrice: 240000,
+                coverImage: "/images/games/413080-cover.jpg",
+                cdKey: "ATA-4130-DEMO-REFUNDED",
+            },
+        ],
+        subtotal: 240000,
+        discount: 60000,
+        fee: 0,
+        totalAmount: 180000,
+        paymentMethod: "visa",
+        paymentDetails: {
+            method: "visa",
+            cardLast4: "4242",
+            cardHolder: "NGUYEN VAN A",
+            paidAt: "2026-11-16T08:30:00.000Z",
+        },
+        status: "refunded",
+        createdAt: "2026-11-16T08:30:00.000Z",
+        refundReason: "Cấu hình máy tính không đáp ứng cấu hình tối thiểu",
+        refundRequestedAt: "2026-11-17T09:10:00.000Z",
+        refundedAt: "2026-11-17T11:20:00.000Z",
+        refundResponseNote: "Yêu cầu hoàn tiền đã được CHẤP NHẬN. Số tiền 180.000 đ đã được hoàn trả về tài khoản của bạn.",
+    },
+    {
+        id: "ord-RJ-1004",
+        userId: "demo-user-1",
+        userName: "Nguyễn Văn A",
+        userEmail: "demo@atagames.vn",
+        gameIds: ["413150"],
+        items: [
+            {
+                gameId: "413150",
+                title: "Stardew Valley",
+                price: 120000,
+                originalPrice: 150000,
+                coverImage: "/images/games/413150-cover.jpg",
+                cdKey: "ATA-4131-DEMO-REJECTED-KEY",
+            },
+        ],
+        subtotal: 150000,
+        discount: 30000,
+        fee: 0,
+        totalAmount: 120000,
+        paymentMethod: "ewallet",
+        paymentDetails: {
+            method: "ewallet",
+            walletType: "momo",
+            paidAt: "2026-11-14T10:15:00.000Z",
+        },
+        status: "refund_rejected",
+        createdAt: "2026-11-14T10:15:00.000Z",
+        refundReason: "Mua nhầm bản game / không muốn chơi nữa",
+        refundRequestedAt: "2026-11-15T09:00:00.000Z",
+        refundRejectedAt: "2026-11-15T15:30:00.000Z",
+        refundRejectReason: "Mã CD-Key đã được kích hoạt thành công trên hệ thống Steam và ghi nhận thời gian chơi đạt 4.8 giờ (vượt quá giới hạn tối đa 2 giờ theo chính sách hoàn tiền).",
+    },
 ];
 
 function getStoredOrders(): Order[] {
@@ -141,6 +275,7 @@ export const orderService = {
                 remoteOrders = res.data.filter((order) => order.userId === userId);
             }
         } catch {
+            // Ignore API fetch errors
         }
 
         const localOrders = getStoredOrders().filter((order) => order.userId === userId);
@@ -340,7 +475,10 @@ export const orderService = {
         }
 
         if (order.status === "refunded") {
-            throw new Error("Đơn hàng này đã được hoàn tiền trước đó.");
+            throw new Error("Đơn hàng này đã được chấp nhận hoàn tiền trước đó.");
+        }
+        if (order.status === "refund_pending") {
+            throw new Error("Đơn hàng này đang có yêu cầu hoàn tiền chờ xét duyệt.");
         }
         const orderTime = new Date(order.createdAt).getTime();
         const daysElapsed = (Date.now() - orderTime) / (1000 * 60 * 60 * 24);
@@ -348,50 +486,93 @@ export const orderService = {
             throw new Error("Đơn hàng đã quá thời hạn 14 ngày theo chính sách hoàn tiền.");
         }
 
-        const refundedAt = new Date().toISOString();
-        const refundedOrder: Order = {
+        const refundRequestedAt = new Date().toISOString();
+        const pendingOrder: Order = {
             ...order,
-            status: "refunded",
+            status: "refund_pending",
             refundReason: reason.trim(),
-            refundedAt,
+            refundRequestedAt,
         };
-        upsertStoredOrder(refundedOrder);
+        upsertStoredOrder(pendingOrder);
         try {
             await api.patch(`/orders/${orderId}`, {
-                status: "refunded",
+                status: "refund_pending",
                 refundReason: reason.trim(),
-                refundedAt,
+                refundRequestedAt,
             });
         } catch {
-            console.warn("Không thể đồng bộ trạng thái hoàn tiền lên Backend.");
-        }
-        const remainingCompletedOrders = userOrders.filter(
-            (o) => o.id !== orderId && o.status === "completed"
-        );
-        const retainedGameIds = new Set<string>();
-        remainingCompletedOrders.forEach((o) => {
-            o.gameIds.forEach((gid) => retainedGameIds.add(gid));
-        });
-
-        try {
-            const userRes = await api.get<UserAccount>(`/users/${userId}`);
-            if (userRes.data && Array.isArray(userRes.data.purchasedGames)) {
-                const updatedGames = userRes.data.purchasedGames.filter((gid) => {
-                    if (order.gameIds.includes(gid)) {
-                        return retainedGameIds.has(gid);
-                    }
-                    return true;
-                });
-
-                await api.patch(`/users/${userId}`, {
-                    purchasedGames: updatedGames,
-                });
-            }
-        } catch {
-            console.warn("Không thể cập nhật danh sách game đã mua sau khi hoàn tiền.");
+            console.warn("Không thể đồng bộ trạng thái yêu cầu hoàn tiền lên Backend.");
         }
 
         dispatchNotificationsUpdated();
-        return refundedOrder;
+        return pendingOrder;
+    },
+
+    async processRefundDecision(
+        orderId: string,
+        userId: string,
+        decision: "approved" | "rejected",
+        customRejectReason?: string
+    ): Promise<Order> {
+        const userOrders = await this.getUserOrders(userId);
+        const order = userOrders.find((item) => item.id === orderId && item.userId === userId);
+        if (!order) throw new Error("Không tìm thấy đơn hàng.");
+
+        const now = new Date().toISOString();
+        let updatedOrder: Order;
+
+        if (decision === "approved") {
+            updatedOrder = {
+                ...order,
+                status: "refunded",
+                refundedAt: now,
+                refundResponseNote: "Yêu cầu hoàn tiền đã được CHẤP NHẬN. Số tiền đã được hoàn tất thủ tục hoàn trả.",
+            };
+
+            const remainingCompletedOrders = userOrders.filter(
+                (o) => o.id !== orderId && o.status === "completed"
+            );
+            const retainedGameIds = new Set<string>();
+            remainingCompletedOrders.forEach((o) => {
+                o.gameIds.forEach((gid) => retainedGameIds.add(gid));
+            });
+
+            try {
+                const userRes = await api.get<UserAccount>(`/users/${userId}`);
+                if (userRes.data && Array.isArray(userRes.data.purchasedGames)) {
+                    const updatedGames = userRes.data.purchasedGames.filter((gid) => {
+                        if (order.gameIds.includes(gid)) {
+                            return retainedGameIds.has(gid);
+                        }
+                        return true;
+                    });
+
+                    await api.patch(`/users/${userId}`, {
+                        purchasedGames: updatedGames,
+                    });
+                }
+            } catch {
+                console.warn("Không thể cập nhật danh sách game đã mua sau khi hoàn tiền.");
+            }
+        } else {
+            updatedOrder = {
+                ...order,
+                status: "refund_rejected",
+                refundRejectedAt: now,
+                refundRejectReason:
+                    customRejectReason?.trim() ||
+                    "Mã CD-Key đã được kích hoạt thành công trên hệ thống Steam và ghi nhận thời gian chơi đạt hơn 2 giờ (vượt quá hạn mức quy định theo chính sách hoàn tiền).",
+            };
+        }
+
+        upsertStoredOrder(updatedOrder);
+        try {
+            await api.patch(`/orders/${orderId}`, updatedOrder);
+        } catch {
+            console.warn("Không thể đồng bộ trạng thái duyệt hoàn tiền lên Backend.");
+        }
+
+        dispatchNotificationsUpdated();
+        return updatedOrder;
     },
 };
