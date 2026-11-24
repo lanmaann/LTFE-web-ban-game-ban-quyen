@@ -1,6 +1,12 @@
 export type PaymentMethod = "visa" | "qr" | "ewallet" | "free";
 
-export type OrderStatus = "completed" | "pending" | "failed" | "refunded";
+export type OrderStatus =
+    | "completed"
+    | "pending"
+    | "failed"
+    | "refund_pending"
+    | "refunded"
+    | "refund_rejected";
 
 export interface OrderItem {
     gameId: string;
@@ -36,7 +42,11 @@ export interface Order {
     status: OrderStatus;
     createdAt: string;
     refundReason?: string;
+    refundRequestedAt?: string;
     refundedAt?: string;
+    refundRejectedAt?: string;
+    refundRejectReason?: string;
+    refundResponseNote?: string;
 }
 
 export interface CreateOrderPayload {

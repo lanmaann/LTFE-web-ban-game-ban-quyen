@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
+    AlertCircle,
     Bell,
     BookOpen,
     CheckCircle2,
@@ -83,19 +84,46 @@ function buildNotifications(
     const notifications: HeaderNotification[] = [];
 
     orders.forEach((order) => {
-        if (order.status !== "completed" && order.status !== "refunded") return;
+        if (
+            order.status !== "completed" &&
+            order.status !== "refunded" &&
+            order.status !== "refund_rejected" &&
+            order.status !== "refund_pending"
+        )
+            return;
+
         const isRefunded = order.status === "refunded";
-        const date = isRefunded ? order.refundedAt ?? order.createdAt : order.createdAt;
+        const isRejected = order.status === "refund_rejected";
+        const isPending = order.status === "refund_pending";
+        const date = isRefunded
+            ? order.refundedAt ?? order.createdAt
+            : isRejected
+            ? order.refundRejectedAt ?? order.createdAt
+            : isPending
+            ? order.refundRequestedAt ?? order.createdAt
+            : order.createdAt;
+
+        let title = "Mua game thành công";
+        let message = `Bạn đã mua ${order.items.map((item) => item.title).join(", ")}.`;
+        if (isRefunded) {
+            title = "Đơn hàng đã được hoàn tiền";
+            message = `Đơn hàng ${order.items.map((item) => item.title).join(", ")} đã được chấp nhận hoàn tiền.`;
+        } else if (isRejected) {
+            title = "Yêu cầu hoàn tiền bị từ chối";
+            message = `Đơn hàng ${order.id}: ${order.refundRejectReason || "Không đủ điều kiện hoàn tiền."}`;
+        } else if (isPending) {
+            title = "Đang xử lý yêu cầu hoàn tiền";
+            message = `Yêu cầu hoàn tiền cho đơn hàng ${order.id} đang được xem xét.`;
+        }
+
         notifications.push({
             id: `order:${order.id}:${order.status}`,
             createdAt: date,
-            title: isRefunded ? "Đơn hàng đã được hoàn tiền" : "Mua game thành công",
-            message: isRefunded
-                ? `Đơn hàng ${order.items.map((item) => item.title).join(", ")} đã được hoàn tiền.`
-                : `Bạn đã mua ${order.items.map((item) => item.title).join(", ")}.`,
+            title,
+            message,
             time: getNotificationTime(date),
             href: "/orders",
-            icon: isRefunded ? Clock : CheckCircle2,
+            icon: isRefunded ? Clock : isRejected ? AlertCircle : isPending ? Clock : CheckCircle2,
             className: "notification-item__icon--purchase",
         });
     });
@@ -151,10 +179,11 @@ export default function Header() {
     const [searchParams] = useSearchParams();
     const urlKeyword = searchParams.get("q") ?? "";
     const [keyword, setKeyword] = useState(urlKeyword);
-
-    useEffect(() => {
+    const [prevUrlKeyword, setPrevUrlKeyword] = useState(urlKeyword);
+    if (prevUrlKeyword !== urlKeyword) {
+        setPrevUrlKeyword(urlKeyword);
         setKeyword(urlKeyword);
-    }, [urlKeyword]);
+    }
 
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);

@@ -7041,8 +7041,33 @@
 }
 
 .order-status-badge--refunded {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.order-status-badge--rejected {
+    background: rgba(239, 68, 68, 0.18);
     color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.order-status-badge--pending {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.order-card--refunded {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.order-card--rejected {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.order-card--pending {
+    border-color: rgba(245, 158, 11, 0.3);
 }
 
 .order-card__body {
@@ -7118,14 +7143,118 @@
 
 .order-card__refund-info {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    align-items: flex-start;
+    gap: 12px;
     margin-top: 14px;
-    padding: 10px 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.order-card__refund-info--refunded {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #a7f3d0;
+}
+
+.order-card__refund-info--refunded svg {
+    color: #34d399;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.order-card__refund-info--rejected {
     background: rgba(239, 68, 68, 0.1);
-    border-radius: 6px;
-    font-size: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+}
+
+.order-card__refund-info--rejected svg {
     color: #f87171;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.order-card__refund-info--pending {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fde68a;
+}
+
+.order-card__refund-info--pending svg {
+    color: #fbbf24;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.order-card__refund-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-card__refund-title {
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.order-card__refund-info--refunded .order-card__refund-title {
+    color: #34d399;
+}
+
+.order-card__refund-info--rejected .order-card__refund-title {
+    color: #f87171;
+}
+
+.order-card__refund-info--pending .order-card__refund-title {
+    color: #fbbf24;
+}
+
+.order-card__refund-msg {
+    margin: 0;
+    font-size: 12.5px;
+}
+
+.order-card__refund-reason,
+.order-card__refund-time {
+    display: block;
+    font-size: 11.5px;
+    opacity: 0.85;
+}
+
+.order-refund-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.order-refund-status-tag--refunded {
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+}
+
+.order-refund-status-tag--rejected {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+.order-refund-status-tag--pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+.order-license-status--pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #fbbf24;
+    font-weight: 600;
 }
 
 .order-card__footer {
@@ -7454,23 +7583,50 @@
 }
 
 .order-detail-refund-banner {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.35);
     border-radius: 10px;
-    padding: 14px 18px;
-    color: #fca5a5;
+    padding: 16px 20px;
     font-size: 13px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+}
+
+.order-detail-refund-banner--refunded {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #a7f3d0;
+}
+
+.order-detail-refund-banner--refunded .order-detail-refund-banner__header {
+    color: #34d399;
+}
+
+.order-detail-refund-banner--rejected {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+.order-detail-refund-banner--rejected .order-detail-refund-banner__header {
+    color: #f87171;
+}
+
+.order-detail-refund-banner--pending {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fde68a;
+}
+
+.order-detail-refund-banner--pending .order-detail-refund-banner__header {
+    color: #fbbf24;
 }
 
 .order-detail-refund-banner__header {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #ef4444;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .order-detail-refund-banner p {
@@ -7480,9 +7636,60 @@
 
 .order-detail-refund-banner__note {
     font-size: 12px;
-    color: #f87171;
+    opacity: 0.85;
     font-style: italic;
-    margin-top: 4px;
+    margin-top: 2px;
+}
+
+.order-detail-demo-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    flex-wrap: wrap;
+}
+
+.order-detail-demo-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--color-muted);
+}
+
+.demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.demo-btn--approve {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #34d399;
+}
+
+.demo-btn--approve:hover {
+    background: #10b981;
+    color: #fff;
+}
+
+.demo-btn--reject {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+.demo-btn--reject:hover {
+    background: #ef4444;
+    color: #fff;
 }
 
 .order-detail-columns {
