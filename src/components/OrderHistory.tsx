@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
     Package,
     Clock,
@@ -27,6 +27,9 @@ import type { Order } from "../types/order";
 
 export default function OrderHistory() {
     const { user } = useAuth();
+    const [searchParams] = useSearchParams();
+    const detailOrderId = searchParams.get("detail");
+    const [handledDetailId, setHandledDetailId] = useState<string | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedDetailOrder, setSelectedDetailOrder] = useState<Order | null>(null);
@@ -38,6 +41,14 @@ export default function OrderHistory() {
     const [isSubmittingRefund, setIsSubmittingRefund] = useState(false);
     const [currentTime] = useState(() => Date.now());
 
+    if (detailOrderId && detailOrderId !== handledDetailId && orders.length > 0) {
+        const found = orders.find((o) => o.id === detailOrderId);
+        if (found) {
+            setHandledDetailId(detailOrderId);
+            setSelectedDetailOrder(found);
+        }
+    }
+
     const loadOrders = useCallback(async () => {
         if (!user) {
             setOrders([]);
@@ -48,12 +59,19 @@ export default function OrderHistory() {
         try {
             const list = await orderService.getUserOrders(user.id);
             setOrders(list);
+            if (detailOrderId) {
+                const found = list.find((o) => o.id === detailOrderId);
+                if (found) {
+                    setHandledDetailId(detailOrderId);
+                    setSelectedDetailOrder(found);
+                }
+            }
         } catch {
             setOrders([]);
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, [user, detailOrderId]);
 
     useEffect(() => {
         let isMounted = true;
@@ -65,6 +83,13 @@ export default function OrderHistory() {
                 if (isMounted) {
                     setOrders(list);
                     setLoading(false);
+                    if (detailOrderId) {
+                        const found = list.find((o) => o.id === detailOrderId);
+                        if (found) {
+                            setHandledDetailId(detailOrderId);
+                            setSelectedDetailOrder(found);
+                        }
+                    }
                 }
             })
             .catch(() => {
@@ -77,7 +102,7 @@ export default function OrderHistory() {
         return () => {
             isMounted = false;
         };
-    }, [user]);
+    }, [user, detailOrderId]);
 
     const handleRefundSubmit = async () => {
         if (!refundOrder || !user) return;
@@ -127,8 +152,8 @@ export default function OrderHistory() {
             const updatedList = await orderService.getUserOrders(user.id);
             const found = updatedList.find((o) => o.id === orderId);
             if (found) setSelectedDetailOrder(found);
-        } catch {
-            // Ignore simulation errors
+        } catch (e) {
+            void e;
         }
     };
 
@@ -181,8 +206,8 @@ export default function OrderHistory() {
             setTimeout(() => {
                 setCopiedKeyId(null);
             }, 2000);
-        } catch {
-            // Ignore simulation errors
+        } catch (e) {
+            void e;
         }
     };
 
@@ -466,7 +491,6 @@ export default function OrderHistory() {
                 </div>
             )}
 
-            {/* Modal Chi tiết đơn hàng đầy đủ */}
             {selectedDetailOrder && (
                 <div className="modal-overlay" role="dialog" aria-modal="true">
                     <div className="modal-box modal-box--order-detail">
@@ -489,7 +513,6 @@ export default function OrderHistory() {
                         </div>
 
                         <div className="modal-box__body order-detail-modal-body">
-                            {/* Banner thông báo nếu đơn hàng đã hoàn tiền */}
                             {selectedDetailOrder.status === "refunded" && (
                                 <div className="order-detail-refund-banner order-detail-refund-banner--refunded">
                                     <div className="order-detail-refund-banner__header">
@@ -512,7 +535,6 @@ export default function OrderHistory() {
                                 </div>
                             )}
 
-                            {/* Banner thông báo nếu đơn hàng bị từ chối hoàn tiền */}
                             {selectedDetailOrder.status === "refund_rejected" && (
                                 <div className="order-detail-refund-banner order-detail-refund-banner--rejected">
                                     <div className="order-detail-refund-banner__header">
@@ -540,7 +562,6 @@ export default function OrderHistory() {
                                 </div>
                             )}
 
-                            {/* Banner thông báo nếu đơn hàng đang chờ duyệt */}
                             {selectedDetailOrder.status === "refund_pending" && (
                                 <div className="order-detail-refund-banner order-detail-refund-banner--pending">
                                     <div className="order-detail-refund-banner__header">
@@ -581,9 +602,7 @@ export default function OrderHistory() {
                                 </div>
                             )}
 
-                            {/* Khối 2 cột: Khách hàng & Thanh toán */}
                             <div className="order-detail-columns">
-                                {/* Thẻ thông tin khách hàng */}
                                 <div className="order-detail-card">
                                     <h4 className="order-detail-card__title">
                                         <User size={16} /> Thông tin khách hàng & Tài khoản
@@ -622,7 +641,6 @@ export default function OrderHistory() {
                                     </div>
                                 </div>
 
-                                {/* Thẻ thông tin thanh toán */}
                                 <div className="order-detail-card">
                                     <h4 className="order-detail-card__title">
                                         <CreditCard size={16} /> Chi tiết thanh toán & Bảo mật
@@ -704,7 +722,6 @@ export default function OrderHistory() {
                                 </div>
                             </div>
 
-                            {/* Danh sách sản phẩm game kèm mã CD-Key */}
                             <div className="order-detail-products">
                                 <div className="order-detail-products__header">
                                     <h4 className="order-detail-section-title">
@@ -817,7 +834,6 @@ export default function OrderHistory() {
                                 </div>
                             </div>
 
-                            {/* Bảng kê tổng kết chi phí */}
                             <div className="order-detail-summary-card">
                                 <div className="order-detail-summary-row">
                                     <span>Tạm tính ({selectedDetailOrder.items.length} game):</span>
@@ -887,7 +903,6 @@ export default function OrderHistory() {
                 </div>
             )}
 
-            {/* Modal Yêu cầu hoàn tiền */}
             {refundOrder && (
                 <div className="modal-overlay" role="dialog" aria-modal="true">
                     <div className="modal-box">
