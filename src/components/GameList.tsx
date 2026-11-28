@@ -16,6 +16,8 @@ import {
 } from "../store/gamesSlice";
 import GameItem from "./GameItem";
 import Pagination from "./Pagination";
+import { useI18n } from "../i18n/I18nContext";
+import { getLocalizedGenre } from "../i18n/productI18n";
 
 type SortOption =
     | "featured"
@@ -52,9 +54,11 @@ export default function GameList() {
     const games = useAppSelector(selectGames);
     const status = useAppSelector(selectGamesStatus);
     const storeError = useAppSelector(selectGamesError);
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
     const loading = status === "idle" || status === "loading";
     const error =
-        status === "failed" ? storeError ?? "Không thể tải danh sách game." : "";
+        status === "failed" ? storeError ?? t.common.error : "";
 
     // 15. URL Search Params: Nhận từ khóa tìm kiếm (từ Header) và các tiêu chí lọc từ URL
     const [searchParams, setSearchParams] = useSearchParams();
@@ -244,28 +248,29 @@ export default function GameList() {
                 <div className="store-hero__content">
                     <span className="store-eyebrow">
                         <Gamepad2 size={16} />
-                        ATA GAMES STORE
+                        {isVi ? "ATA GAMES STORE" : "ATA GAMES STORE"}
                     </span>
 
-                    <h1>Khám phá thế giới game</h1>
+                    <h1>{isVi ? "Khám phá thế giới game" : "Explore the World of Games"}</h1>
 
                     <p>
-                        Tìm tựa game tiếp theo của bạn giữa hàng loạt cuộc phiêu lưu,
-                        thế giới mở và trải nghiệm đỉnh cao.
+                        {isVi
+                            ? "Tìm tựa game tiếp theo của bạn giữa hàng loạt cuộc phiêu lưu, thế giới mở và trải nghiệm đỉnh cao."
+                            : "Find your next favorite game across epic adventures, open worlds, and unforgettable experiences."}
                     </p>
 
                     <div className="store-hero__stats">
                         <div>
                             <strong>{games.length}+</strong>
-                            <span>Tựa game</span>
+                            <span>{isVi ? "Tựa game" : "Titles"}</span>
                         </div>
                         <div>
                             <strong>{genres.length}</strong>
-                            <span>Thể loại</span>
+                            <span>{t.store.filters.genre}</span>
                         </div>
                         <div>
                             <strong>PC</strong>
-                            <span>Nền tảng</span>
+                            <span>{t.store.filters.platform}</span>
                         </div>
                     </div>
                 </div>
@@ -274,18 +279,20 @@ export default function GameList() {
             <section className="store-content">
                 <div className="store-heading">
                     <div>
-                        <span className="store-section-label">GAME LIBRARY</span>
-                        <h2>Cửa hàng game</h2>
+                        <span className="store-section-label">{isVi ? "THƯ VIỆN GAME" : "GAME CATALOG"}</span>
+                        <h2>{t.store.title}</h2>
                         <p>
                             {loading
-                                ? "Đang tải danh sách game..."
-                                : `Tìm thấy ${filteredGames.length} game phù hợp`}
+                                ? t.header.search.loading
+                                : isVi
+                                ? `Tìm thấy ${filteredGames.length} game phù hợp`
+                                : `Found ${filteredGames.length} matching games`}
                         </p>
                     </div>
 
                     {/* 8 & 9. Sắp xếp giá và đánh giá */}
                     <label className="store-sort">
-                        <span>Sắp xếp:</span>
+                        <span>{t.store.filters.sort}:</span>
                         <select
                             value={sortBy}
                             onChange={(e) =>
@@ -295,12 +302,12 @@ export default function GameList() {
                                 })
                             }
                         >
-                            <option value="featured">Nổi bật</option>
-                            <option value="newest">Mới phát hành</option>
-                            <option value="name-asc">Tên A – Z</option>
-                            <option value="price-asc">Giá thấp đến cao</option>
-                            <option value="price-desc">Giá cao đến thấp</option>
-                            <option value="rating-desc">Đánh giá cao nhất</option>
+                            <option value="featured">{isVi ? "Nổi bật" : "Featured"}</option>
+                            <option value="newest">{t.store.filters.sortOptions.newest}</option>
+                            <option value="name-asc">{t.store.filters.sortOptions.name}</option>
+                            <option value="price-asc">{t.store.filters.sortOptions.priceAsc}</option>
+                            <option value="price-desc">{t.store.filters.sortOptions.priceDesc}</option>
+                            <option value="rating-desc">{t.store.filters.sortOptions.rating}</option>
                         </select>
                     </label>
                 </div>
@@ -309,7 +316,7 @@ export default function GameList() {
                 <div
                     className="store-genre-pills"
                     role="toolbar"
-                    aria-label="Lọc nhanh thể loại"
+                    aria-label={isVi ? "Lọc nhanh thể loại" : "Quick genre filter"}
                 >
                     {POPULAR_GENRES.map((g) => {
                         const isAll = g === "Tất cả";
@@ -331,7 +338,7 @@ export default function GameList() {
                                     })
                                 }
                             >
-                                {g}
+                                {isAll ? t.store.filters.all : getLocalizedGenre(g, locale)}
                             </button>
                         );
                     })}
@@ -342,15 +349,15 @@ export default function GameList() {
                     {urlKeyword ? (
                         <div className="store-search-tag">
                             <span>
-                                Tìm kiếm: <strong>"{urlKeyword}"</strong>
+                                {t.common.search}: <strong>"{urlKeyword}"</strong>
                             </span>
                             {/* 3. Nút X để xóa từ khóa tìm kiếm */}
                             <button
                                 type="button"
                                 className="store-search-tag__clear"
                                 onClick={handleClearKeyword}
-                                title="Xóa từ khóa tìm kiếm"
-                                aria-label="Xóa từ khóa tìm kiếm"
+                                title={t.header.search.clearLabel}
+                                aria-label={t.header.search.clearLabel}
                             >
                                 <X size={14} />
                             </button>
@@ -365,10 +372,10 @@ export default function GameList() {
                             className="store-reset-button"
                             type="button"
                             onClick={handleResetAllFilters}
-                            title="Xóa tất cả bộ lọc và từ khóa"
+                            title={isVi ? "Xóa tất cả bộ lọc và từ khóa" : "Clear all filters"}
                         >
                             <RefreshCw size={16} />
-                            Xóa bộ lọc
+                            {isVi ? "Xóa bộ lọc" : "Reset Filters"}
                         </button>
                     )}
                 </div>
@@ -378,12 +385,12 @@ export default function GameList() {
                     <aside className="store-filters">
                         <div className="store-filters__title">
                             <SlidersHorizontal size={18} />
-                            <h3>Bộ lọc chi tiết</h3>
+                            <h3>{isVi ? "Bộ lọc chi tiết" : "Detailed Filters"}</h3>
                         </div>
 
                         {/* 6. Filter thể loại */}
                         <div className="store-filter-group">
-                            <label htmlFor="genre-filter">Thể loại</label>
+                            <label htmlFor="genre-filter">{t.store.filters.genre}</label>
                             <select
                                 id="genre-filter"
                                 value={selectedGenre}
@@ -394,10 +401,10 @@ export default function GameList() {
                                     })
                                 }
                             >
-                                <option value="all">Tất cả thể loại</option>
+                                <option value="all">{isVi ? "Tất cả thể loại" : "All genres"}</option>
                                 {genres.map((genre) => (
                                     <option key={genre} value={genre}>
-                                        {genre}
+                                        {getLocalizedGenre(genre, locale)}
                                     </option>
                                 ))}
                             </select>
@@ -405,7 +412,7 @@ export default function GameList() {
 
                         {/* Filter nền tảng */}
                         <div className="store-filter-group">
-                            <label htmlFor="platform-filter">Nền tảng</label>
+                            <label htmlFor="platform-filter">{t.store.filters.platform}</label>
                             <select
                                 id="platform-filter"
                                 value={selectedPlatform}
@@ -416,7 +423,7 @@ export default function GameList() {
                                     })
                                 }
                             >
-                                <option value="all">Tất cả nền tảng</option>
+                                <option value="all">{isVi ? "Tất cả nền tảng" : "All platforms"}</option>
                                 {platforms.map((platform) => (
                                     <option key={platform} value={platform}>
                                         {platform}
@@ -427,7 +434,7 @@ export default function GameList() {
 
                         {/* 7. Filter giá */}
                         <div className="store-filter-group">
-                            <label htmlFor="price-filter">Khoảng giá</label>
+                            <label htmlFor="price-filter">{isVi ? "Khoảng giá" : "Price Range"}</label>
                             <select
                                 id="price-filter"
                                 value={priceFilter}
@@ -438,19 +445,20 @@ export default function GameList() {
                                     })
                                 }
                             >
-                                <option value="all">Tất cả mức giá</option>
-                                <option value="free">Miễn phí (0đ)</option>
-                                <option value="under200">Dưới 200.000đ</option>
-                                <option value="200to500">200.000đ – 500.000đ</option>
-                                <option value="over500">Trên 500.000đ</option>
+                                <option value="all">{isVi ? "Tất cả mức giá" : "All prices"}</option>
+                                <option value="free">{t.store.filters.free}</option>
+                                <option value="under200">{isVi ? `Dưới ${formatPrice(200000)}` : `Under ${formatPrice(200000)}`}</option>
+                                <option value="200to500">{formatPrice(200000)} – {formatPrice(500000)}</option>
+                                <option value="over500">{isVi ? `Trên ${formatPrice(500000)}` : `Over ${formatPrice(500000)}`}</option>
                             </select>
                         </div>
 
                         <div className="store-filter-note">
                             <Gamepad2 size={20} />
                             <p>
-                                Chọn kết hợp các bộ lọc để tìm nhanh tựa game ưng ý
-                                nhất.
+                                {isVi
+                                    ? "Chọn kết hợp các bộ lọc để tìm nhanh tựa game ưng ý nhất."
+                                    : "Combine filters to quickly find the game you're looking for."}
                             </p>
                         </div>
                     </aside>
@@ -460,21 +468,21 @@ export default function GameList() {
                         {loading && (
                             <div className="store-state">
                                 <div className="store-spinner" />
-                                <h3>Đang tải cửa hàng</h3>
-                                <p>Vui lòng đợi trong giây lát...</p>
+                                <h3>{isVi ? "Đang tải cửa hàng" : "Loading store"}</h3>
+                                <p>{isVi ? "Vui lòng đợi trong giây lát..." : "Please wait a moment..."}</p>
                             </div>
                         )}
 
                         {!loading && error && (
                             <div className="store-state store-state--error">
-                                <h3>Chưa thể tải game</h3>
+                                <h3>{isVi ? "Chưa thể tải game" : "Could not load games"}</h3>
                                 <p>{error}</p>
                                 <button
                                     type="button"
                                     className="store-primary-button"
                                     onClick={() => dispatch(fetchGames())}
                                 >
-                                    Thử lại
+                                    {t.common.retry}
                                 </button>
                             </div>
                         )}
@@ -483,14 +491,14 @@ export default function GameList() {
                         {!loading && !error && filteredGames.length === 0 && (
                             <div className="store-state">
                                 <Search size={36} />
-                                <h3>Không tìm thấy game phù hợp</h3>
-                                <p>Hãy thử tìm với từ khóa hoặc điều kiện lọc khác.</p>
+                                <h3>{t.store.noResults}</h3>
+                                <p>{isVi ? "Hãy thử tìm với từ khóa hoặc điều kiện lọc khác." : "Try another keyword or adjust your filters."}</p>
                                 <button
                                     type="button"
                                     className="store-primary-button"
                                     onClick={handleResetAllFilters}
                                 >
-                                    Xóa bộ lọc
+                                    {isVi ? "Xóa bộ lọc" : "Reset Filters"}
                                 </button>
                             </div>
                         )}

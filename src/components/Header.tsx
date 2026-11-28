@@ -27,7 +27,6 @@ import {
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice";
-import { formatPrice } from "../utils/format";
 import { selectCartCount } from "../store/cartSlice";
 import { useAuth } from "../auth/useAuth";
 import { communityService } from "../services/communityService";
@@ -45,6 +44,9 @@ import {
     removeSearchHistoryItem,
 } from "../utils/searchHistory";
 import { loadFromStorage, saveToStorage } from "../utils/storage";
+import { useI18n } from "../i18n/I18nContext";
+import type { Translations } from "../i18n/locales/vi";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "header__link header__link--active" : "header__link";
@@ -63,23 +65,24 @@ type HeaderNotification = {
     className: string;
 };
 
-function getNotificationTime(dateString: string): string {
+function getNotificationTime(dateString: string, t: Translations): string {
     const timestamp = new Date(dateString).getTime();
     if (!Number.isFinite(timestamp)) return "";
 
     const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-    if (seconds < 60) return "Vừa xong";
-    if (seconds < 3600) return `${Math.floor(seconds / 60)} phút trước`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)} giờ trước`;
-    if (seconds < 604800) return `${Math.floor(seconds / 86400)} ngày trước`;
-    return new Date(timestamp).toLocaleDateString("vi-VN");
+    if (seconds < 60) return t.time.justNow;
+    if (seconds < 3600) return t.time.minutesAgo(Math.floor(seconds / 60));
+    if (seconds < 86400) return t.time.hoursAgo(Math.floor(seconds / 3600));
+    if (seconds < 604800) return t.time.daysAgo(Math.floor(seconds / 86400));
+    return new Date(timestamp).toLocaleDateString();
 }
 
 function buildNotifications(
     orders: Order[],
     posts: CommunityPost[],
     spins: SpinHistoryItem[],
-    userId: string
+    userId: string,
+    t: Translations
 ): HeaderNotification[] {
     const notifications: HeaderNotification[] = [];
 
@@ -95,25 +98,35 @@ function buildNotifications(
         const isRefunded = order.status === "refunded";
         const isRejected = order.status === "refund_rejected";
         const isPending = order.status === "refund_pending";
+
         const date = isRefunded
             ? order.refundedAt ?? order.createdAt
             : isRejected
-            ? order.refundRejectedAt ?? order.createdAt
-            : isPending
-            ? order.refundRequestedAt ?? order.createdAt
-            : order.createdAt;
+                ? order.refundRejectedAt ?? order.createdAt
+                : isPending
+                    ? order.refundRequestedAt ?? order.createdAt
+                    : order.createdAt;
 
-        let title = "Mua game thành công";
-        let message = `Bạn đã mua ${order.items.map((item) => item.title).join(", ")}.`;
+        const titles = order.items.map((item) => item.title).join(", ");
+
+        let title: string;
+        let message: string;
+
         if (isRefunded) {
-            title = "Đơn hàng đã được hoàn tiền";
-            message = `Đơn hàng ${order.items.map((item) => item.title).join(", ")} đã được chấp nhận hoàn tiền.`;
+            title = t.notifications.orderRefunded;
+            message = t.notifications.orderRefundedMsg(titles);
         } else if (isRejected) {
-            title = "Yêu cầu hoàn tiền bị từ chối";
-            message = `Đơn hàng ${order.id}: ${order.refundRejectReason || "Không đủ điều kiện hoàn tiền."}`;
+            title = t.notifications.orderRefundRejected;
+            message = t.notifications.orderRefundRejectedMsg(
+                order.id,
+                order.refundRejectReason || "Không đủ điều kiện hoàn tiền."
+            );
         } else if (isPending) {
-            title = "Đang xử lý yêu cầu hoàn tiền";
-            message = `Yêu cầu hoàn tiền cho đơn hàng ${order.id} đang được xem xét.`;
+            title = t.notifications.orderRefundPending;
+            message = t.notifications.orderRefundPendingMsg(order.id);
+        } else {
+            title = t.notifications.orderCompleted;
+            message = t.notifications.orderCompletedMsg(titles);
         }
 
         notifications.push({
@@ -121,13 +134,15 @@ function buildNotifications(
             createdAt: date,
             title,
             message,
-            time: getNotificationTime(date),
+            time: getNotificationTime(date, t),
             href: "/orders",
-            icon: isRefunded ? Clock : isRejected ? AlertCircle : isPending ? Clock : CheckCircle2,
+            icon: isRefunded || isPending
+                ? Clock
+                : isRejected
+                    ? AlertCircle
+                    : CheckCircle2,
             className: "notification-item__icon--purchase",
         });
-    });
-
     posts.forEach((post) => {
         if (post.userId !== userId) return;
         post.replies.forEach((reply) => {
@@ -135,9 +150,9 @@ function buildNotifications(
             notifications.push({
                 id: `reply:${reply.id}`,
                 createdAt: reply.createdAt,
-                title: "Có phản hồi mới trong Cộng đồng",
-                message: `${reply.userName} đã trả lời bài viết “${post.title}”.`,
-                time: getNotificationTime(reply.createdAt),
+                title: t.notifications.newReply,
+                message: t.notifications.newReplyMsg(reply.userName, post.title),
+                time: getNotificationTime(reply.createdAt, t),
                 href: "/community",
                 icon: MessageCircle,
                 className: "notification-item__icon--community",
@@ -150,9 +165,9 @@ function buildNotifications(
         notifications.push({
             id: `spin:${spin.id}`,
             createdAt: spin.createdAt,
-            title: "Bạn vừa nhận được voucher",
-            message: `Bạn nhận được ${spin.prizeName} với mã ${spin.voucherCode}.`,
-            time: getNotificationTime(spin.createdAt),
+            title: t.notifications.voucherReceived,
+            message: t.notifications.voucherReceivedMsg(spin.prizeName, spin.voucherCode),
+            time: getNotificationTime(spin.createdAt, t),
             href: "/profile/vouchers",
             icon: Gift,
             className: "notification-item__icon--voucher",
@@ -179,6 +194,9 @@ export default function Header() {
     const [searchParams] = useSearchParams();
     const urlKeyword = searchParams.get("q") ?? "";
     const [keyword, setKeyword] = useState(urlKeyword);
+    const { t, formatPrice } = useI18n();
+
+    useEffect(() => {
     const [prevUrlKeyword, setPrevUrlKeyword] = useState(urlKeyword);
     if (prevUrlKeyword !== urlKeyword) {
         setPrevUrlKeyword(urlKeyword);
@@ -237,19 +255,17 @@ export default function Header() {
                 if (!active) return;
                 setNotifications({
                     userId,
-                    items: buildNotifications(orders, posts, spins, userId),
+                    items: buildNotifications(orders, posts, spins, userId, t),
                 });
                 setNotificationsError(null);
             } catch (error) {
                 if (!active) return;
-                setNotificationsError(
-                    {
-                        userId,
-                        message: error instanceof Error
-                            ? error.message
-                            : "Không thể tải thông báo.",
-                    }
-                );
+                setNotificationsError({
+                    userId,
+                    message: error instanceof Error
+                        ? error.message
+                        : t.header.notifications.loadError,
+                });
             }
         }
 
@@ -259,7 +275,7 @@ export default function Header() {
             active = false;
             window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
         };
-    }, [currentUserId]);
+    }, [currentUserId, t]);
 
     useEffect(() => {
         return onSearchHistoryChange(() => setHistory(getSearchHistory()));
@@ -400,7 +416,6 @@ export default function Header() {
                 );
             }
         } else {
-
             if (event.key === "ArrowDown") {
                 event.preventDefault();
                 setActiveIndex((index) =>
@@ -440,34 +455,34 @@ export default function Header() {
             <div className="header__inner">
                 <Link to="/" className="header__logo">
                     <Gamepad2 size={26} />
-                    <span>ATA GAMES</span>
+                    <span>{t.header.logo}</span>
                 </Link>
 
-                <nav className="header__nav" aria-label="Điều hướng chính">
+                <nav className="header__nav" aria-label={t.header.nav_aria}>
                     <NavLink to="/home" className={navClass}>
-                        Trang chủ
+                        {t.header.nav.home}
                     </NavLink>
                     <NavLink to="/store" className={navClass}>
-                        Cửa hàng
+                        {t.header.nav.store}
                     </NavLink>
                     <NavLink to="/library" className={navClass}>
-                        Thư viện
+                        {t.header.nav.library}
                     </NavLink>
                     <NavLink to="/community" className={navClass}>
-                        Cộng đồng
+                        {t.header.nav.community}
                     </NavLink>
                     <div className="header__support">
                         <button type="button" className="header__link header__support-trigger" aria-haspopup="true">
-                            Hỗ trợ
+                            {t.header.nav.support}
                         </button>
                         <div className="header__support-menu">
                             <Link to="/support/purchase-guide" role="menuitem">
                                 <BookOpen size={17} />
-                                <span>Hướng dẫn mua hàng</span>
+                                <span>{t.header.support.purchaseGuide}</span>
                             </Link>
                             <Link to="/support/policies" role="menuitem">
                                 <LifeBuoy size={17} />
-                                <span>Chính sách &amp; Điều khoản</span>
+                                <span>{t.header.support.policies}</span>
                             </Link>
                         </div>
                     </div>
@@ -482,7 +497,7 @@ export default function Header() {
                     <Search size={17} />
                     <input
                         type="text"
-                        placeholder="Tìm kiếm..."
+                        placeholder={t.header.search.placeholder}
                         value={keyword}
                         onChange={(event) => {
                             setKeyword(event.target.value);
@@ -503,7 +518,7 @@ export default function Header() {
                                 ? `header-suggestion-${activeIndex}`
                                 : undefined
                         }
-                        aria-label="Tìm kiếm game"
+                        aria-label={t.header.search.ariaLabel}
                         autoComplete="off"
                     />
 
@@ -511,8 +526,8 @@ export default function Header() {
                         <button
                             type="button"
                             className="header__search-clear"
-                            title="Xóa từ khóa tìm kiếm"
-                            aria-label="Xóa từ khóa tìm kiếm"
+                            title={t.header.search.clearLabel}
+                            aria-label={t.header.search.clearLabel}
                             onClick={handleClearKeyword}
                         >
                             <X size={15} />
@@ -529,20 +544,18 @@ export default function Header() {
                                 <li className="search-history">
                                     <div className="search-history__header">
                                         <span className="search-history__title">
-                                            <Clock size={13} /> Lịch sử tìm kiếm
+                                            <Clock size={13} /> {t.header.search.history}
                                         </span>
                                         <button
                                             type="button"
                                             className="search-history__clear-all"
-                                            onMouseDown={(e) =>
-                                                e.preventDefault()
-                                            }
+                                            onMouseDown={(e) => e.preventDefault()}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 clearSearchHistory();
                                             }}
                                         >
-                                            Xóa tất cả
+                                            {t.header.search.clearAll}
                                         </button>
                                     </div>
                                     <ul className="search-history__list">
@@ -554,40 +567,29 @@ export default function Header() {
                                                         ? "search-history__item--active"
                                                         : ""
                                                 }`}
-                                                onMouseDown={(e) =>
-                                                    e.preventDefault()
-                                                }
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => {
                                                     setKeyword(term);
                                                     addSearchHistory(term);
                                                     setIsOpen(false);
                                                     navigate(
-                                                        `/store?q=${encodeURIComponent(
-                                                            term
-                                                        )}`
+                                                        `/store?q=${encodeURIComponent(term)}`
                                                     );
                                                 }}
                                             >
                                                 <span className="search-history__keyword">
-                                                    <Clock
-                                                        size={13}
-                                                        color="#62758f"
-                                                    />
+                                                    <Clock size={13} color="#62758f" />
                                                     {term}
                                                 </span>
                                                 <button
                                                     type="button"
                                                     className="search-history__remove-btn"
-                                                    title={`Xóa "${term}"`}
-                                                    onMouseDown={(e) =>
-                                                        e.preventDefault()
-                                                    }
+                                                    title={`${t.common.delete} "${term}"`}
+                                                    onMouseDown={(e) => e.preventDefault()}
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
-                                                        removeSearchHistoryItem(
-                                                            term
-                                                        );
+                                                        removeSearchHistoryItem(term);
                                                     }}
                                                 >
                                                     <X size={13} />
@@ -609,15 +611,9 @@ export default function Header() {
                                                     ? "search-suggest__item--active"
                                                     : ""
                                             }`}
-                                            onMouseDown={(event) =>
-                                                event.preventDefault()
-                                            }
-                                            onMouseEnter={() =>
-                                                setActiveIndex(index)
-                                            }
-                                            onClick={() =>
-                                                goToGame(game.id, game.title)
-                                            }
+                                            onMouseDown={(event) => event.preventDefault()}
+                                            onMouseEnter={() => setActiveIndex(index)}
+                                            onClick={() => goToGame(game.id, game.title)}
                                         >
                                             <img
                                                 src={game.coverImage}
@@ -644,7 +640,7 @@ export default function Header() {
                                                 )}
                                                 <span>
                                                     {game.price === 0
-                                                        ? "Miễn phí"
+                                                        ? t.common.free
                                                         : formatPrice(game.price)}
                                                 </span>
                                             </span>
@@ -655,44 +651,35 @@ export default function Header() {
                                         <li
                                             id={`header-suggestion-${viewAllIndex}`}
                                             role="option"
-                                            aria-selected={
-                                                activeIndex === viewAllIndex
-                                            }
+                                            aria-selected={activeIndex === viewAllIndex}
                                             className={`search-suggest__all ${
                                                 activeIndex === viewAllIndex
                                                     ? "search-suggest__item--active"
                                                     : ""
                                             }`}
-                                            onMouseDown={(event) =>
-                                                event.preventDefault()
-                                            }
-                                            onMouseEnter={() =>
-                                                setActiveIndex(viewAllIndex)
-                                            }
+                                            onMouseDown={(event) => event.preventDefault()}
+                                            onMouseEnter={() => setActiveIndex(viewAllIndex)}
                                             onClick={() => {
                                                 const q = keyword.trim();
                                                 if (q) addSearchHistory(q);
                                                 setIsOpen(false);
                                                 navigate(
-                                                    `/store?q=${encodeURIComponent(
-                                                        q
-                                                    )}`
+                                                    `/store?q=${encodeURIComponent(q)}`
                                                 );
                                             }}
                                         >
-                                            Xem tất cả {totalMatches} kết quả cho “
-                                            {keyword.trim()}”
+                                            {t.header.search.viewAll(totalMatches, keyword.trim())}
                                         </li>
                                     ) : (
                                         <li
                                             className="search-suggest__empty"
                                             role="option"
-                                            aria-selected="false"
+                                            aria-selected={false}
                                         >
                                             {gamesStatus === "loading" ||
                                             gamesStatus === "idle"
-                                                ? "Đang tải danh sách game..."
-                                                : `Không tìm thấy game nào cho “${keyword.trim()}”`}
+                                                ? t.header.search.loading
+                                                : t.header.search.noResult(keyword.trim())}
                                         </li>
                                     )}
                                 </>
@@ -702,10 +689,13 @@ export default function Header() {
                 </form>
 
                 <div className="header__actions">
+                    {/* Language / Currency switcher */}
+                    <LanguageSwitcher />
+
                     <Link
                         to="/cart"
                         className="header__icon-button"
-                        aria-label={`Giỏ hàng (${cartCount} sản phẩm)`}
+                        aria-label={t.header.cart.ariaLabel(cartCount)}
                     >
                         <ShoppingCart size={20} />
                         {cartCount > 0 && (
@@ -716,7 +706,7 @@ export default function Header() {
                         <button
                             type="button"
                             className="header__icon-button"
-                            aria-label={`Thông báo (${unreadNotificationCount} chưa đọc)`}
+                            aria-label={t.header.notifications.ariaLabel(unreadNotificationCount)}
                             aria-expanded={notificationsOpen}
                             aria-controls="header-notifications-menu"
                             onClick={() => setNotificationsOpen((open) => !open)}
@@ -727,17 +717,24 @@ export default function Header() {
                             )}
                         </button>
                         {notificationsOpen && (
-                            <section className="header-notifications" id="header-notifications-menu" aria-label="Thông báo">
+                            <section className="header-notifications" id="header-notifications-menu" aria-label={t.header.notifications.title}>
                                 <div className="header-notifications__heading">
-                                    <div><strong>Thông báo</strong><span>{unreadNotificationCount} chưa đọc</span></div>
-                                    <button type="button" onClick={markAllNotificationsRead} disabled={unreadNotificationCount === 0}>Đọc tất cả</button>
+                                    <div>
+                                        <strong>{t.header.notifications.title}</strong>
+                                        <span>{t.header.notifications.unread(unreadNotificationCount)}</span>
+                                    </div>
+                                    <button type="button" onClick={markAllNotificationsRead} disabled={unreadNotificationCount === 0}>
+                                        {t.header.notifications.markAllRead}
+                                    </button>
                                 </div>
                                 <div className="header-notifications__list">
                                     {currentNotificationsError ? (
                                         <p className="header-notifications__note" role="alert">{currentNotificationsError}</p>
                                     ) : notificationsForUser.length === 0 ? (
                                         <p className="header-notifications__note">
-                                            {user ? "Chưa có sự kiện mới." : "Đăng nhập để xem thông báo của bạn."}
+                                            {user
+                                                ? t.header.notifications.empty
+                                                : t.header.notifications.loginPrompt}
                                         </p>
                                     ) : null}
                                     {notificationsForUser.map((notification) => {
@@ -756,7 +753,7 @@ export default function Header() {
                                                     <span>{notification.message}</span>
                                                     <small>{notification.time}</small>
                                                 </span>
-                                                {!isRead && <span className="header-notification__unread" aria-label="Chưa đọc" />}
+                                                {!isRead && <span className="header-notification__unread" aria-label={t.common.ok} />}
                                             </Link>
                                         );
                                     })}
@@ -770,7 +767,7 @@ export default function Header() {
                                 type="button"
                                 className="header__profile-link"
                                 aria-haspopup="true"
-                                aria-label={`Tài khoản của ${user.name}`}
+                                aria-label={t.header.account.ariaLabel(user.name)}
                                 title={user.name}
                             >
                                 {user.avatar ? (
@@ -781,16 +778,16 @@ export default function Header() {
                             </button>
                             <div className="header__account-menu">
                                 <Link to="/profile">
-                                    <User size={17} /> Hồ sơ cá nhân
+                                    <User size={17} /> {t.header.account.profile}
                                 </Link>
                                 <Link to="/profile/vouchers">
-                                    <Ticket size={17} /> Kho voucher của tôi
+                                    <Ticket size={17} /> {t.header.account.vouchers}
                                 </Link>
                                 <Link to="/orders">
-                                    <ShoppingCart size={17} /> Lịch sử đơn hàng
+                                    <ShoppingCart size={17} /> {t.header.account.orders}
                                 </Link>
                                 <Link to="/favorites">
-                                    <Heart size={17} /> Yêu thích
+                                    <Heart size={17} /> {t.header.account.favorites}
                                 </Link>
                             </div>
                             <button
@@ -800,20 +797,18 @@ export default function Header() {
                                     try {
                                         logout();
                                     } catch {
-                                        window.alert(
-                                            "Không thể đăng xuất. Vui lòng thử lại."
-                                        );
+                                        window.alert(t.header.account.logoutError);
                                     }
                                 }}
                             >
                                 <LogOut size={17} />
-                                <span>Đăng xuất</span>
+                                <span>{t.header.account.logout}</span>
                             </button>
                         </div>
                     ) : (
                         <Link to="/login" className="header__login">
                             <User size={17} />
-                            <span>Đăng nhập</span>
+                            <span>{t.header.account.login}</span>
                         </Link>
                     )}
                 </div>

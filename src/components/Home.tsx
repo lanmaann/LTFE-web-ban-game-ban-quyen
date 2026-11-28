@@ -12,14 +12,16 @@ import {
 import HeroCarousel from "./HeroCarousel";
 import GameItem from "./GameItem";
 import StateMessage from "./StateMessage";
+import { useI18n } from "../i18n/I18nContext";
 
 interface SectionProps {
     title: string;
     subtitle: string;
     games: Game[];
+    viewAllLabel: string;
 }
 
-function GameSection({ title, subtitle, games }: SectionProps) {
+function GameSection({ title, subtitle, games, viewAllLabel }: SectionProps) {
     if (games.length === 0) return null;
 
     return (
@@ -30,7 +32,7 @@ function GameSection({ title, subtitle, games }: SectionProps) {
                     <p>{subtitle}</p>
                 </div>
                 <Link to="/store" className="home-section__more">
-                    Xem tất cả <ArrowRight size={16} />
+                    {viewAllLabel} <ArrowRight size={16} />
                 </Link>
             </div>
 
@@ -49,6 +51,8 @@ export default function Home() {
     const status = useAppSelector(selectGamesStatus);
     const error = useAppSelector(selectGamesError);
     const loading = status === "idle" || status === "loading";
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
 
     useEffect(() => {
         void dispatch(fetchGames());
@@ -77,17 +81,17 @@ export default function Home() {
                 {loading && (
                     <StateMessage
                         variant="loading"
-                        title="Đang tải trang chủ"
-                        message="Vui lòng đợi trong giây lát."
+                        title={isVi ? "Đang tải trang chủ" : "Loading Home"}
+                        message={isVi ? "Vui lòng đợi trong giây lát." : "Please wait a moment."}
                     />
                 )}
 
                 {!loading && error && (
                     <StateMessage
                         variant="error"
-                        title="Chưa thể tải game"
+                        title={isVi ? "Chưa thể tải game" : "Failed to load games"}
                         message={error}
-                        actionLabel="Thử lại"
+                        actionLabel={t.common.retry}
                         onAction={() => dispatch(fetchGames())}
                     />
                 )}
@@ -98,35 +102,41 @@ export default function Home() {
                         <div className="lucky-wheel-mini-banner">
                             <div className="lucky-wheel-mini-banner__content">
                                 <div className="lucky-wheel-mini-banner__text">
-                                    <h3>Vòng Quay May Mắn Hằng Ngày</h3>
-                                    <p>Mỗi ngày 1 lượt quay miễn phí – Nhận voucher giảm giá tới 50.000₫ &amp; 20%</p>
+                                    <h3>{isVi ? "Vòng Quay May Mắn Hằng Ngày" : "Daily Lucky Wheel"}</h3>
+                                    <p>{isVi
+                                        ? `Mỗi ngày 1 lượt quay miễn phí – Nhận voucher giảm giá tới ${formatPrice(50000)} & 20%`
+                                        : `1 free spin every day – Win vouchers up to ${formatPrice(50000)} & 20% off`}</p>
                                 </div>
                             </div>
                             <Link to="/profile/lucky-wheel" className="lucky-wheel-mini-banner__btn">
-                                <span>Quay ngay</span>
+                                <span>{t.luckyWheel.spin}</span>
                                 <ArrowRight size={16} />
                             </Link>
                         </div>
 
                         <GameSection
-                            title="Đang giảm giá"
-                            subtitle="Ưu đãi sâu nhất hôm nay"
+                            title={t.home.onSale}
+                            subtitle={isVi ? "Ưu đãi sâu nhất hôm nay" : "Biggest discounts today"}
                             games={sections.deals}
+                            viewAllLabel={t.home.viewAll}
                         />
                         <GameSection
-                            title="Game nổi bật"
-                            subtitle="Được cộng đồng yêu thích"
+                            title={t.home.featuredGames}
+                            subtitle={isVi ? "Được cộng đồng yêu thích" : "Community favorites"}
                             games={sections.featured}
+                            viewAllLabel={t.home.viewAll}
                         />
                         <GameSection
-                            title="Mới phát hành"
-                            subtitle="Những tựa game vừa ra mắt"
+                            title={t.home.newReleases}
+                            subtitle={isVi ? "Những tựa game vừa ra mắt" : "Recently released titles"}
                             games={sections.newest}
+                            viewAllLabel={t.home.viewAll}
                         />
                         <GameSection
-                            title="Đánh giá cao"
-                            subtitle="Điểm đánh giá tốt nhất"
+                            title={isVi ? "Đánh giá cao" : "Top Rated"}
+                            subtitle={isVi ? "Điểm đánh giá tốt nhất" : "Highest player ratings"}
                             games={sections.topRated}
+                            viewAllLabel={t.home.viewAll}
                         />
                     </>
                 )}

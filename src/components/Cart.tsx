@@ -13,7 +13,8 @@ import {
     removeFromCart,
     clearCart,
 } from "../store/cartSlice";
-import { formatPrice } from "../utils/format";
+import { useI18n } from "../i18n/I18nContext";
+import { getLocalizedGame } from "../i18n/productI18n";
 
 const FALLBACK_IMAGE = "https://placehold.co/120x68/18243A/FFFFFF?text=ATA";
 
@@ -21,6 +22,8 @@ export default function Cart() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
     const items = useAppSelector(selectCartItems);
     const total = useAppSelector(selectCartTotal);
     const originalTotal = useAppSelector(selectCartOriginalTotal);
@@ -72,14 +75,14 @@ export default function Cart() {
         (codeToApply?: string) => {
             const code = (codeToApply ?? couponCode).trim();
             if (!code) {
-                setCouponError("Vui lòng nhập mã giảm giá.");
+                setCouponError(isVi ? "Vui lòng nhập mã giảm giá." : "Please enter a voucher code.");
                 setCouponSuccess("");
                 return;
             }
 
             const res = luckyWheelService.validateAndApplyVoucher(code, total, user?.id);
             if (!res.success || !res.voucher) {
-                setCouponError(res.error || "Mã giảm giá không hợp lệ.");
+                setCouponError(res.error || t.cart.invalidVoucher);
                 setCouponSuccess("");
                 setAppliedVoucher(null);
                 return;
@@ -88,10 +91,14 @@ export default function Cart() {
             setAppliedVoucher(res.voucher);
             setCouponCode(res.voucher.code);
             setCouponError("");
-            setCouponSuccess(`Đã áp dụng ${res.voucher.name} (-${formatPrice(res.discountAmount)})`);
+            setCouponSuccess(
+                isVi
+                    ? `Đã áp dụng ${res.voucher.name} (-${formatPrice(res.discountAmount)})`
+                    : `Applied ${res.voucher.name} (-${formatPrice(res.discountAmount)})`
+            );
             setShowVoucherList(false);
         },
-        [couponCode, total, user]
+        [couponCode, total, user, isVi, t.cart.invalidVoucher, formatPrice]
     );
 
     const handleRemoveCoupon = useCallback(() => {
@@ -106,19 +113,21 @@ export default function Cart() {
             <div className="cart-page">
                 <div className="cart-page__header">
                     <ShoppingCart size={28} aria-hidden="true" />
-                    <h1 id="cart-heading">Giỏ hàng</h1>
+                    <h1 id="cart-heading">{t.cart.title}</h1>
                 </div>
                 <div className="cart-empty" role="status" aria-labelledby="cart-heading">
                     <div className="cart-empty__icon" aria-hidden="true">
                         <ShoppingBag size={72} strokeWidth={1.2} />
                     </div>
-                    <h2 className="cart-empty__title">Giỏ hàng của bạn đang trống</h2>
+                    <h2 className="cart-empty__title">{t.cart.empty}</h2>
                     <p className="cart-empty__desc">
-                        Hãy khám phá cửa hàng và thêm game yêu thích vào giỏ nhé!
+                        {isVi
+                            ? "Hãy khám phá cửa hàng và thêm game yêu thích vào giỏ nhé!"
+                            : "Explore the store and add your favorite games to the cart!"}
                     </p>
                     <Link to="/store" className="cart-empty__cta" id="cart-shop-btn">
                         <ShoppingCart size={18} />
-                        Tiếp tục mua sắm
+                        {t.cart.continueShopping}
                     </Link>
                 </div>
             </div>
@@ -129,9 +138,9 @@ export default function Cart() {
         <div className="cart-page">
             <div className="cart-page__header">
                 <ShoppingCart size={28} aria-hidden="true" />
-                <h1 id="cart-heading">Giỏ hàng</h1>
+                <h1 id="cart-heading">{t.cart.title}</h1>
                 <span className="cart-page__count" aria-live="polite">
-                    {items.length} {items.length === 1 ? "game" : "game"}
+                    {items.length} {items.length === 1 ? "game" : "games"}
                 </span>
             </div>
 
@@ -147,16 +156,17 @@ export default function Cart() {
                             id="clear-cart-btn"
                             className="cart-items__clear-btn"
                             onClick={() => setShowClearConfirm(true)}
-                            aria-label="Xóa toàn bộ giỏ hàng"
+                            aria-label={isVi ? "Xóa toàn bộ giỏ hàng" : "Clear cart"}
                         >
                             <Trash2 size={15} />
-                            Xóa tất cả
+                            {t.header.search.clearAll}
                         </button>
                     </div>
 
-                    <ul className="cart-list" role="list" aria-label="Danh sách game trong giỏ">
+                    <ul className="cart-list" role="list" aria-label={t.cart.title}>
                         {items.map((item) => {
                             const { game } = item;
+                            const localized = getLocalizedGame(game, locale);
                             const hasDiscount =
                                 game.originalPrice > game.price && game.price > 0;
                             const isFree = game.price === 0;
@@ -172,12 +182,12 @@ export default function Cart() {
                                         to={`/games/${game.id}`}
                                         className="cart-item__image-link"
                                         tabIndex={isRemoving ? -1 : 0}
-                                        aria-label={`Xem chi tiết ${game.title}`}
+                                        aria-label={localized.title}
                                     >
                                         <img
                                             className="cart-item__image"
                                             src={game.coverImage || FALLBACK_IMAGE}
-                                            alt={game.title}
+                                            alt={localized.title}
                                             loading="lazy"
                                             onError={(e) => {
                                                 e.currentTarget.onerror = null;
@@ -192,7 +202,7 @@ export default function Cart() {
                                             className="cart-item__title"
                                             tabIndex={isRemoving ? -1 : 0}
                                         >
-                                            {game.title}
+                                            {localized.title}
                                         </Link>
                                         {game.platform && game.platform.length > 0 && (
                                             <div className="cart-item__platforms">
@@ -217,7 +227,7 @@ export default function Cart() {
                                             </del>
                                         )}
                                         <strong className="cart-item__final-price">
-                                            {isFree ? "Miễn phí" : formatPrice(game.price)}
+                                            {isFree ? t.common.free : formatPrice(game.price)}
                                         </strong>
                                     </div>
                                     <button
@@ -226,7 +236,7 @@ export default function Cart() {
                                         className="cart-item__remove-btn"
                                         onClick={() => handleRemove(game.id)}
                                         disabled={isRemoving}
-                                        aria-label={`Xóa ${game.title} khỏi giỏ hàng`}
+                                        aria-label={`${t.cart.remove} ${localized.title}`}
                                     >
                                         <X size={16} />
                                     </button>
@@ -240,20 +250,20 @@ export default function Cart() {
                         id="cart-continue-shopping"
                     >
                         <ArrowRight size={16} />
-                        Tiếp tục mua sắm
+                        {t.cart.continueShopping}
                     </Link>
                 </section>
-                <aside className="cart-summary" aria-label="Tổng kết đơn hàng">
-                    <h2 className="cart-summary__title">Tổng đơn hàng</h2>
+                <aside className="cart-summary" aria-label={t.checkout.orderSummary}>
+                    <h2 className="cart-summary__title">{t.checkout.orderSummary}</h2>
                     <div className="cart-summary__rows">
                         <div className="cart-summary__row">
-                            <span>Tạm tính ({items.length} game)</span>
+                            <span>{t.cart.subtotal} ({items.length})</span>
                             <span>{formatPrice(originalTotal)}</span>
                         </div>
 
                         {savings > 0 && (
                             <div className="cart-summary__row cart-summary__row--savings">
-                                <span>Tiết kiệm</span>
+                                <span>{t.cart.discount}</span>
                                 <span>- {formatPrice(savings)}</span>
                             </div>
                         )}
@@ -268,7 +278,7 @@ export default function Cart() {
                         <div className="cart-summary__divider" role="separator" />
 
                         <div className="cart-summary__row cart-summary__row--total">
-                            <span>Tổng thanh toán</span>
+                            <span>{t.cart.total}</span>
                             <span className="cart-summary__total-amount">
                                 {formatPrice(payableTotal)}
                             </span>
@@ -277,7 +287,7 @@ export default function Cart() {
                     <div className="cart-coupon">
                         <div className="cart-coupon__header-row">
                             <label htmlFor="coupon-input" className="cart-coupon__label">
-                                Mã giảm giá / Voucher
+                                {t.cart.voucher}
                             </label>
                             {availableVouchers.length > 0 && (
                                 <button
@@ -286,7 +296,7 @@ export default function Cart() {
                                     onClick={() => setShowVoucherList((prev) => !prev)}
                                 >
                                     <Ticket size={14} />
-                                    <span>Chọn từ kho ({availableVouchers.length})</span>
+                                    <span>{isVi ? `Chọn từ kho (${availableVouchers.length})` : `Choose (${availableVouchers.length})`}</span>
                                 </button>
                             )}
                         </div>
@@ -306,7 +316,7 @@ export default function Cart() {
                                             <code>{v.code}</code>
                                         </div>
                                         <button type="button" className="voucher-select-pill">
-                                            {appliedVoucher?.id === v.id ? <Check size={14} /> : "Dùng"}
+                                            {appliedVoucher?.id === v.id ? <Check size={14} /> : (isVi ? "Dùng" : "Use")}
                                         </button>
                                     </div>
                                 ))}
@@ -318,7 +328,7 @@ export default function Cart() {
                                 id="coupon-input"
                                 type="text"
                                 className="cart-coupon__input"
-                                placeholder="Nhập mã voucher..."
+                                placeholder={isVi ? "Nhập mã voucher..." : "Enter voucher code..."}
                                 value={couponCode}
                                 onChange={(e) => {
                                     setCouponCode(e.target.value);
@@ -335,7 +345,7 @@ export default function Cart() {
                                     className="cart-coupon__btn cart-coupon__btn--remove"
                                     onClick={handleRemoveCoupon}
                                 >
-                                    Gỡ
+                                    {t.cart.remove}
                                 </button>
                             ) : (
                                 <button
@@ -344,7 +354,7 @@ export default function Cart() {
                                     className="cart-coupon__btn"
                                     onClick={() => handleApplyCoupon()}
                                 >
-                                    Áp dụng
+                                    {t.cart.applyVoucher}
                                 </button>
                             )}
                         </div>
@@ -378,9 +388,9 @@ export default function Cart() {
                                 },
                             });
                         }}
-                        aria-label={`Tiến hành thanh toán — Tổng ${formatPrice(payableTotal)}`}
+                        aria-label={`${t.cart.checkout} — ${formatPrice(payableTotal)}`}
                     >
-                        Tiến hành thanh toán
+                        {t.cart.checkout}
                         <ArrowRight size={18} />
                     </button>
 
@@ -401,10 +411,12 @@ export default function Cart() {
                             <Trash2 size={32} />
                         </div>
                         <h3 id="confirm-title" className="cart-confirm-modal__title">
-                            Xóa toàn bộ giỏ hàng?
+                            {isVi ? "Xóa toàn bộ giỏ hàng?" : "Clear entire cart?"}
                         </h3>
                         <p className="cart-confirm-modal__desc">
-                            Tất cả {items.length} game sẽ bị xóa khỏi giỏ hàng. Hành động này không thể hoàn tác.
+                            {isVi
+                                ? `Tất cả ${items.length} game sẽ bị xóa khỏi giỏ hàng. Hành động này không thể hoàn tác.`
+                                : `All ${items.length} games will be removed from your cart. This action cannot be undone.`}
                         </p>
                         <div className="cart-confirm-modal__actions">
                             <button
@@ -413,7 +425,7 @@ export default function Cart() {
                                 className="cart-confirm-modal__cancel"
                                 onClick={() => setShowClearConfirm(false)}
                             >
-                                Hủy
+                                {t.common.cancel}
                             </button>
                             <button
                                 type="button"
@@ -421,7 +433,7 @@ export default function Cart() {
                                 className="cart-confirm-modal__confirm"
                                 onClick={handleClearCart}
                             >
-                                Xóa tất cả
+                                {t.header.search.clearAll}
                             </button>
                         </div>
                     </div>

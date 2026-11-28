@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, Gamepad2, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
+import { useI18n } from "../i18n/I18nContext";
 
 interface AuthPageProps {
     mode: "login" | "register";
@@ -10,6 +11,8 @@ interface AuthPageProps {
 export default function AuthPage({ mode }: AuthPageProps) {
     const isRegister = mode === "register";
     const { user, login, register } = useAuth();
+    const { t, locale } = useI18n();
+    const isVi = locale === "vi";
     const location = useLocation();
     const from = (location.state as {
         from?: { pathname?: string; search?: string; hash?: string };
@@ -33,7 +36,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         setError("");
 
         if (isRegister && password !== confirmPassword) {
-            setError("Mật khẩu xác nhận không khớp.");
+            setError(t.profile.passwordMismatch);
             return;
         }
 
@@ -50,7 +53,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             setError(
                 requestError instanceof Error
                     ? requestError.message
-                    : "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                    : t.common.error,
             );
         } finally {
             setIsSubmitting(false);
@@ -67,33 +70,35 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 {isRegister && registrationComplete ? (
                     <div className="auth-success" role="status">
                         <CheckCircle2 size={48} aria-hidden="true" />
-                        <h1>Đăng ký thành công!</h1>
+                        <h1>{t.auth.registerSuccess}</h1>
                         <p>
-                            Tài khoản đã được tạo. Hãy đăng nhập bằng email và mật khẩu vừa đăng ký.
+                            {isVi
+                                ? "Tài khoản đã được tạo. Hãy đăng nhập bằng email và mật khẩu vừa đăng ký."
+                                : "Your account has been created. Sign in with your email and password."}
                         </p>
                         <Link className="auth-form__submit auth-success__login" to="/login" state={location.state}>
-                            Đăng nhập ngay
+                            {t.auth.login}
                         </Link>
                     </div>
                 ) : (
                     <>
-                <h1>{isRegister ? "Tạo tài khoản" : "Chào mừng trở lại"}</h1>
+                <h1>{isRegister ? (isVi ? "Tạo tài khoản" : "Create Account") : (isVi ? "Chào mừng trở lại" : "Welcome Back")}</h1>
                 <p className="auth-card__subtitle">
                     {isRegister
-                        ? "Tạo tài khoản để bắt đầu mua sắm."
-                        : "Đăng nhập để tiếp tục khám phá game yêu thích."}
+                        ? (isVi ? "Tạo tài khoản để bắt đầu mua sắm." : "Create an account to start shopping.")
+                        : (isVi ? "Đăng nhập để tiếp tục khám phá game yêu thích." : "Sign in to continue exploring your favorite games.")}
                 </p>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     {isRegister && (
                         <label className="auth-form__field">
-                            <span>Họ và tên</span>
+                            <span>{t.auth.name}</span>
                             <span className="auth-form__input">
                                 <UserRound size={18} aria-hidden="true" />
                                 <input
                                     type="text"
                                     name="name"
-                                    placeholder="Nguyễn Văn A"
+                                    placeholder={isVi ? "Nguyễn Văn A" : "John Doe"}
                                     value={name}
                                     onChange={(event) => setName(event.target.value)}
                                     autoComplete="name"
@@ -105,13 +110,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         </label>
                     )}
                     <label className="auth-form__field">
-                        <span>Email</span>
+                        <span>{t.auth.email}</span>
                         <span className="auth-form__input">
                             <Mail size={18} aria-hidden="true" />
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="ban@email.com"
+                                placeholder="you@email.com"
                                 value={email}
                                 onChange={(event) => setEmail(event.target.value)}
                                 autoComplete="email"
@@ -121,13 +126,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     </label>
 
                     <label className="auth-form__field">
-                        <span>Mật khẩu</span>
+                        <span>{t.auth.password}</span>
                         <span className="auth-form__input">
                             <LockKeyhole size={18} aria-hidden="true" />
                             <input
                                 type="password"
                                 name="password"
-                                placeholder="Tối thiểu 6 ký tự"
+                                placeholder={isVi ? "Tối thiểu 6 ký tự" : "Minimum 6 characters"}
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                                 autoComplete={isRegister ? "new-password" : "current-password"}
@@ -139,13 +144,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
                     {isRegister && (
                         <label className="auth-form__field">
-                            <span>Nhập lại mật khẩu</span>
+                            <span>{t.profile.confirmPassword}</span>
                             <span className="auth-form__input">
                                 <LockKeyhole size={18} aria-hidden="true" />
                                 <input
                                     type="password"
                                     name="confirmPassword"
-                                    placeholder="Nhập lại mật khẩu"
+                                    placeholder={t.profile.confirmPassword}
                                     value={confirmPassword}
                                     onChange={(event) => setConfirmPassword(event.target.value)}
                                     autoComplete="new-password"
@@ -164,17 +169,17 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
                     <button className="auth-form__submit" type="submit" disabled={isSubmitting}>
                         {isSubmitting
-                            ? "Đang xử lý..."
+                            ? t.common.loading
                             : isRegister
-                              ? "Đăng ký"
-                              : "Đăng nhập"}
+                              ? t.auth.register
+                              : t.auth.login}
                     </button>
                 </form>
 
                 <p className="auth-card__switch">
-                    {isRegister ? "Đã có tài khoản?" : "Chưa có tài khoản?"}{" "}
+                    {isRegister ? t.auth.hasAccount : t.auth.noAccount}{" "}
                     <Link to={isRegister ? "/login" : "/register"} state={location.state}>
-                        {isRegister ? "Đăng nhập" : "Đăng ký"}
+                        {isRegister ? t.auth.login : t.auth.register}
                     </Link>
                 </p>
                     </>

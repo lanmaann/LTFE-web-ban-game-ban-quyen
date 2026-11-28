@@ -36,17 +36,18 @@ import ReviewSection from "./ReviewSection";
 import GameQuestions from "./GameQuestions";
 import SupportPopup, { type SupportData } from "./SupportPopup";
 import { api } from "../services/api";
-import { formatPrice } from "../utils/format";
 import { STEAM_TRAILERS } from "../data/trailers";
+import { useI18n } from "../i18n/I18nContext";
+import { getLocalizedGame } from "../i18n/productI18n";
 
 const FALLBACK_BANNER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='500' viewBox='0 0 1200 500'%3E%3Crect width='1200' height='500' fill='%23111c2e'/%3E%3Ctext x='50%25' y='50%25' fill='%2362b5ff' font-family='sans-serif' font-size='32' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3EATA GAMES%3C/text%3E%3C/svg%3E";
 
-function formatDate(dateString: string): string {
-    if (!dateString) return "Chưa cập nhật";
+function formatDate(dateString: string, locale = "vi"): string {
+    if (!dateString) return locale === "vi" ? "Chưa cập nhật" : "N/A";
     try {
         const date = new Date(dateString);
         if (Number.isNaN(date.getTime())) return dateString;
-        return date.toLocaleDateString("vi-VN", {
+        return date.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -76,15 +77,21 @@ export default function GameDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
 
     const storeGames = useAppSelector(selectGames);
 
     const status = useAppSelector(selectGamesStatus);
     const game = storeGames.find((g) => g.id === id) ?? null;
+    const localizedGame = useMemo(
+        () => (game ? getLocalizedGame(game, locale) : null),
+        [game, locale]
+    );
     const loading = status === "idle" || status === "loading";
     const error = !id
-        ? "Không tìm thấy mã định danh game."
-        : "Không thể tải thông tin game hoặc tựa game không tồn tại.";
+        ? (isVi ? "Không tìm thấy mã định danh game." : "Game ID not found.")
+        : (isVi ? "Không thể tải thông tin game hoặc tựa game không tồn tại." : "Could not load game details or game does not exist.");
     const [addedToCart, setAddedToCart] = useState(false);
     const isInCart = useAppSelector(selectIsInCart(game?.id ?? ""));
     const [cartToastMessage, setCartToastMessage] = useState<string | null>(null);
@@ -150,12 +157,14 @@ export default function GameDetail() {
         };
     }, []);
     useEffect(() => {
-        if (game?.title) {
-            document.title = `${game.title} | ATA GAMES - Bản Quyền Chính Hãng`;
+        if (localizedGame?.title) {
+            document.title = isVi
+                ? `${localizedGame.title} | ATA GAMES - Bản Quyền Chính Hãng`
+                : `${localizedGame.title} | ATA GAMES - Official Digital Keys`;
         } else {
-            document.title = "Chi tiết game | ATA GAMES";
+            document.title = isVi ? "Chi tiết game | ATA GAMES" : "Game Details | ATA GAMES";
         }
-    }, [game?.title]);
+    }, [localizedGame?.title, isVi]);
     const mediaItems: MediaItem[] = useMemo(() => {
         if (!game) return [];
 
@@ -316,11 +325,11 @@ export default function GameDetail() {
     function handleAddToCart() {
         if (!game) return;
         if (isInCart) {
-            setCartToastMessage("Game đã có trong giỏ hàng");
+            setCartToastMessage(t.gameDetail.inCart);
             setCartToastType("warning");
         } else {
             dispatch(addToCart(game));
-            setCartToastMessage("Đã thêm vào giỏ hàng");
+            setCartToastMessage(isVi ? "Đã thêm vào giỏ hàng" : "Added to cart");
             setCartToastType("success");
             setAddedToCart(true);
             window.setTimeout(() => setAddedToCart(false), 2200);
@@ -360,17 +369,17 @@ export default function GameDetail() {
             <div className="game-detail__container">
                 <nav className="game-detail__breadcrumbs" aria-label="Breadcrumb">
                     <Link to="/home" className="game-detail__breadcrumb-link">
-                        Trang chủ
+                        {t.header.nav.home}
                     </Link>
                     <ChevronRight size={14} className="game-detail__breadcrumb-separator" />
                     <Link to="/store" className="game-detail__breadcrumb-link">
-                        Cửa hàng
+                        {t.header.nav.store}
                     </Link>
-                    {game && (
+                    {game && localizedGame && (
                         <>
                             <ChevronRight size={14} className="game-detail__breadcrumb-separator" />
-                            <span className="game-detail__breadcrumb-current" title={game.title}>
-                                {game.title}
+                            <span className="game-detail__breadcrumb-current" title={localizedGame.title}>
+                                {localizedGame.title}
                             </span>
                         </>
                     )}
@@ -379,7 +388,7 @@ export default function GameDetail() {
                 <div className="game-detail__top-bar">
                     <Link to="/store" className="game-detail__back-btn">
                         <ArrowLeft size={18} />
-                        <span>Quay lại Cửa hàng</span>
+                        <span>{isVi ? "Quay lại Cửa hàng" : "Back to Store"}</span>
                     </Link>
 
                     {game && (
@@ -387,14 +396,14 @@ export default function GameDetail() {
                             type="button"
                             className="game-detail__share-btn"
                             onClick={handleShare}
-                            title="Sao chép liên kết chia sẻ"
+                            title={isVi ? "Sao chép liên kết chia sẻ" : "Copy share link"}
                         >
                             {copiedLink ? (
                                 <Check size={16} color="var(--color-success)" />
                             ) : (
                                 <Share2 size={16} />
                             )}
-                            <span>{copiedLink ? "Đã sao chép liên kết!" : "Chia sẻ"}</span>
+                            <span>{copiedLink ? t.vouchers.copied : (isVi ? "Chia sẻ" : "Share")}</span>
                         </button>
                     )}
                 </div>
@@ -402,8 +411,8 @@ export default function GameDetail() {
                     <div className="game-detail__state-wrapper">
                         <StateMessage
                             variant="loading"
-                            title="Đang tải thông tin game"
-                            message="Vui lòng đợi trong giây lát..."
+                            title={isVi ? "Đang tải thông tin game" : "Loading game details"}
+                            message={isVi ? "Vui lòng đợi trong giây lát..." : "Please wait a moment..."}
                         />
                     </div>
                 )}
@@ -411,23 +420,23 @@ export default function GameDetail() {
                     <div className="game-detail__state-wrapper">
                         <StateMessage
                             variant="error"
-                            title="Không tìm thấy game"
+                            title={isVi ? "Không tìm thấy game" : "Game not found"}
                             message={error}
-                            actionLabel="Khám phá cửa hàng"
+                            actionLabel={isVi ? "Khám phá cửa hàng" : "Browse Store"}
                             onAction={() => navigate("/store")}
                         />
                     </div>
                 )}
-                {!loading && game && (
+                {!loading && game && localizedGame && (
                     <><div className="game-detail__header-info">
                             <div className="game-detail__badges">
                                 <span className="game-detail__genre-badge">
                                     <Tag size={13} />
-                                    {game.genre}
+                                    {localizedGame.genre}
                                 </span>
                                 {game.isFeatured && (
                                     <span className="game-detail__featured-badge">
-                                        <Flame size={13} /> Nổi bật
+                                        <Flame size={13} /> {isVi ? "Nổi bật" : "Featured"}
                                     </span>
                                 )}
                                 {hasDiscount && (
@@ -435,23 +444,30 @@ export default function GameDetail() {
                                         -{game.discountPercent}%
                                     </span>
                                 )}
+                                {localizedGame.promotionText && (
+                                    <span className="game-detail__featured-badge">
+                                        {localizedGame.promotionText}
+                                    </span>
+                                )}
                             </div>
 
-                            <h1 className="game-detail__title">{game.title}</h1>
+                            <h1 className="game-detail__title">{localizedGame.title}</h1>
 
                             <div className="game-detail__submeta">
                                 <div className="game-detail__rating">
                                     <Star size={17} fill="currentColor" />
                                     <strong>{Number(dynamicRating ?? game.rating).toFixed(1)}</strong>
                                     <span>
-                                        / 5.0 {dynamicReviewCount !== null && dynamicReviewCount > 0 ? `(${dynamicReviewCount} lượt đánh giá)` : "(Cộng đồng đánh giá rất tích cực)"}
+                                        / 5.0 {dynamicReviewCount !== null && dynamicReviewCount > 0
+                                            ? (isVi ? `(${dynamicReviewCount} lượt đánh giá)` : `(${dynamicReviewCount} reviews)`)
+                                            : (isVi ? "(Cộng đồng đánh giá rất tích cực)" : "(Very Positive)")}
                                     </span>
                                 </div>
                                 <span className="game-detail__dot">•</span>
                                 <div className="game-detail__developer-info">
                                     <Building2 size={15} />
                                     <span>
-                                        Phát triển: <strong>{game.developer}</strong>
+                                        {t.gameDetail.developer}: <strong>{game.developer}</strong>
                                     </span>
                                 </div>
                             </div>
@@ -632,37 +648,45 @@ export default function GameDetail() {
                                 <section className="game-detail__section">
                                     <h2 className="game-detail__section-title">
                                         <Gamepad2 size={22} />
-                                        <span>Giới thiệu tựa game</span>
+                                        <span>{isVi ? "Giới thiệu tựa game" : "About This Game"}</span>
                                     </h2>
                                     <div className="game-detail__description">
-                                        <p>{game.description}</p>
+                                        <p>{localizedGame.description}</p>
                                     </div>
 
                                     <div className="game-detail__highlights">
-                                        <h3>Điểm nổi bật của game</h3>
+                                        <h3>{isVi ? "Điểm nổi bật của game" : "Key Highlights"}</h3>
                                         <ul className="game-detail__highlights-list">
                                             <li>
                                                 <Check size={18} className="game-detail__check-icon" />
                                                 <span>
-                                                    Trải nghiệm đồ họa đỉnh cao, âm thanh chân thực cùng thế giới mở sống động.
+                                                    {isVi
+                                                        ? "Trải nghiệm đồ họa đỉnh cao, âm thanh chân thực cùng thế giới mở sống động."
+                                                        : "Experience stunning visuals, immersive audio, and a rich, living world."}
                                                 </span>
                                             </li>
                                             <li>
                                                 <Check size={18} className="game-detail__check-icon" />
                                                 <span>
-                                                    Cốt truyện có chiều sâu lôi cuốn, hệ thống nhiệm vụ phong phú và phát triển nhân vật không giới hạn.
+                                                    {isVi
+                                                        ? "Cốt truyện có chiều sâu lôi cuốn, hệ thống nhiệm vụ phong phú và phát triển nhân vật không giới hạn."
+                                                        : "Deep, engaging storyline with diverse quests and limitless character progression."}
                                                 </span>
                                             </li>
                                             <li>
                                                 <Check size={18} className="game-detail__check-icon" />
                                                 <span>
-                                                    Tối ưu hóa mượt mà cho nền tảng {game.platform?.join(", ") || "PC"}, hỗ trợ đa dạng thiết bị ngoại vi và tay cầm.
+                                                    {isVi
+                                                        ? `Tối ưu hóa mượt mà cho nền tảng ${game.platform?.join(", ") || "PC"}, hỗ trợ đa dạng thiết bị ngoại vi và tay cầm.`
+                                                        : `Smoothly optimized for ${game.platform?.join(", ") || "PC"} with full controller and peripheral support.`}
                                                 </span>
                                             </li>
                                             <li>
                                                 <Check size={18} className="game-detail__check-icon" />
                                                 <span>
-                                                    Kích hoạt và cập nhật tự động trực tiếp từ nền tảng bản quyền chính hãng.
+                                                    {isVi
+                                                        ? "Kích hoạt và cập nhật tự động trực tiếp từ nền tảng bản quyền chính hãng."
+                                                        : "Instant activation and automatic updates directly from official licensed platforms."}
                                                 </span>
                                             </li>
                                         </ul>
@@ -671,60 +695,62 @@ export default function GameDetail() {
                                 <section className="game-detail__section">
                                     <h2 className="game-detail__section-title">
                                         <Cpu size={22} />
-                                        <span>Cấu hình yêu cầu hệ thống</span>
+                                        <span>{isVi ? "Cấu hình yêu cầu hệ thống" : "System Requirements"}</span>
                                     </h2>
                                     <div className="game-detail__requirements-grid">
                                         <div className="game-detail__requirements-card">
-                                            <h4>Cấu hình tối thiểu</h4>
+                                            <h4>{t.gameDetail.systemRequirements}</h4>
                                             <dl className="game-detail__req-list">
                                                 <div>
-                                                    <dt>Hệ điều hành:</dt>
-                                                    <dd>Windows 10 64-bit (phiên bản mới nhất)</dd>
+                                                    <dt>{isVi ? "Hệ điều hành:" : "OS:"}</dt>
+                                                    <dd>{localizedGame.systemRequirements.minimum.os}</dd>
                                                 </div>
                                                 <div>
-                                                    <dt>Bộ vi xử lý:</dt>
-                                                    <dd>Intel Core i5-6600K / AMD Ryzen 5 1600</dd>
+                                                    <dt>{isVi ? "Bộ vi xử lý:" : "Processor:"}</dt>
+                                                    <dd>{localizedGame.systemRequirements.minimum.processor}</dd>
                                                 </div>
                                                 <div>
-                                                    <dt>Bộ nhớ RAM:</dt>
-                                                    <dd>8 GB RAM</dd>
+                                                    <dt>{isVi ? "Bộ nhớ RAM:" : "Memory:"}</dt>
+                                                    <dd>{localizedGame.systemRequirements.minimum.memory}</dd>
                                                 </div>
                                                 <div>
-                                                    <dt>Card đồ họa:</dt>
-                                                    <dd>NVIDIA GeForce GTX 1050 Ti (4GB) / AMD Radeon RX 560</dd>
+                                                    <dt>{isVi ? "Card đồ họa:" : "Graphics:"}</dt>
+                                                    <dd>{localizedGame.systemRequirements.minimum.graphics}</dd>
                                                 </div>
                                                 <div>
-                                                    <dt>Lưu trữ khả dụng:</dt>
-                                                    <dd>60 GB dung lượng trống (Khuyến nghị SSD)</dd>
+                                                    <dt>{isVi ? "Lưu trữ khả dụng:" : "Storage:"}</dt>
+                                                    <dd>{localizedGame.systemRequirements.minimum.storage}</dd>
                                                 </div>
                                             </dl>
                                         </div>
 
-                                        <div className="game-detail__requirements-card game-detail__requirements-card--recommended">
-                                            <h4>Cấu hình đề nghị</h4>
-                                            <dl className="game-detail__req-list">
-                                                <div>
-                                                    <dt>Hệ điều hành:</dt>
-                                                    <dd>Windows 10 / Windows 11 64-bit</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>Bộ vi xử lý:</dt>
-                                                    <dd>Intel Core i7-10700K / AMD Ryzen 7 3700X</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>Bộ nhớ RAM:</dt>
-                                                    <dd>16 GB RAM Dual-Channel</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>Card đồ họa:</dt>
-                                                    <dd>NVIDIA GeForce RTX 3060 (8GB) / AMD Radeon RX 6700 XT</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>Lưu trữ khả dụng:</dt>
-                                                    <dd>60 GB dung lượng trống (Ổ cứng SSD tốc độ cao)</dd>
-                                                </div>
-                                            </dl>
-                                        </div>
+                                        {localizedGame.systemRequirements.recommended && (
+                                            <div className="game-detail__requirements-card game-detail__requirements-card--recommended">
+                                                <h4>{isVi ? "Cấu hình đề nghị" : "Recommended Requirements"}</h4>
+                                                <dl className="game-detail__req-list">
+                                                    <div>
+                                                        <dt>{isVi ? "Hệ điều hành:" : "OS:"}</dt>
+                                                        <dd>{localizedGame.systemRequirements.recommended.os}</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>{isVi ? "Bộ vi xử lý:" : "Processor:"}</dt>
+                                                        <dd>{localizedGame.systemRequirements.recommended.processor}</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>{isVi ? "Bộ nhớ RAM:" : "Memory:"}</dt>
+                                                        <dd>{localizedGame.systemRequirements.recommended.memory}</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>{isVi ? "Card đồ họa:" : "Graphics:"}</dt>
+                                                        <dd>{localizedGame.systemRequirements.recommended.graphics}</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>{isVi ? "Lưu trữ khả dụng:" : "Storage:"}</dt>
+                                                        <dd>{localizedGame.systemRequirements.recommended.storage}</dd>
+                                                    </div>
+                                                </dl>
+                                            </div>
+                                        )}
                                     </div>
                                 </section>
 
@@ -744,9 +770,9 @@ export default function GameDetail() {
                                     <div className="game-detail__purchase-header">
                                         <div className="game-detail__stock-badge">
                                             <span className="game-detail__pulse-dot" />
-                                            <span>Còn hàng (Key kỹ thuật số)</span>
+                                            <span>{isVi ? "Còn hàng (Key kỹ thuật số)" : "In Stock (Digital Key)"}</span>
                                         </div>
-                                        <span className="game-detail__edition-badge">Bản quyền 100%</span>
+                                        <span className="game-detail__edition-badge">{isVi ? "Bản quyền 100%" : "100% Official"}</span>
                                     </div>
                                     <div className="game-detail__price-box">
                                         {hasDiscount ? (
@@ -765,7 +791,7 @@ export default function GameDetail() {
                                                     </span>
                                                 </div>
                                                 <p className="game-detail__saving-text">
-                                                    Tiết kiệm <strong>{formatPrice(savingsAmount)}</strong> khi mua ngay
+                                                    {isVi ? "Tiết kiệm" : "Save"} <strong>{formatPrice(savingsAmount)}</strong> {isVi ? "khi mua ngay" : "today"}
                                                 </p>
                                             </>
                                         ) : (
@@ -783,24 +809,24 @@ export default function GameDetail() {
                                             onClick={handleAddToCart}
                                             aria-label={
                                                 isInCart
-                                                    ? `${game.title} đã có trong giỏ hàng`
-                                                    : `Thêm ${game.title} vào giỏ hàng`
+                                                    ? `${localizedGame.title} ${t.gameDetail.inCart}`
+                                                    : `${t.gameDetail.addToCart} ${localizedGame.title}`
                                             }
                                         >
                                             {isInCart ? (
                                                 <>
                                                     <Check size={20} />
-                                                    <span>Đã trong giỏ hàng</span>
+                                                    <span>{t.gameDetail.inCart}</span>
                                                 </>
                                             ) : addedToCart ? (
                                                 <>
                                                     <Check size={20} />
-                                                    <span>Đã thêm vào giỏ!</span>
+                                                    <span>{isVi ? "Đã thêm vào giỏ!" : "Added to cart!"}</span>
                                                 </>
                                             ) : (
                                                 <>
                                                     <ShoppingCart size={20} />
-                                                    <span>Thêm vào giỏ hàng</span>
+                                                    <span>{t.gameDetail.addToCart}</span>
                                                 </>
                                             )}
                                         </button>
@@ -811,7 +837,7 @@ export default function GameDetail() {
                                             onClick={handleBuyNow}
                                         >
                                             <Zap size={19} />
-                                            <span>Mua ngay</span>
+                                            <span>{t.gameDetail.buyNow}</span>
                                         </button>
                                     </div>
 
@@ -827,29 +853,29 @@ export default function GameDetail() {
                                         <div className="game-detail__perk-item">
                                             <ShieldCheck size={18} className="game-detail__perk-icon" />
                                             <div>
-                                                <strong>100% Bản quyền chính hãng</strong>
-                                                <p>CD-Key kích hoạt chính thống từ nhà phát hành</p>
+                                                <strong>{isVi ? "100% Bản quyền chính hãng" : "100% Official License"}</strong>
+                                                <p>{isVi ? "CD-Key kích hoạt chính thống từ nhà phát hành" : "Official CD-Key directly from the publisher"}</p>
                                             </div>
                                         </div>
                                         <div className="game-detail__perk-item">
                                             <Zap size={18} className="game-detail__perk-icon" />
                                             <div>
-                                                <strong>Giao mã tức thì 24/7</strong>
-                                                <p>Hệ thống tự động kích hoạt mã ngay sau thanh toán</p>
+                                                <strong>{isVi ? "Giao mã tức thì 24/7" : "Instant 24/7 Delivery"}</strong>
+                                                <p>{isVi ? "Hệ thống tự động kích hoạt mã ngay sau thanh toán" : "Automated key delivery right after payment"}</p>
                                             </div>
                                         </div>
                                         <div className="game-detail__perk-item">
                                             <RefreshCw size={18} className="game-detail__perk-icon" />
                                             <div>
-                                                <strong>Bảo hành trọn đời key</strong>
-                                                <p>Đổi mới 1:1 nhanh chóng nếu phát sinh lỗi kỹ thuật</p>
+                                                <strong>{isVi ? "Bảo hành trọn đời key" : "Lifetime Key Warranty"}</strong>
+                                                <p>{isVi ? "Đổi mới 1:1 nhanh chóng nếu phát sinh lỗi kỹ thuật" : "Fast 1:1 replacement if any technical issue occurs"}</p>
                                             </div>
                                         </div>
                                         <div className="game-detail__perk-item">
                                             <Headphones size={18} className="game-detail__perk-icon" />
                                             <div>
-                                                <strong>Hỗ trợ cài đặt & kỹ thuật</strong>
-                                                <p>Đội ngũ ATA GAMES đồng hành cùng bạn 24/7</p>
+                                                <strong>{isVi ? "Hỗ trợ cài đặt & kỹ thuật" : "Setup & Tech Support"}</strong>
+                                                <p>{isVi ? "Đội ngũ ATA GAMES đồng hành cùng bạn 24/7" : "ATA GAMES support team available 24/7"}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -858,19 +884,19 @@ export default function GameDetail() {
                                         type="button"
                                         className="game-detail__chat-support-btn"
                                         onClick={() => setIsSupportOpen(true)}
-                                        aria-label="Hỗ trợ qua chat"
+                                        aria-label={isVi ? "Hỗ trợ qua chat" : "Chat Support"}
                                         aria-haspopup="dialog"
                                         aria-expanded={isSupportOpen}
                                     >
                                         <MessageSquare size={18} />
-                                        <span>Hỗ trợ qua chat</span>
+                                        <span>{isVi ? "Hỗ trợ qua chat" : "Chat Support"}</span>
                                     </button>
                                     <div className="game-detail__specs">
-                                        <h3>Thông tin sản phẩm</h3>
+                                        <h3>{isVi ? "Thông tin sản phẩm" : "Product Information"}</h3>
                                         <div className="game-detail__specs-list">
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Building2 size={15} /> Nhà phát triển:
+                                                    <Building2 size={15} /> {t.gameDetail.developer}:
                                                 </span>
                                                 <span className="game-detail__spec-value">
                                                     {game.developer}
@@ -878,31 +904,31 @@ export default function GameDetail() {
                                             </div>
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Layers size={15} /> Nhà phát hành:
+                                                    <Layers size={15} /> {t.gameDetail.publisher}:
                                                 </span>
                                                 <span className="game-detail__spec-value">
-                                                    {game.publisher || game.developer}
+                                                    {localizedGame.publisher}
                                                 </span>
                                             </div>
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Calendar size={15} /> Ngày phát hành:
+                                                    <Calendar size={15} /> {t.gameDetail.releaseDate}:
                                                 </span>
                                                 <span className="game-detail__spec-value">
-                                                    {formatDate(game.releaseDate)}
+                                                    {formatDate(game.releaseDate, locale)}
                                                 </span>
                                             </div>
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Tag size={15} /> Thể loại:
+                                                    <Tag size={15} /> {t.gameDetail.genre}:
                                                 </span>
                                                 <span className="game-detail__spec-value">
-                                                    {game.genre}
+                                                    {localizedGame.genre}
                                                 </span>
                                             </div>
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Monitor size={15} /> Nền tảng:
+                                                    <Monitor size={15} /> {t.gameDetail.platform}:
                                                 </span>
                                                 <div className="game-detail__platform-badges">
                                                     {(game.platform ?? ["PC"]).map((plat) => (
@@ -917,7 +943,7 @@ export default function GameDetail() {
                                             </div>
                                             <div className="game-detail__spec-row">
                                                 <span className="game-detail__spec-label">
-                                                    <Star size={15} /> Điểm đánh giá:
+                                                    <Star size={15} /> {t.gameDetail.rating}:
                                                 </span>
                                                 <span className="game-detail__spec-value rating">
                                                     <Star size={14} fill="currentColor" />
@@ -933,13 +959,14 @@ export default function GameDetail() {
                             <section className="game-detail__related-section">
                                 <div className="game-detail__related-header">
                                     <div>
-                                        <h2>Game cùng thể loại & Đề xuất</h2>
+                                        <h2>{isVi ? "Game cùng thể loại & Đề xuất" : "Similar & Recommended Games"}</h2>
                                         <p>
-                                            Khám phá các tựa game thuộc dòng <strong>{game.genre}</strong> hấp dẫn khác
+                                            {isVi ? "Khám phá các tựa game thuộc dòng" : "Explore more games in"}{" "}
+                                            <strong>{localizedGame.genre}</strong>
                                         </p>
                                     </div>
                                     <Link to="/store" className="game-detail__related-more">
-                                        Xem toàn bộ Cửa hàng <ChevronRight size={16} />
+                                        {isVi ? "Xem toàn bộ Cửa hàng" : "View Full Store"} <ChevronRight size={16} />
                                     </Link>
                                 </div>
                                 <div className="game-detail__related-grid">

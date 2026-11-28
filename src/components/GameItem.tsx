@@ -4,11 +4,12 @@ import { Check, Heart, MoreHorizontal, ShoppingCart, Star } from "lucide-react";
 import type { Game } from "../types/game";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addToCart, selectIsInCart } from "../store/cartSlice";
-import { formatPrice } from "../utils/format";
 import { useAuth } from "../auth/useAuth";
 import { favoriteService } from "../services/favoriteService";
 import { useNavigate } from "react-router-dom";
 import { salesService } from "../services/salesService";
+import { useI18n } from "../i18n/I18nContext";
+import { getLocalizedGame } from "../i18n/productI18n";
 
 interface GameItemProps {
     game: Game;
@@ -16,34 +17,40 @@ interface GameItemProps {
 
 const FALLBACK_IMAGE = "https://placehold.co/400x225/18243A/FFFFFF?text=ATA+Games";
 
-function formatDateSteam(dateStr?: string): string {
-    if (!dateStr) return "Chưa cập nhật";
+function formatDateSteam(dateStr?: string, locale = "vi"): string {
+    if (!dateStr) return locale === "vi" ? "Chưa cập nhật" : "N/A";
     try {
         const d = new Date(dateStr);
         if (Number.isNaN(d.getTime())) return dateStr;
-        const day = d.getDate();
-        const month = d.getMonth() + 1;
-        const year = d.getFullYear();
-        return `${day} Thg${month < 10 ? "0" + month : month}, ${year}`;
+        return d.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
     } catch {
         return dateStr;
     }
 }
 
-function getSteamReview(rating: number, gameId: string): { label: string; count: string } {
+function getSteamReview(rating: number, gameId: string, locale: string): { label: string; count: string } {
     const idNum = Math.abs(gameId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0));
-    const count = (1200 + (idNum * 173) % 8500).toLocaleString("vi-VN");
+    const count = (1200 + (idNum * 173) % 8500).toLocaleString(locale === "vi" ? "vi-VN" : "en-US");
+    const reviews = locale === "vi"
+        ? { veryPos: "Cực kỳ tích cực", pos: "Rất tích cực", mixed: "Tích cực", fair: "Khá tích cực", label: "đánh giá" }
+        : { veryPos: "Overwhelmingly Positive", pos: "Very Positive", mixed: "Mostly Positive", fair: "Positive", label: "reviews" };
 
-    if (rating >= 4.7) return { label: "Cực kỳ tích cực", count: `(${count} đánh giá)` };
-    if (rating >= 4.2) return { label: "Rất tích cực", count: `(${count} đánh giá)` };
-    if (rating >= 3.8) return { label: "Tích cực", count: `(${count} đánh giá)` };
-    return { label: "Khá tích cực", count: `(${count} đánh giá)` };
+    if (rating >= 4.7) return { label: reviews.veryPos, count: `(${count} ${reviews.label})` };
+    if (rating >= 4.2) return { label: reviews.pos, count: `(${count} ${reviews.label})` };
+    if (rating >= 3.8) return { label: reviews.mixed, count: `(${count} ${reviews.label})` };
+    return { label: reviews.fair, count: `(${count} ${reviews.label})` };
 }
 
 export default function GameItem({ game }: GameItemProps) {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { t, formatPrice, locale } = useI18n();
+    const localizedGame = useMemo(() => getLocalizedGame(game, locale), [game, locale]);
     const [isFavorite, setIsFavorite] = useState(() => !!user && favoriteService.isFavorite(user.id, game.id));
     const salesCount = salesService.getSalesCount(game.id);
     const isInCart = useAppSelector(selectIsInCart(game.id));
@@ -84,20 +91,20 @@ export default function GameItem({ game }: GameItemProps) {
 
     const userTags = useMemo(() => {
         const list: string[] = [];
-        if (game.genre) list.push(game.genre);
-        if (isFree) list.push("Chơi miễn phí");
+        if (localizedGame.genre) list.push(localizedGame.genre);
+        if (isFree) list.push(t.common.free);
         if (game.platform && game.platform.length > 0) {
             list.push(...game.platform);
         } else {
             list.push("PC");
         }
-        list.push("Chơi đơn", "Hỗ trợ tay cầm");
+        list.push(locale === "vi" ? "Chơi đơn" : "Single-player", locale === "vi" ? "Hỗ trợ tay cầm" : "Controller support");
         return Array.from(new Set(list)).slice(0, 4);
-    }, [game.genre, game.platform, isFree]);
+    }, [localizedGame.genre, game.platform, isFree, t, locale]);
 
     const reviewInfo = useMemo(
-        () => getSteamReview(game.rating, game.id),
-        [game.rating, game.id]
+        () => getSteamReview(game.rating, game.id, locale),
+        [game.rating, game.id, locale]
     );
 
     useEffect(() => {
@@ -126,11 +133,11 @@ export default function GameItem({ game }: GameItemProps) {
         e.preventDefault();
         e.stopPropagation();
         if (isInCart) {
-            setToastMessage("Game đã có trong giỏ hàng");
+            setToastMessage(t.gameDetail.inCart);
             setToastType("warning");
         } else {
             dispatch(addToCart(game));
-            setToastMessage("Đã thêm vào giỏ hàng");
+            setToastMessage(t.home.addToCart);
             setToastType("success");
         }
         window.clearTimeout(addedTimerRef.current);
@@ -183,7 +190,7 @@ export default function GameItem({ game }: GameItemProps) {
             <Link
                 className="game-card__image-link"
                 to={`/games/${game.id}`}
-                aria-label={`Xem chi tiết ${game.title}`}
+                aria-label={`${t.gameDetail.description} ${game.title}`}
             >
                 <img
                     className="game-card__image"
@@ -196,7 +203,7 @@ export default function GameItem({ game }: GameItemProps) {
                     }}
                 />
 
-                <button type="button" className={`game-card__favorite ${isFavorite ? "is-favorite" : ""}`} aria-label={isFavorite ? `Bỏ ${game.title} khỏi yêu thích` : `Thêm ${game.title} vào yêu thích`} title={isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"} onClick={toggleFavorite}>
+                <button type="button" className={`game-card__favorite ${isFavorite ? "is-favorite" : ""}`} aria-label={isFavorite ? `${t.favorites.remove} ${game.title}` : `${t.favorites.addToCart} ${game.title}`} title={isFavorite ? t.favorites.remove : t.favorites.addToCart} onClick={toggleFavorite}>
                     <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
                 </button>
 
@@ -217,12 +224,16 @@ export default function GameItem({ game }: GameItemProps) {
                 {hasDiscount && (
                     <span className="game-card__discount">-{game.discountPercent}%</span>
                 )}
-                {game.isFeatured && <span className="game-card__featured">Nổi bật</span>}
+                {game.isFeatured && (
+                    <span className="game-card__featured">
+                        {locale === "vi" ? "Nổi bật" : "Featured"}
+                    </span>
+                )}
             </Link>
 
             <div className="game-card__body">
                 <div className="game-card__meta">
-                    <span>{game.genre}</span>
+                    <span>{localizedGame.genre}</span>
                     <span className="game-card__rating">
                         <Star size={14} fill="currentColor" />
                         {Number(game.rating).toFixed(1)}
@@ -230,7 +241,7 @@ export default function GameItem({ game }: GameItemProps) {
                 </div>
 
                 <Link className="game-card__title" to={`/games/${game.id}`}>
-                    {game.title}
+                    {localizedGame.title}
                 </Link>
 
                 <p className="game-card__developer">{game.developer}</p>
@@ -245,10 +256,10 @@ export default function GameItem({ game }: GameItemProps) {
                     <div className="game-card__price">
                         {hasDiscount && <del>{formatPrice(game.originalPrice)}</del>}
                         <strong>
-                            {isFree ? "Chơi miễn phí" : formatPrice(game.price)}
+                            {isFree ? t.common.free : formatPrice(game.price)}
                         </strong>
-                        <span className="game-card__sales" aria-label={`Đã bán ${salesCount} bản`}>
-                            <ShoppingCart size={13} /> Đã bán {salesCount.toLocaleString("vi-VN")}
+                        <span className="game-card__sales" aria-label={`${locale === "vi" ? "Đã bán" : "Sold"} ${salesCount}`}>
+                            <ShoppingCart size={13} /> {locale === "vi" ? "Đã bán" : "Sold"} {salesCount.toLocaleString(locale === "vi" ? "vi-VN" : "en-US")}
                         </span>
                     </div>
 
@@ -257,10 +268,10 @@ export default function GameItem({ game }: GameItemProps) {
                         className={`game-card__cart-button ${isInCart ? "game-card__cart-button--in-cart" : ""}`}
                         aria-label={
                             isInCart
-                                ? `${game.title} đã có trong giỏ hàng`
-                                : `Thêm ${game.title} vào giỏ hàng`
+                                ? `${game.title} ${t.gameDetail.inCart}`
+                                : `${t.home.addToCart} ${game.title}`
                         }
-                        title={isInCart ? "Đã có trong giỏ hàng" : "Thêm vào giỏ hàng"}
+                        title={isInCart ? t.gameDetail.inCart : t.home.addToCart}
                         onClick={handleAdd}
                     >
                         {isInCart ? <Check size={17} /> : <ShoppingCart size={17} />}
@@ -285,18 +296,18 @@ export default function GameItem({ game }: GameItemProps) {
                     role="tooltip"
                 >
                     <h4 className="steam-hover-box__title">
-                        <Link to={`/games/${game.id}`}>{game.title}</Link>
+                        <Link to={`/games/${game.id}`}>{localizedGame.title}</Link>
                     </h4>
 
                     <div className="steam-hover-box__date">
-                        Đã phát hành: {formatDateSteam(game.releaseDate)}
+                        {locale === "vi" ? "Đã phát hành:" : "Released:"} {formatDateSteam(game.releaseDate, locale)}
                     </div>
 
-                    <p className="steam-hover-box__desc">{game.description}</p>
+                    <p className="steam-hover-box__desc">{localizedGame.description}</p>
 
                     <div className="steam-hover-box__review-section">
                         <div className="steam-hover-box__review-label">
-                            Đánh giá của người dùng:
+                            {locale === "vi" ? "Đánh giá của người dùng:" : "User Reviews:"}
                         </div>
                         <div className="steam-hover-box__review-result">
                             <span className="steam-hover-box__review-highlight">
@@ -309,7 +320,9 @@ export default function GameItem({ game }: GameItemProps) {
                     </div>
 
                     <div className="steam-hover-box__tags-section">
-                        <div className="steam-hover-box__tags-label">Nhãn người dùng:</div>
+                        <div className="steam-hover-box__tags-label">
+                            {locale === "vi" ? "Nhãn người dùng:" : "User Tags:"}
+                        </div>
                         <div className="steam-hover-box__tags-list">
                             {userTags.map((tag) => (
                                 <span key={tag} className="steam-hover-box__tag-pill">
