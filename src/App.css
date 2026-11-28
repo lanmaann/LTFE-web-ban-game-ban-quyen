@@ -9388,10 +9388,2223 @@
     font-size: 12px;
     color: #fca5a5;
 }
+:root[data-theme="light"] {
+    color-scheme: light;
+    --color-bg: #edf3fa;
+    --color-surface: #ffffff;
+    --color-surface-2: #f3f7fc;
+    --color-border: #c9d6e5;
+    --color-text: #172033;
+    --color-muted: #607087;
+    --color-accent: #1674cf;
+}
+
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app-layout,
+:root[data-theme="light"] .app-main,
+:root[data-theme="light"] .home-page,
+:root[data-theme="light"] .store-page,
+:root[data-theme="light"] .game-detail-page,
+:root[data-theme="light"] .library-page,
+:root[data-theme="light"] .favorites-page,
+:root[data-theme="light"] .cart-page,
+:root[data-theme="light"] .checkout-page,
+:root[data-theme="light"] .orders-page,
+:root[data-theme="light"] .profile-page,
+:root[data-theme="light"] .support-page,
+:root[data-theme="light"] .community-page,
+:root[data-theme="light"] .lucky-page-container {
+    color: #172033;
+    background: #edf3fa;
+}
+
+:root[data-theme="light"] input::placeholder,
+:root[data-theme="light"] textarea::placeholder {
+    color: #8a99ae;
+}
+
+:root[data-theme="light"] .profile-date-input {
+    color-scheme: light;
+}
+
+:root[data-theme="light"] .header {
+    background: rgb(255 255 255 / 96%);
+    border-bottom-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .header__logo,
+:root[data-theme="light"] .header__icon-button,
+:root[data-theme="light"] .header__profile-link,
+:root[data-theme="light"] .header__logout,
+:root[data-theme="light"] .header__account-name {
+    color: #172033;
+}
+
+:root[data-theme="light"] .header__link,
+:root[data-theme="light"] .header__orders-btn {
+    color: #607087;
+}
+
+:root[data-theme="light"] .header__link:hover,
+:root[data-theme="light"] .header__link--active,
+:root[data-theme="light"] .header__orders-btn:hover {
+    color: #172033;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .header__search,
+:root[data-theme="light"] .header__icon-button,
+:root[data-theme="light"] .header__profile-link,
+:root[data-theme="light"] .header__logout,
+:root[data-theme="light"] .header__orders-btn {
+    background: #e6eef7;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .header__search {
+    color: #607087;
+}
+
+:root[data-theme="light"] .header__search input {
+    color: #172033;
+}
+
+:root[data-theme="light"] .header__icon-button:hover,
+:root[data-theme="light"] .header__profile-link:hover,
+:root[data-theme="light"] .header__logout:hover {
+    color: #172033;
+    background: #d6e4f3;
+}
+
+:root[data-theme="light"] .theme-toggle,
+:root[data-theme="light"] .lang-switcher__trigger {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .theme-toggle:hover,
+:root[data-theme="light"] .lang-switcher__trigger:hover,
+:root[data-theme="light"] .lang-switcher__trigger[aria-expanded="true"] {
+    color: #1674cf;
+    background: #edf4fc;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .lang-switcher__dropdown,
+:root[data-theme="light"] .header__account-menu,
+:root[data-theme="light"] .header__support-menu,
+:root[data-theme="light"] .header-notifications,
+:root[data-theme="light"] .search-suggest,
+:root[data-theme="light"] .store-search-dropdown,
+:root[data-theme="light"] .spin-modal-card,
+:root[data-theme="light"] .cart-confirm-modal,
+:root[data-theme="light"] .modal-box {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 14px 32px rgb(30 64 96 / 16%);
+}
+
+:root[data-theme="light"] .lang-switcher__option,
+:root[data-theme="light"] .header__account-menu a,
+:root[data-theme="light"] .header__support-menu a,
+:root[data-theme="light"] .header__support-menu strong,
+:root[data-theme="light"] .header-notification,
+:root[data-theme="light"] .header-notification__copy strong,
+:root[data-theme="light"] .header-notifications__heading strong,
+:root[data-theme="light"] .search-suggest__item,
+:root[data-theme="light"] .search-suggest__price,
+:root[data-theme="light"] .search-history__item {
+    color: #172033;
+}
+
+:root[data-theme="light"] .lang-switcher__section-title,
+:root[data-theme="light"] .header__support-menu small,
+:root[data-theme="light"] .header-notification__copy > span,
+:root[data-theme="light"] .header-notification__copy small,
+:root[data-theme="light"] .header-notifications__heading span,
+:root[data-theme="light"] .header-notifications__note,
+:root[data-theme="light"] .search-suggest__meta,
+:root[data-theme="light"] .search-suggest__empty,
+:root[data-theme="light"] .search-history__header,
+:root[data-theme="light"] .search-history__title,
+:root[data-theme="light"] .search-history__remove-btn {
+    color: #607087;
+}
+
+:root[data-theme="light"] .lang-switcher__option:hover,
+:root[data-theme="light"] .lang-switcher__option--active,
+:root[data-theme="light"] .header__account-menu a:hover,
+:root[data-theme="light"] .header__support-menu a:hover,
+:root[data-theme="light"] .header-notification:hover,
+:root[data-theme="light"] .search-suggest__item--active,
+:root[data-theme="light"] .search-history__item:hover,
+:root[data-theme="light"] .search-history__item--active {
+    color: #172033;
+    background: #edf4fc;
+}
+
+:root[data-theme="light"] .lang-switcher__divider,
+:root[data-theme="light"] .header-notifications__heading,
+:root[data-theme="light"] .search-history__header,
+:root[data-theme="light"] .search-suggest__all {
+    border-color: #dde6f0;
+    background-color: transparent;
+}
+
+:root[data-theme="light"] .lang-switcher__divider {
+    background: #dde6f0;
+}
+
+:root[data-theme="light"] .header-notification {
+    border-bottom-color: #e6edf5;
+}
+
+:root[data-theme="light"] .header-notifications__heading button {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .search-suggest__thumb {
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .hero-carousel {
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 8px 24px rgb(30 64 96 / 10%);
+}
+
+:root[data-theme="light"] .hero-carousel__overlay {
+    background: linear-gradient(90deg, rgb(255 255 255 / 95%) 0%, rgb(255 255 255 / 88%) 34%, rgb(255 255 255 / 35%) 52%, rgb(255 255 255 / 0%) 68%);
+}
+
+:root[data-theme="light"] .hero-carousel__image {
+    filter: saturate(1.08) contrast(1.04);
+}
+
+:root[data-theme="light"] .hero-carousel__content {
+    padding-left: 80px;
+}
+:root[data-theme="light"] .hero-carousel__content h2,
+:root[data-theme="light"] .hero-carousel__price strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .hero-carousel__content p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .hero-carousel__price del {
+    color: #607087;
+}
+
+:root[data-theme="light"] .hero-carousel__arrow {
+    color: #172033;
+    background: rgb(255 255 255 / 94%);
+    border-color: #c9d6e5;
+    box-shadow: 0 4px 12px rgb(30 64 96 / 18%);
+}
+
+:root[data-theme="light"] .hero-carousel__arrow:hover {
+    color: #ffffff;
+    background: var(--color-primary);
+}
+
+:root[data-theme="light"] .hero-carousel__dot {
+    background: rgb(23 32 51 / 25%);
+}
+
+:root[data-theme="light"] .hero-carousel__dot--active {
+    background: var(--color-accent);
+}
+
+:root[data-theme="light"] .store-hero {
+    background: #ffffff;
+    border-bottom-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .store-hero h1,
+:root[data-theme="light"] .store-hero__stats strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .store-hero__content > p,
+:root[data-theme="light"] .store-hero__stats span {
+    color: #607087;
+}
+
+:root[data-theme="light"] .store-eyebrow,
+:root[data-theme="light"] .store-section-label,
+:root[data-theme="light"] .support-eyebrow,
+:root[data-theme="light"] .community-eyebrow {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .support-hero,
+:root[data-theme="light"] .community-hero {
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 8px 24px rgb(30 64 96 / 10%);
+}
+
+:root[data-theme="light"] .support-hero h1,
+:root[data-theme="light"] .community-hero h1,
+:root[data-theme="light"] .community-hero__badge strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .community-hero h1 span {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .support-hero__copy > p,
+:root[data-theme="light"] .community-hero__copy > p,
+:root[data-theme="light"] .policy-updated {
+    color: #607087;
+}
+
+:root[data-theme="light"] .support-hero--policy .support-hero__image::after {
+    background: linear-gradient(90deg, rgb(255 255 255 / 20%), rgb(255 255 255 / 55%));
+}
+
+:root[data-theme="light"] .policy-hero-shield {
+    color: #1674cf;
+    background: #edf4fc;
+    border-color: #b8d2ec;
+    box-shadow: 0 0 30px rgb(22 116 207 / 14%);
+}
+
+:root[data-theme="light"] .community-hero__badge {
+    color: #1674cf;
+    background: #edf4fc;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .footer__newsletter,
+:root[data-theme="light"] .support-contact,
+:root[data-theme="light"] .game-reviews__auth-prompt,
+:root[data-theme="light"] .lucky-wheel-mini-banner {
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .footer__newsletter-content h3,
+:root[data-theme="light"] .support-contact h2,
+:root[data-theme="light"] .lucky-wheel-mini-banner__text h3,
+:root[data-theme="light"] .game-reviews__prompt-content h3 {
+    color: #172033;
+}
+
+:root[data-theme="light"] .footer__newsletter-content p,
+:root[data-theme="light"] .support-contact p,
+:root[data-theme="light"] .support-contact small,
+:root[data-theme="light"] .lucky-wheel-mini-banner__text p,
+:root[data-theme="light"] .game-reviews__prompt-content p {
+    color: #607087;
+}
+
+:root[data-theme="light"] .footer__newsletter-input-group {
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .footer__newsletter-input-group input {
+    color: #172033;
+}
+
+:root[data-theme="light"] .support-contact__icon,
+:root[data-theme="light"] .game-reviews__prompt-icon {
+    color: #1674cf;
+    background: #e3effb;
+}
+
+:root[data-theme="light"] .game-card,
+:root[data-theme="light"] .store-game-card,
+:root[data-theme="light"] .library-card,
+:root[data-theme="light"] .rec-card,
+:root[data-theme="light"] .cart-item,
+:root[data-theme="light"] .steam-hover-box {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 4px 14px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .game-card:hover,
+:root[data-theme="light"] .game-card--hovered,
+:root[data-theme="light"] .store-game-card:hover,
+:root[data-theme="light"] .library-card:hover,
+:root[data-theme="light"] .rec-card:hover,
+:root[data-theme="light"] .cart-item:hover {
+    border-color: #80a8d2;
+    box-shadow: 0 12px 28px rgb(30 64 96 / 18%);
+}
+
+:root[data-theme="light"] .steam-hover-box {
+    box-shadow: 0 10px 30px rgb(30 64 96 / 22%);
+}
+
+:root[data-theme="light"] .game-card__image-link,
+:root[data-theme="light"] .store-game-card__image-link,
+:root[data-theme="light"] .library-card__media,
+:root[data-theme="light"] .rec-card__image-link {
+    background: #e6eef7;
+}
+
+/* Chữ trong khung game */
+:root[data-theme="light"] .game-card__title,
+:root[data-theme="light"] .store-game-card__title,
+:root[data-theme="light"] .library-card__title a,
+:root[data-theme="light"] .rec-card__title a,
+:root[data-theme="light"] .cart-item__title,
+:root[data-theme="light"] .game-card__price strong,
+:root[data-theme="light"] .store-price strong,
+:root[data-theme="light"] .cart-item__final-price,
+:root[data-theme="light"] .steam-hover-box__title,
+:root[data-theme="light"] .steam-hover-box__title a {
+    color: #172033;
+}
+
+:root[data-theme="light"] .game-card__title:hover,
+:root[data-theme="light"] .store-game-card__title:hover,
+:root[data-theme="light"] .library-card__title a:hover,
+:root[data-theme="light"] .rec-card__title a:hover,
+:root[data-theme="light"] .cart-item__title:hover,
+:root[data-theme="light"] .steam-hover-box__title a:hover {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .game-card__meta,
+:root[data-theme="light"] .game-card__developer,
+:root[data-theme="light"] .game-card__price del,
+:root[data-theme="light"] .store-game-card__meta,
+:root[data-theme="light"] .store-game-card__developer,
+:root[data-theme="light"] .store-price del,
+:root[data-theme="light"] .library-card__developer,
+:root[data-theme="light"] .rec-card__genre,
+:root[data-theme="light"] .rec-card__old-price,
+:root[data-theme="light"] .cart-item__developer,
+:root[data-theme="light"] .cart-item__original-price,
+:root[data-theme="light"] .steam-hover-box__date,
+:root[data-theme="light"] .steam-hover-box__desc,
+:root[data-theme="light"] .steam-hover-box__review-label,
+:root[data-theme="light"] .steam-hover-box__review-count,
+:root[data-theme="light"] .steam-hover-box__tags-label {
+    color: #607087;
+}
+
+:root[data-theme="light"] .game-card__platforms span,
+:root[data-theme="light"] .store-game-card__platforms span,
+:root[data-theme="light"] .cart-item__platform-tag {
+    color: #425168;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .store-game-card__bottom,
+:root[data-theme="light"] .rec-card__bottom {
+    border-top-color: #dde6f0;
+}
+
+:root[data-theme="light"] .game-card__rating,
+:root[data-theme="light"] .store-rating,
+:root[data-theme="light"] .rec-card__rating-row,
+:root[data-theme="light"] .library-card__reviewed-score {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .game-card__added,
+:root[data-theme="light"] .store-added-message,
+:root[data-theme="light"] .cart-item__discount-badge {
+    color: #059669;
+}
+
+:root[data-theme="light"] .cart-item__discount-badge {
+    background: #d9f5e8;
+}
+
+:root[data-theme="light"] .rec-card__price,
+:root[data-theme="light"] .library-card__genre {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .steam-hover-box__review-section {
+    background: #f3f7fc;
+}
+
+:root[data-theme="light"] .steam-hover-box__review-highlight {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .steam-hover-box__tag-pill {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .library-page__header,
+:root[data-theme="light"] .library-page__auth-card,
+:root[data-theme="light"] .library-page__empty-card,
+:root[data-theme="light"] .library-page__no-match {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .library-page__title,
+:root[data-theme="light"] .library-page__shelf-header h2,
+:root[data-theme="light"] .library-page__auth-card h2,
+:root[data-theme="light"] .library-page__empty-card h2 {
+    color: #172033;
+}
+
+:root[data-theme="light"] .library-page__auth-card p,
+:root[data-theme="light"] .library-page__empty-card p,
+:root[data-theme="light"] .library-page__rec-subtitle,
+:root[data-theme="light"] .library-page__shelf-count,
+:root[data-theme="light"] .library-page__loading,
+:root[data-theme="light"] .library-page__no-match {
+    color: #607087;
+}
+
+:root[data-theme="light"] .library-page__stat-pill,
+:root[data-theme="light"] .library-page__tab-btn,
+:root[data-theme="light"] .library-page__search-box,
+:root[data-theme="light"] .library-card__cdkey-box {
+    color: #425168;
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .library-page__stat-pill {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .library-page__tab-btn:hover {
+    color: #172033;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .library-page__tab-btn.is-active {
+    color: #ffffff;
+    background: #1674cf;
+    border-color: #1674cf;
+}
+
+:root[data-theme="light"] .library-page__search-input,
+:root[data-theme="light"] .library-card__cdkey-code {
+    color: #172033;
+}
+
+:root[data-theme="light"] .library-page__control-bar,
+:root[data-theme="light"] .library-card__review-status {
+    border-top-color: #dde6f0;
+}
+
+:root[data-theme="light"] .library-card__cdkey-label,
+:root[data-theme="light"] .library-card__unreviewed-text,
+:root[data-theme="light"] .library-card__detail-link {
+    color: #607087;
+}
+
+:root[data-theme="light"] .library-card__copy-btn,
+:root[data-theme="light"] .library-card__review-btn.is-edit {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .library-card__copy-btn:hover,
+:root[data-theme="light"] .library-card__review-btn.is-edit:hover {
+    color: #ffffff;
+    background: #1674cf;
+}
+
+:root[data-theme="light"] .library-card__fav-btn {
+    color: #607087;
+    background: rgb(255 255 255 / 92%);
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .home-section__header h2,
+:root[data-theme="light"] .store-heading h2,
+:root[data-theme="light"] .store-filters__title h3 {
+    color: #172033;
+}
+
+:root[data-theme="light"] .home-section__header p,
+:root[data-theme="light"] .store-heading p,
+:root[data-theme="light"] .store-sort,
+:root[data-theme="light"] .store-filter-group label {
+    color: #607087;
+}
+
+:root[data-theme="light"] .home-section__more:hover,
+:root[data-theme="light"] .game-detail__related-more:hover {
+    color: #0f5ea8;
+}
+
+:root[data-theme="light"] .store-filters,
+:root[data-theme="light"] .store-state,
+:root[data-theme="light"] .state-message {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .store-state h3,
+:root[data-theme="light"] .state-message h3 {
+    color: #172033;
+}
+
+:root[data-theme="light"] .store-state p,
+:root[data-theme="light"] .state-message p {
+    color: #607087;
+}
+
+:root[data-theme="light"] .store-filters__title {
+    border-bottom-color: #dde6f0;
+}
+
+:root[data-theme="light"] .store-filter-note {
+    color: #425168;
+    background: #e3effb;
+}
+
+:root[data-theme="light"] .store-search,
+:root[data-theme="light"] .store-sort select,
+:root[data-theme="light"] .store-filter-group select,
+:root[data-theme="light"] .store-genre-pill,
+:root[data-theme="light"] .store-reset-button,
+:root[data-theme="light"] .store-pagination button,
+:root[data-theme="light"] .pagination button {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .store-search {
+    color: #607087;
+}
+
+:root[data-theme="light"] .store-search input,
+:root[data-theme="light"] .store-search__clear-btn:hover {
+    color: #172033;
+}
+
+:root[data-theme="light"] .store-genre-pill:hover,
+:root[data-theme="light"] .store-reset-button:hover {
+    color: #172033;
+    background: #e6eef7;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .store-genre-pill--active,
+:root[data-theme="light"] .store-pagination button.store-pagination__active,
+:root[data-theme="light"] .pagination button.pagination__active {
+    color: #ffffff;
+    background: #1674cf;
+    border-color: #1674cf;
+}
+
+:root[data-theme="light"] .game-detail__section,
+:root[data-theme="light"] .game-detail__hero-media-wrapper,
+:root[data-theme="light"] .game-detail__purchase-card,
+:root[data-theme="light"] .game-questions,
+:root[data-theme="light"] .game-detail__back-btn,
+:root[data-theme="light"] .game-detail__share-btn {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .game-detail__back-btn,
+:root[data-theme="light"] .game-detail__share-btn {
+    box-shadow: none;
+}
+
+:root[data-theme="light"] .game-detail__back-btn:hover,
+:root[data-theme="light"] .game-detail__share-btn:hover {
+    color: #1674cf;
+    background: #edf4fc;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .game-detail__highlights,
+:root[data-theme="light"] .game-detail__requirements-card,
+:root[data-theme="light"] .game-detail__price-box {
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .game-detail__requirements-card--recommended {
+    background: #e8f2fc;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .game-detail__requirements-card h4,
+:root[data-theme="light"] .game-detail__requirements-card--recommended h4 {
+    border-bottom-color: #dde6f0;
+}
+
+:root[data-theme="light"] .game-detail__title,
+:root[data-theme="light"] .game-detail__breadcrumb-current,
+:root[data-theme="light"] .game-detail__section-title,
+:root[data-theme="light"] .game-detail__highlights h3,
+:root[data-theme="light"] .game-detail__requirements-card h4,
+:root[data-theme="light"] .game-detail__specs h3,
+:root[data-theme="light"] .game-detail__related-header h2,
+:root[data-theme="light"] .game-detail__current-price,
+:root[data-theme="light"] .game-detail__rating strong,
+:root[data-theme="light"] .game-detail__developer-info strong,
+:root[data-theme="light"] .game-detail__perk-item strong,
+:root[data-theme="light"] .game-detail__spec-value,
+:root[data-theme="light"] .game-detail__req-list dd {
+    color: #172033;
+}
+
+:root[data-theme="light"] .game-detail__description,
+:root[data-theme="light"] .game-detail__highlights-list li {
+    color: #425168;
+}
+
+:root[data-theme="light"] .game-detail__breadcrumbs,
+:root[data-theme="light"] .game-detail__breadcrumb-link,
+:root[data-theme="light"] .game-detail__submeta,
+:root[data-theme="light"] .game-detail__rating span,
+:root[data-theme="light"] .game-detail__developer-info,
+:root[data-theme="light"] .game-detail__req-list dt,
+:root[data-theme="light"] .game-detail__original-price,
+:root[data-theme="light"] .game-detail__perk-item p,
+:root[data-theme="light"] .game-detail__spec-label,
+:root[data-theme="light"] .game-detail__related-header p {
+    color: #607087;
+}
+
+:root[data-theme="light"] .game-detail__breadcrumb-link:hover {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .game-detail__section-title,
+:root[data-theme="light"] .game-detail__perks,
+:root[data-theme="light"] .game-detail__related-section {
+    border-color: #dde6f0;
+}
+
+:root[data-theme="light"] .game-detail__edition-badge,
+:root[data-theme="light"] .game-detail__platform-tag {
+    color: #425168;
+    background: #e6eef7;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .game-detail__rating,
+:root[data-theme="light"] .game-detail__spec-value.rating,
+:root[data-theme="light"] .game-detail__featured-badge {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .game-detail__saving-text,
+:root[data-theme="light"] .game-detail__stock-badge,
+:root[data-theme="light"] .game-detail__check-icon {
+    color: #059669;
+}
+
+:root[data-theme="light"] .game-detail__chat-support-btn {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .game-detail__chat-support-btn svg {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .game-detail__chat-support-btn:hover {
+    color: #0f5ea8;
+    background: #d3e6f8;
+    border-color: #1674cf;
+}
+
+:root[data-theme="light"] .game-reviews__overview-card,
+:root[data-theme="light"] .game-reviews__form,
+:root[data-theme="light"] .game-reviews__card,
+:root[data-theme="light"] .game-reviews__status-box,
+:root[data-theme="light"] .game-reviews__loading-state,
+:root[data-theme="light"] .game-reviews__empty-state {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 4px 14px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .game-reviews__card.is-own-review {
+    background: #f1f7fd;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .game-reviews__score-box,
+:root[data-theme="light"] .game-reviews__form-header,
+:root[data-theme="light"] .game-reviews__list-header {
+    border-color: #dde6f0;
+}
+
+:root[data-theme="light"] .game-reviews__score-number,
+:root[data-theme="light"] .game-reviews__form-title,
+:root[data-theme="light"] .game-reviews__list-title,
+:root[data-theme="light"] .game-reviews__author-name,
+:root[data-theme="light"] .game-reviews__empty-title,
+:root[data-theme="light"] .game-reviews__subtitle strong,
+:root[data-theme="light"] .game-reviews__form-user strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .game-reviews__subtitle,
+:root[data-theme="light"] .game-reviews__count-text,
+:root[data-theme="light"] .game-reviews__score-max,
+:root[data-theme="light"] .game-reviews__breakdown-count,
+:root[data-theme="light"] .game-reviews__form-user,
+:root[data-theme="light"] .game-reviews__char-counter,
+:root[data-theme="light"] .game-reviews__date-row,
+:root[data-theme="light"] .game-reviews__edited-tag,
+:root[data-theme="light"] .game-reviews__sort-box,
+:root[data-theme="light"] .game-reviews__empty-desc {
+    color: #607087;
+}
+
+:root[data-theme="light"] .game-reviews__breakdown-label,
+:root[data-theme="light"] .game-reviews__rating-picker-label,
+:root[data-theme="light"] .game-reviews__textarea-label,
+:root[data-theme="light"] .game-reviews__card-body p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .game-reviews__star--empty,
+:root[data-theme="light"] .library-card__star--empty,
+:root[data-theme="light"] .game-reviews__star-btn {
+    color: #c3cfdd;
+}
+
+:root[data-theme="light"] .game-reviews__star-btn.is-active {
+    color: #ffb800;
+}
+
+:root[data-theme="light"] .game-reviews__progress-track {
+    background: #e6eef7;
+    border-color: #d3deea;
+}
+
+:root[data-theme="light"] .game-reviews__textarea,
+:root[data-theme="light"] .game-reviews__sort-select,
+:root[data-theme="light"] .game-reviews__cancel-edit-btn,
+:root[data-theme="light"] .game-reviews__card-edit-btn {
+    color: #172033;
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .game-reviews__card-edit-btn {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .game-reviews__card-edit-btn:hover {
+    color: #ffffff;
+    background: #1674cf;
+}
+
+:root[data-theme="light"] .game-reviews__star-feedback,
+:root[data-theme="light"] .game-reviews__not-purchased-title {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .game-reviews__badge--verified,
+:root[data-theme="light"] .game-reviews__verified-badge {
+    color: #059669;
+}
+:root[data-theme="light"] .game-questions__heading h2,
+:root[data-theme="light"] .game-questions__list-heading h3,
+:root[data-theme="light"] .game-question__meta strong,
+:root[data-theme="light"] .game-questions__form-footer > span strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .game-questions__heading p,
+:root[data-theme="light"] .game-questions__form-footer > span,
+:root[data-theme="light"] .game-question__meta time,
+:root[data-theme="light"] .game-questions__empty,
+:root[data-theme="light"] .game-questions__login {
+    color: #607087;
+}
+
+:root[data-theme="light"] .game-question__content > p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .game-questions__form,
+:root[data-theme="light"] .game-questions__login {
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .game-questions__form textarea {
+    color: #172033;
+    background: transparent;
+}
+
+:root[data-theme="light"] .game-questions__form-footer,
+:root[data-theme="light"] .game-questions__list-heading {
+    border-color: #dde6f0;
+}
+
+:root[data-theme="light"] .game-question {
+    border-bottom-color: #e6edf5;
+}
+
+:root[data-theme="light"] .game-question__avatar {
+    color: #172033;
+    background: #dbe6f2;
+}
+
+:root[data-theme="light"] .cart-page__header,
+:root[data-theme="light"] .checkout-header {
+    border-bottom-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .cart-page__header h1,
+:root[data-theme="light"] .checkout-header__title,
+:root[data-theme="light"] .orders-header__title,
+:root[data-theme="light"] .cart-summary__title,
+:root[data-theme="light"] .cart-summary__total-amount,
+:root[data-theme="light"] .cart-empty__title,
+:root[data-theme="light"] .cart-confirm-modal__title {
+    color: #172033;
+}
+
+:root[data-theme="light"] .cart-page__count {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .cart-summary {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .cart-summary__row,
+:root[data-theme="light"] .cart-summary__row--total,
+:root[data-theme="light"] .cart-coupon__label,
+:root[data-theme="light"] .cart-empty__desc,
+:root[data-theme="light"] .cart-summary__note,
+:root[data-theme="light"] .cart-confirm-modal__desc {
+    color: #607087;
+}
+
+:root[data-theme="light"] .cart-summary__row--savings,
+:root[data-theme="light"] .cart-coupon__success {
+    color: #059669;
+}
+
+:root[data-theme="light"] .cart-summary__row--coupon {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .cart-summary__divider {
+    background: #dde6f0;
+}
+
+:root[data-theme="light"] .cart-coupon__input,
+:root[data-theme="light"] .checkout-voucher-input {
+    color: #172033;
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .cart-coupon__btn,
+:root[data-theme="light"] .cart-confirm-modal__cancel,
+:root[data-theme="light"] .cart-voucher-toggle-btn {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .cart-coupon__btn:hover,
+:root[data-theme="light"] .cart-confirm-modal__cancel:hover,
+:root[data-theme="light"] .cart-voucher-toggle-btn:hover {
+    color: #0f5ea8;
+    background: #d3e6f8;
+}
+
+:root[data-theme="light"] .cart-coupon__btn--remove,
+:root[data-theme="light"] .cart-items__clear-btn {
+    color: #dc2626;
+    background: #fdecec;
+    border-color: #f3b9b9;
+}
+
+:root[data-theme="light"] .cart-item__remove-btn {
+    color: #607087;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .cart-continue-link {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .cart-continue-link:hover {
+    color: #0f5ea8;
+}
+
+:root[data-theme="light"] .cart-empty__icon {
+    color: #9bb4d1;
+}
+
+/* Checkout */
+:root[data-theme="light"] .checkout-card,
+:root[data-theme="light"] .checkout-summary-card,
+:root[data-theme="light"] .checkout-processing__card,
+:root[data-theme="light"] .checkout-result-card,
+:root[data-theme="light"] .checkout-empty,
+:root[data-theme="light"] .orders-empty,
+:root[data-theme="light"] .order-card,
+:root[data-theme="light"] .order-games-box {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .checkout-item,
+:root[data-theme="light"] .payment-option,
+:root[data-theme="light"] .payment-details-panel,
+:root[data-theme="light"] .checkout-result-meta,
+:root[data-theme="light"] .order-card__header,
+:root[data-theme="light"] .order-card__footer,
+:root[data-theme="light"] .order-detail-card,
+:root[data-theme="light"] .order-detail-products,
+:root[data-theme="light"] .modal-box__footer,
+:root[data-theme="light"] .order-detail-modal-footer {
+    color: #172033;
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .payment-option:hover {
+    background: #e8f2fc;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .payment-option--active {
+    background: #e3effb;
+    border-color: #1674cf;
+}
+
+:root[data-theme="light"] .form-input,
+:root[data-theme="light"] .form-select,
+:root[data-theme="light"] .qr-info-table,
+:root[data-theme="light"] .ewallet-instruction,
+:root[data-theme="light"] .ewallet-tab:not(.ewallet-tab--active),
+:root[data-theme="light"] .order-key-item,
+:root[data-theme="light"] .order-game-item,
+:root[data-theme="light"] .order-card__key-code,
+:root[data-theme="light"] .order-detail-summary-card,
+:root[data-theme="light"] .order-detail-key-box,
+:root[data-theme="light"] .order-detail-game-thumb-placeholder {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .checkout-header__title,
+:root[data-theme="light"] .checkout-card__title,
+:root[data-theme="light"] .checkout-item__title,
+:root[data-theme="light"] .checkout-summary-card__title,
+:root[data-theme="light"] .checkout-summary-card__row--total,
+:root[data-theme="light"] .payment-option__name,
+:root[data-theme="light"] .payment-form__title,
+:root[data-theme="light"] .qr-info-table__value,
+:root[data-theme="light"] .checkout-processing__title,
+:root[data-theme="light"] .checkout-result-card__title,
+:root[data-theme="light"] .checkout-result-meta__value,
+:root[data-theme="light"] .checkout-empty__title,
+:root[data-theme="light"] .order-key-item__name,
+:root[data-theme="light"] .order-card__id,
+:root[data-theme="light"] .order-card__item-title,
+:root[data-theme="light"] .order-card__total-amount,
+:root[data-theme="light"] .orders-empty h2,
+:root[data-theme="light"] .modal-box__title,
+:root[data-theme="light"] .order-detail-header-info .modal-box__title,
+:root[data-theme="light"] .order-detail-field__value,
+:root[data-theme="light"] .order-detail-section-title,
+:root[data-theme="light"] .order-detail-game-name strong,
+:root[data-theme="light"] .order-detail-total-amount,
+:root[data-theme="light"] .order-game-item__name,
+:root[data-theme="light"] .order-license-hint strong,
+:root[data-theme="light"] .order-detail-key-notice strong,
+:root[data-theme="light"] .stepper-step--active .stepper-step__label,
+:root[data-theme="light"] .form-label {
+    color: #172033;
+}
+
+:root[data-theme="light"] .checkout-header__subtitle,
+:root[data-theme="light"] .checkout-item__meta,
+:root[data-theme="light"] .checkout-item__del,
+:root[data-theme="light"] .checkout-summary-card__row,
+:root[data-theme="light"] .payment-option__sub,
+:root[data-theme="light"] .qr-info-table__label,
+:root[data-theme="light"] .qr-box__sub,
+:root[data-theme="light"] .checkout-processing__desc,
+:root[data-theme="light"] .checkout-result-card__desc,
+:root[data-theme="light"] .checkout-result-meta__label,
+:root[data-theme="light"] .checkout-empty__desc,
+:root[data-theme="light"] .orders-header__desc,
+:root[data-theme="light"] .orders-loading,
+:root[data-theme="light"] .orders-empty,
+:root[data-theme="light"] .order-card__date,
+:root[data-theme="light"] .order-card__item-type,
+:root[data-theme="light"] .order-card__total,
+:root[data-theme="light"] .order-game-item__tag,
+:root[data-theme="light"] .modal-box__text,
+:root[data-theme="light"] .order-detail-field__label,
+:root[data-theme="light"] .order-detail-game-id,
+:root[data-theme="light"] .order-detail-orig-price,
+:root[data-theme="light"] .order-detail-summary-row,
+:root[data-theme="light"] .order-detail-table th,
+:root[data-theme="light"] .order-detail-products__sub,
+:root[data-theme="light"] .order-detail-demo-label,
+:root[data-theme="light"] .order-refund-expired,
+:root[data-theme="light"] .stepper-step,
+:root[data-theme="light"] .modal-box__close {
+    color: #607087;
+}
+
+:root[data-theme="light"] .ewallet-instruction,
+:root[data-theme="light"] .order-license-hint,
+:root[data-theme="light"] .order-detail-key-notice,
+:root[data-theme="light"] .checkout-notice {
+    color: #425168;
+}
+
+:root[data-theme="light"] .checkout-item__final-price,
+:root[data-theme="light"] .checkout-summary-card__total-amount,
+:root[data-theme="light"] .checkout-header__subtitle strong,
+:root[data-theme="light"] .order-card__item-price,
+:root[data-theme="light"] .order-detail-item-price,
+:root[data-theme="light"] .order-keys-box__title,
+:root[data-theme="light"] .order-games-box__title,
+:root[data-theme="light"] .order-detail-card__title,
+:root[data-theme="light"] .order-card__view-lib-btn {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .qr-info-table__code,
+:root[data-theme="light"] .order-detail-field__value.code-font,
+:root[data-theme="light"] .order-detail-key-code {
+    color: #1674cf;
+    background: #e3effb;
+}
+
+:root[data-theme="light"] .order-key-item__code,
+:root[data-theme="light"] .order-card__key-code {
+    color: #059669;
+}
+
+:root[data-theme="light"] .checkout-card__header,
+:root[data-theme="light"] .order-detail-card__title,
+:root[data-theme="light"] .order-card__item-row,
+:root[data-theme="light"] .order-detail-table td,
+:root[data-theme="light"] .checkout-summary-card__divider,
+:root[data-theme="light"] .order-detail-summary-row--total,
+:root[data-theme="light"] .modal-box__header {
+    border-color: #dde6f0;
+}
+
+:root[data-theme="light"] .checkout-summary-card__divider {
+    background: #dde6f0;
+}
+
+:root[data-theme="light"] .stepper-step__circle {
+    color: #607087;
+    background: #e6eef7;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .stepper-step--active .stepper-step__circle,
+:root[data-theme="light"] .stepper-step--done .stepper-step__circle {
+    color: #ffffff;
+}
+
+:root[data-theme="light"] .stepper-line {
+    background: #c9d6e5;
+}
+
+:root[data-theme="light"] .checkout-btn--secondary,
+:root[data-theme="light"] .orders-header__lib-btn,
+:root[data-theme="light"] .order-key-item__copy-btn {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .checkout-btn--secondary:hover,
+:root[data-theme="light"] .orders-header__lib-btn:hover {
+    color: #1674cf;
+    background: #edf4fc;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .order-key-item__copy-btn:hover {
+    color: #ffffff;
+}
+
+:root[data-theme="light"] .checkout-btn--ghost:hover {
+    color: #172033;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .order-detail-field__value.highlight-badge {
+    color: #1674cf;
+    background: #e3effb;
+}
+
+:root[data-theme="light"] .order-detail-copy-btn,
+:root[data-theme="light"] .order-license-link,
+:root[data-theme="light"] .order-card__detail-btn {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .order-detail-copy-btn:hover,
+:root[data-theme="light"] .order-license-link:hover,
+:root[data-theme="light"] .order-card__detail-btn:hover {
+    color: #ffffff;
+    background: #1674cf;
+}
+
+:root[data-theme="light"] .checkout-alert__text,
+:root[data-theme="light"] .checkout-notice__text {
+    color: #425168;
+}
+
+:root[data-theme="light"] .checkout-alert--warning,
+:root[data-theme="light"] .order-status-badge--pending,
+:root[data-theme="light"] .order-refund-status-tag--pending,
+:root[data-theme="light"] .order-license-status--pending,
+:root[data-theme="light"] .sandbox-tester-bar__label,
+:root[data-theme="light"] .qr-box__timer,
+:root[data-theme="light"] .order-card__refund-info--pending,
+:root[data-theme="light"] .order-detail-refund-banner--pending {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .checkout-alert--success,
+:root[data-theme="light"] .checkout-badge--secure,
+:root[data-theme="light"] .order-status-badge--completed,
+:root[data-theme="light"] .order-status-badge--refunded,
+:root[data-theme="light"] .order-refund-status-tag--refunded,
+:root[data-theme="light"] .order-card__refund-info--refunded,
+:root[data-theme="light"] .order-detail-refund-banner--refunded,
+:root[data-theme="light"] .checkout-summary-card__free,
+:root[data-theme="light"] .checkout-summary-card__row--saving,
+:root[data-theme="light"] .order-detail-summary-row--discount,
+:root[data-theme="light"] .order-detail-summary-row .free-text,
+:root[data-theme="light"] .ewallet-badge-tag,
+:root[data-theme="light"] .checkout-processing__security,
+:root[data-theme="light"] .order-pay-badge--qr,
+:root[data-theme="light"] .order-license-status--active,
+:root[data-theme="light"] .order-detail-field__value.payment-success-tag,
+:root[data-theme="light"] .order-game-item__badge {
+    color: #059669;
+}
+
+:root[data-theme="light"] .checkout-alert--danger,
+:root[data-theme="light"] .checkout-badge--owned,
+:root[data-theme="light"] .order-status-badge--rejected,
+:root[data-theme="light"] .order-refund-status-tag--rejected,
+:root[data-theme="light"] .order-card__refund-info--rejected,
+:root[data-theme="light"] .order-detail-refund-banner--rejected,
+:root[data-theme="light"] .form-error,
+:root[data-theme="light"] .checkout-summary-card__warn-msg,
+:root[data-theme="light"] .order-license-status--revoked,
+:root[data-theme="light"] .order-key-revoked-label,
+:root[data-theme="light"] .order-card__refund-btn,
+:root[data-theme="light"] .checkout-btn--danger-outline {
+    color: #dc2626;
+}
+
+:root[data-theme="light"] .order-card__refund-btn:hover,
+:root[data-theme="light"] .checkout-btn--danger-outline:hover {
+    color: #ffffff;
+}
+
+:root[data-theme="light"] .lucky-page-title {
+    background: linear-gradient(135deg, #172033 30%, #1d4ed8 70%, #2563eb 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+:root[data-theme="light"] .lucky-page-subtitle,
+:root[data-theme="light"] .spin-hint,
+:root[data-theme="light"] .spin-spins-left,
+:root[data-theme="light"] .spin-countdown__label,
+:root[data-theme="light"] .spin-countdown__note,
+:root[data-theme="light"] .section-head p,
+:root[data-theme="light"] .lucky-empty-state p,
+:root[data-theme="light"] .voucher-item-sub,
+:root[data-theme="light"] .voucher-item-exp,
+:root[data-theme="light"] .spin-modal__desc,
+:root[data-theme="light"] .rules-content ul {
+    color: #607087;
+}
+
+:root[data-theme="light"] .lucky-page-subtitle strong,
+:root[data-theme="light"] .spin-spins-left strong,
+:root[data-theme="light"] .spin-modal__badge,
+:root[data-theme="light"] .voucher-code-text,
+:root[data-theme="light"] .voucher-item-code-row code,
+:root[data-theme="light"] .voucher-quick-info code,
+:root[data-theme="light"] .voucher-applied-title strong,
+:root[data-theme="light"] .lucky-badge {
+    color: #b45309;
+}
+
+:root[data-theme="light"] .lucky-wheel-stage {
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 12px 30px rgb(30 64 96 / 14%);
+}
+
+:root[data-theme="light"] .lucky-card-section,
+:root[data-theme="light"] .voucher-item-card {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .voucher-item-card {
+    border-left-color: #1674cf;
+}
+
+:root[data-theme="light"] .section-head,
+:root[data-theme="light"] .lucky-table th,
+:root[data-theme="light"] .lucky-table td {
+    border-bottom-color: #dde6f0;
+}
+
+:root[data-theme="light"] .section-head h2,
+:root[data-theme="light"] .voucher-item-title,
+:root[data-theme="light"] .spin-modal__title,
+:root[data-theme="light"] .lucky-table td,
+:root[data-theme="light"] .prob-text,
+:root[data-theme="light"] .rules-content ul strong,
+:root[data-theme="light"] .voucher-quick-info strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .rules-content h3,
+:root[data-theme="light"] .voucher-applied-title,
+:root[data-theme="light"] .voucher-code-label {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .lucky-table th {
+    color: #607087;
+    background: #f3f7fc;
+}
+
+:root[data-theme="light"] .lucky-tab {
+    color: #607087;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .lucky-tab:hover {
+    color: #172033;
+    background: #edf4fc;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .lucky-tab--active {
+    color: #ffffff;
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+:root[data-theme="light"] .spin-countdown {
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .timer-box {
+    background: #ffffff;
+    border-color: #1674cf;
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .spin-btn--disabled {
+    color: #607087;
+    background: #dbe6f2;
+}
+
+:root[data-theme="light"] .spin-btn--spinning {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+:root[data-theme="light"] .voucher-code-box,
+:root[data-theme="light"] .cart-voucher-quick-list,
+:root[data-theme="light"] .checkout-voucher-section {
+    background: #f3f7fc;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .cart-voucher-quick-item {
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .cart-voucher-quick-item:hover,
+:root[data-theme="light"] .cart-voucher-quick-item.active {
+    background: #e3effb;
+    border-color: #1674cf;
+}
+
+:root[data-theme="light"] .voucher-item-code-row code {
+    background: #fff3d6;
+}
+
+:root[data-theme="light"] .voucher-item-badge {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+:root[data-theme="light"] .voucher-copy-sm,
+:root[data-theme="light"] .spin-modal-btn--secondary {
+    color: #425168;
+    background: #e6eef7;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .voucher-copy-sm:hover,
+:root[data-theme="light"] .spin-modal-btn--secondary:hover {
+    color: #172033;
+    background: #d6e4f3;
+}
+
+:root[data-theme="light"] .spin-modal__close {
+    color: #607087;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .spin-modal__close:hover {
+    color: #172033;
+    background: #d6e4f3;
+}
+
+:root[data-theme="light"] .profile-card,
+:root[data-theme="light"] .auth-card,
+:root[data-theme="light"] .favorites-empty,
+:root[data-theme="light"] .support-sidebar,
+:root[data-theme="light"] .guide-step,
+:root[data-theme="light"] .guide-faq__list,
+:root[data-theme="light"] .policy-document,
+:root[data-theme="light"] .policy-no-results,
+:root[data-theme="light"] .policy-acknowledgement,
+:root[data-theme="light"] .policy-contact,
+:root[data-theme="light"] .community-composer,
+:root[data-theme="light"] .community-post,
+:root[data-theme="light"] .community-side-card,
+:root[data-theme="light"] .community-highlights > div,
+:root[data-theme="light"] .community-empty {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+    box-shadow: 0 6px 18px rgb(30 64 96 / 8%);
+}
+
+:root[data-theme="light"] .guide-step--open {
+    background: #f8fbff;
+    border-color: #80a8d2;
+}
+
+:root[data-theme="light"] .profile-avatar,
+:root[data-theme="light"] .profile-field input,
+:root[data-theme="light"] .profile-value,
+:root[data-theme="light"] .profile-upload,
+:root[data-theme="light"] .profile-cancel,
+:root[data-theme="light"] .auth-form__input,
+:root[data-theme="light"] .support-search,
+:root[data-theme="light"] .community-search,
+:root[data-theme="light"] .community-field input,
+:root[data-theme="light"] .community-field textarea,
+:root[data-theme="light"] .community-field select,
+:root[data-theme="light"] .community-composer__prompt > button,
+:root[data-theme="light"] .community-reply-form input,
+:root[data-theme="light"] .community-post__game,
+:root[data-theme="light"] .community-reply p,
+:root[data-theme="light"] .policy-toc,
+:root[data-theme="light"] .policy-document__toolbar {
+    color: #172033;
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .auth-form__input,
+:root[data-theme="light"] .support-search,
+:root[data-theme="light"] .community-search {
+    color: #607087;
+}
+
+:root[data-theme="light"] .auth-form__input input,
+:root[data-theme="light"] .support-search input,
+:root[data-theme="light"] .community-search input {
+    color: #172033;
+}
+
+:root[data-theme="light"] .profile-heading h1,
+:root[data-theme="light"] .favorites-page__heading h1,
+:root[data-theme="light"] .favorites-empty h2,
+:root[data-theme="light"] .auth-card h1,
+:root[data-theme="light"] .auth-card__brand,
+:root[data-theme="light"] .support-heading h2,
+:root[data-theme="light"] .guide-step__title strong,
+:root[data-theme="light"] .guide-faq__item button,
+:root[data-theme="light"] .policy-document__header h2,
+:root[data-theme="light"] .policy-section h3,
+:root[data-theme="light"] .policy-toc > strong,
+:root[data-theme="light"] .community-feed__heading h2,
+:root[data-theme="light"] .community-post h3,
+:root[data-theme="light"] .community-post__author strong,
+:root[data-theme="light"] .community-post__game strong,
+:root[data-theme="light"] .community-side-card__heading h2,
+:root[data-theme="light"] .community-highlights strong,
+:root[data-theme="light"] .community-empty h3,
+:root[data-theme="light"] .community-reply p strong,
+:root[data-theme="light"] .community-login-prompt strong,
+:root[data-theme="light"] .game-card__title {
+    color: #172033;
+}
+
+:root[data-theme="light"] .profile-heading p,
+:root[data-theme="light"] .profile-hint,
+:root[data-theme="light"] .favorites-page__heading p,
+:root[data-theme="light"] .favorites-empty,
+:root[data-theme="light"] .auth-card__subtitle,
+:root[data-theme="light"] .auth-card__switch,
+:root[data-theme="light"] .support-section-intro,
+:root[data-theme="light"] .guide-step__title small,
+:root[data-theme="light"] .guide-faq__item p,
+:root[data-theme="light"] .support-empty,
+:root[data-theme="light"] .policy-document__header p,
+:root[data-theme="light"] .policy-section p,
+:root[data-theme="light"] .policy-nav__item,
+:root[data-theme="light"] .policy-toc > a,
+:root[data-theme="light"] .support-sidebar__link,
+:root[data-theme="light"] .support-sidebar__sub-link,
+:root[data-theme="light"] .support-sidebar__label,
+:root[data-theme="light"] .community-post__body,
+:root[data-theme="light"] .community-post__author > span,
+:root[data-theme="light"] .community-reply p,
+:root[data-theme="light"] .community-highlights small,
+:root[data-theme="light"] .community-empty p,
+:root[data-theme="light"] .community-side-card__heading p,
+:root[data-theme="light"] .community-guidelines ul,
+:root[data-theme="light"] .community-sidebar__foot,
+:root[data-theme="light"] .community-login-prompt p {
+    color: #607087;
+}
+
+:root[data-theme="light"] .profile-field > span,
+:root[data-theme="light"] .auth-form__field,
+:root[data-theme="light"] .community-field > span,
+:root[data-theme="light"] .policy-acknowledgement label,
+:root[data-theme="light"] .community-upcoming__item,
+:root[data-theme="light"] .support-hero__copy > p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .profile-section,
+:root[data-theme="light"] .profile-avatar-row,
+:root[data-theme="light"] .guide-faq__item + .guide-faq__item,
+:root[data-theme="light"] .community-composer__actions,
+:root[data-theme="light"] .community-post__actions,
+:root[data-theme="light"] .community-reply-form,
+:root[data-theme="light"] .community-tabs,
+:root[data-theme="light"] .community-side-card__heading,
+:root[data-theme="light"] .community-side-card__link,
+:root[data-theme="light"] .policy-section + .policy-section,
+:root[data-theme="light"] .policy-document__toolbar {
+    border-color: #dde6f0;
+}
+
+:root[data-theme="light"] .support-sidebar__divider {
+    background: #dde6f0;
+}
+
+:root[data-theme="light"] .support-sidebar__link:hover,
+:root[data-theme="light"] .policy-nav__item:hover,
+:root[data-theme="light"] .policy-toc > a:hover,
+:root[data-theme="light"] .guide-faq__item button:hover,
+:root[data-theme="light"] .community-tabs button:hover,
+:root[data-theme="light"] .community-post__actions button:hover,
+:root[data-theme="light"] .community-composer__actions button:hover {
+    color: #172033;
+    background: #e6eef7;
+}
+
+:root[data-theme="light"] .support-sidebar__link--active,
+:root[data-theme="light"] .policy-nav__item.is-active,
+:root[data-theme="light"] .community-tabs button.is-active {
+    color: #1674cf;
+    background: #e3effb;
+}
+
+:root[data-theme="light"] .support-sidebar__note,
+:root[data-theme="light"] .community-sidebar__foot {
+    background: #edf4fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .support-sidebar__note p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .guide-step__icon,
+:root[data-theme="light"] .support-heading__icon,
+:root[data-theme="light"] .community-highlight__icon,
+:root[data-theme="light"] .community-side-card__heading > span,
+:root[data-theme="light"] .profile-heading__icon {
+    color: #1674cf;
+    background: #e3effb;
+    border-color: #b8d2ec;
+}
+
+:root[data-theme="light"] .guide-step__instructions ol,
+:root[data-theme="light"] .community-reply p {
+    color: #425168;
+}
+
+:root[data-theme="light"] .guide-step__visual {
+    background: #e6eef7;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .community-post__actions button,
+:root[data-theme="light"] .community-composer__actions button,
+:root[data-theme="light"] .community-tabs button,
+:root[data-theme="light"] .community-secondary-button {
+    color: #607087;
+}
+
+:root[data-theme="light"] .community-secondary-button {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .community-secondary-button:hover {
+    color: #1674cf;
+    background: #edf4fc;
+}
+
+:root[data-theme="light"] .community-post__actions button.is-liked {
+    color: #dc2626;
+}
+
+:root[data-theme="light"] .policy-document__toolbar button,
+:root[data-theme="light"] .policy-search-results button {
+    color: #172033;
+    background: #ffffff;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .policy-warning {
+    color: #b45309;
+    background: #fff6e0;
+    border-color: #f1d28a;
+}
+
+:root[data-theme="light"] .policy-warning p {
+    color: #6b4a12;
+}
+
+:root[data-theme="light"] .policy-warning strong {
+    color: #92400e;
+}
+
+:root[data-theme="light"] .community-avatar--sample {
+    color: #6b4a12;
+}
+
+:root[data-theme="light"] .policy-acknowledgement label > span {
+    background: #ffffff;
+    border-color: #9bb4d1;
+}
+
+:root[data-theme="light"] .community-message--notice {
+    color: #047857;
+}
+
+:root[data-theme="light"] .community-message--error {
+    color: #dc2626;
+}
+
+:root[data-theme="light"] .footer {
+    background: #ffffff;
+    border-top-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .footer__trust-bar {
+    background: #f3f7fc;
+    border-bottom-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .footer__bottom {
+    color: #607087;
+    border-top-color: #dde6f0;
+}
+
+:root[data-theme="light"] .footer__logo,
+:root[data-theme="light"] .footer__column h4,
+:root[data-theme="light"] .footer__socials-label,
+:root[data-theme="light"] .footer__trust-text strong,
+:root[data-theme="light"] .footer__contact-item strong {
+    color: #172033;
+}
+
+:root[data-theme="light"] .footer__brand-desc,
+:root[data-theme="light"] .footer__contact-item,
+:root[data-theme="light"] .footer__trust-text p,
+:root[data-theme="light"] .footer__column a,
+:root[data-theme="light"] .footer__social-btn {
+    color: #607087;
+}
+
+:root[data-theme="light"] .footer__column a:hover,
+:root[data-theme="light"] .footer__social-btn:hover {
+    color: #1674cf;
+}
+
+:root[data-theme="light"] .footer__social-btn {
+    background: #f3f7fc;
+    border-color: #c9d6e5;
+}
+
+:root[data-theme="light"] .state-message__spinner,
+:root[data-theme="light"] .store-spinner {
+    border-color: #d3deea;
+    border-top-color: #1674cf;
+}
+
+:root[data-theme="light"] .pagination__ellipsis {
+    color: #607087;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #c3cfdd;
+}
+:root {
+    --sp-accent: #62b5ff;
+    --sp-accent-hover: #38bdf8;
+    --sp-primary: #1674cf;
+    --sp-primary-hover: #268de9;
+    --sp-bg: #111c2e;
+    --sp-bg-header: #17243a;
+    --sp-bg-messages: #0d1524;
+    --sp-bg-bot-bubble: #1a2942;
+    --sp-border: #263a53;
+    --sp-border-glow: rgba(98, 181, 255, 0.28);
+    --sp-text: #edf3ff;
+    --sp-text-muted: #96a9c4;
+    --sp-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--sp-border-glow);
+}
+
+.support-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(11, 17, 32, 0.6);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 24px;
+    animation: spFadeIn 0.2s ease-out;
+}
+
+@keyframes spFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.support-popup--chat {
+    position: relative;
+    width: 395px;
+    height: 580px;
+    max-width: 100%;
+    max-height: calc(100vh - 48px);
+    background: var(--sp-bg);
+    border: 1.5px solid var(--sp-border-glow);
+    border-radius: 20px;
+    box-shadow: var(--sp-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: inherit;
+    color: var(--sp-text);
+    animation: spSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes spSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.support-popup__drag-handle {
+    display: none;
+}
+
+.support-popup__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--sp-bg-header);
+    border-bottom: 1px solid var(--sp-border);
+    flex-shrink: 0;
+}
+
+.support-popup__bot-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.support-popup__bot-avatar {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1674cf 0%, #0284c7 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(22, 116, 207, 0.35);
+    flex-shrink: 0;
+}
+
+.support-popup__online-status {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #72e5ad;
+    border: 2px solid var(--sp-bg-header);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(114, 229, 173, 0.8);
+}
+
+.support-popup__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+.support-popup__subtitle {
+    margin: 2px 0 0;
+    font-size: 11.5px;
+    color: var(--sp-accent);
+    font-weight: 500;
+}
+
+.support-popup__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.support-popup__icon-action,
+.support-popup__close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sp-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    outline: none;
+}
+
+.support-popup__icon-action:hover,
+.support-popup__close-btn:hover {
+    background: rgba(98, 181, 255, 0.18);
+    color: var(--sp-accent);
+}
+
+.support-popup__close-btn:hover {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+}
+
+.support-chat__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--sp-bg-messages);
+}
+
+.support-chat__messages-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.support-chat__messages-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.support-chat__messages-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.support-chat__message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    animation: spMsgAppear 0.2s ease-out;
+}
+
+@keyframes spMsgAppear {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.support-chat__message-row--bot {
+    align-self: flex-start;
+    max-width: 86%;
+}
+
+.support-chat__message-row--user {
+    align-self: flex-end;
+    justify-content: flex-end;
+    max-width: 82%;
+}
+
+.support-chat__msg-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: rgba(98, 181, 255, 0.15);
+    border: 1px solid rgba(98, 181, 255, 0.3);
+    color: var(--sp-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+}
+
+.support-chat__bubble-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.support-chat__message-row--user .support-chat__bubble-container {
+    align-items: flex-end;
+}
+
+.support-chat__bubble {
+    padding: 11px 14px;
+    border-radius: 16px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.support-chat__message-row--bot .support-chat__bubble {
+    background: var(--sp-bg-bot-bubble);
+    border: 1px solid var(--sp-border);
+    color: #edf3ff;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.support-chat__message-row--user .support-chat__bubble {
+    background: linear-gradient(135deg, #1674cf 0%, #0ea5e9 100%);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 14px rgba(22, 116, 207, 0.35);
+}
+
+.support-chat__paragraph {
+    margin: 0;
+}
+
+.support-chat__paragraph + .support-chat__paragraph {
+    margin-top: 6px;
+}
+
+.support-chat__bubble strong {
+    color: #9cd5ff;
+    font-weight: 700;
+}
+
+.support-chat__message-row--user .support-chat__bubble strong {
+    color: #ffffff;
+}
+
+.support-chat__time {
+    font-size: 10px;
+    color: var(--sp-text-muted);
+    padding: 0 4px;
+}
+
+.support-chat__bubble--typing {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 16px;
+}
+
+.support-chat__typing-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--sp-accent);
+    border-radius: 50%;
+    animation: spTyping 1.2s infinite ease-in-out;
+}
+
+.support-chat__typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.support-chat__typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes spTyping {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    30% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+}
+
+.support-chat__quick-prompts {
+    padding: 10px 14px 12px;
+    background: rgba(17, 28, 46, 0.85);
+    border-top: 1px solid rgba(38, 58, 83, 0.6);
+    flex-shrink: 0;
+}
+
+.support-chat__quick-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sp-text-muted);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.support-chat__quick-scroll {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.support-chat__quick-scroll::-webkit-scrollbar {
+    height: 3px;
+}
+
+.support-chat__quick-scroll::-webkit-scrollbar-thumb {
+    background: rgba(98, 181, 255, 0.2);
+    border-radius: 4px;
+}
+
+.support-chat__quick-chip {
+    white-space: nowrap;
+    padding: 6px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sp-accent);
+    background: rgba(22, 116, 207, 0.14);
+    border: 1px solid rgba(98, 181, 255, 0.3);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.support-chat__quick-chip:hover:not(:disabled) {
+    background: rgba(98, 181, 255, 0.24);
+    border-color: var(--sp-accent);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.support-chat__quick-chip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.support-chat__footer-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: var(--sp-bg-header);
+    border-top: 1px solid var(--sp-border);
+    flex-shrink: 0;
+}
+
+.support-chat__input {
+    flex: 1;
+    height: 42px;
+    padding: 0 14px;
+    background: #0d1524;
+    border: 1px solid var(--sp-border);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.support-chat__input::placeholder {
+    color: var(--sp-text-muted);
+}
+
+.support-chat__input:focus {
+    border-color: var(--sp-accent);
+    box-shadow: 0 0 0 3px rgba(98, 181, 255, 0.2);
+}
+
+.support-chat__input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.support-chat__send-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: none;
+    background: var(--sp-primary);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.support-chat__send-btn:hover:not(:disabled) {
+    background: var(--sp-primary-hover);
+    box-shadow: 0 4px 12px rgba(22, 116, 207, 0.4);
+    transform: scale(1.04);
+}
+
+.support-chat__send-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+    .support-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .support-popup--chat {
+        width: 100%;
+        height: 85vh;
+        max-height: 85vh;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+    }
+
+    .support-popup__drag-handle {
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 2px;
+        margin: 8px auto 2px;
+    }
+}
+
 .lang-switcher {
     position: relative;
     display: flex;
     align-items: center;
+    gap: 6px;
+}
+
+.theme-toggle {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    place-items: center;
+    padding: 0;
+    color: #c8d6e5;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.18s;
+}
+
+.theme-toggle:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.4);
 }
 
 .lang-switcher__trigger {

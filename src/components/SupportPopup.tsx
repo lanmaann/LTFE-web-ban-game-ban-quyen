@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./SupportPopup.css";
 
 export interface SupportChannel {
     name: string;
