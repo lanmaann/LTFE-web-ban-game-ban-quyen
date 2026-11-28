@@ -18,6 +18,7 @@ import {
     Trash2,
     CheckCircle,
     Ticket,
+    FileText,
 } from "lucide-react";
 import { useAuth } from "../auth/useAuth";
 import { luckyWheelService } from "../services/luckyWheelService";
@@ -887,10 +888,13 @@ export default function Checkout() {
 
                             <div className="checkout-result-actions">
                                 <Link to="/library" className="checkout-btn checkout-btn--primary">
-                                    <CheckCircle2 size={18} /> Đi tới Thư viện xem Key & Cài đặt
+                                    <CheckCircle2 size={18} /> Đi tới Thư viện
                                 </Link>
-                                <Link to="/orders" className="checkout-btn checkout-btn--secondary">
-                                    Xem Lịch sử mua hàng
+                                <Link
+                                    to={createdOrder ? `/orders?detail=${createdOrder.id}` : "/orders"}
+                                    className="checkout-btn checkout-btn--secondary"
+                                >
+                                    <FileText size={18} /> Xem chi tiết đơn hàng
                                 </Link>
                                 <Link to="/store" className="checkout-btn checkout-btn--ghost">
                                     Tiếp tục mua sắm

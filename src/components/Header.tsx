@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
+    AlertCircle,
     Bell,
     BookOpen,
     CheckCircle2,
@@ -86,26 +87,62 @@ function buildNotifications(
     const notifications: HeaderNotification[] = [];
 
     orders.forEach((order) => {
-        if (order.status !== "completed" && order.status !== "refunded") return;
+        if (
+            order.status !== "completed" &&
+            order.status !== "refunded" &&
+            order.status !== "refund_rejected" &&
+            order.status !== "refund_pending"
+        )
+            return;
+
         const isRefunded = order.status === "refunded";
-        const date = isRefunded ? order.refundedAt ?? order.createdAt : order.createdAt;
+        const isRejected = order.status === "refund_rejected";
+        const isPending = order.status === "refund_pending";
+
+        const date = isRefunded
+            ? order.refundedAt ?? order.createdAt
+            : isRejected
+                ? order.refundRejectedAt ?? order.createdAt
+                : isPending
+                    ? order.refundRequestedAt ?? order.createdAt
+                    : order.createdAt;
+
         const titles = order.items.map((item) => item.title).join(", ");
+
+        let title: string;
+        let message: string;
+
+        if (isRefunded) {
+            title = t.notifications.orderRefunded;
+            message = t.notifications.orderRefundedMsg(titles);
+        } else if (isRejected) {
+            title = t.notifications.orderRefundRejected;
+            message = t.notifications.orderRefundRejectedMsg(
+                order.id,
+                order.refundRejectReason || "Không đủ điều kiện hoàn tiền."
+            );
+        } else if (isPending) {
+            title = t.notifications.orderRefundPending;
+            message = t.notifications.orderRefundPendingMsg(order.id);
+        } else {
+            title = t.notifications.orderCompleted;
+            message = t.notifications.orderCompletedMsg(titles);
+        }
+
         notifications.push({
             id: `order:${order.id}:${order.status}`,
             createdAt: date,
-            title: isRefunded
-                ? t.notifications.orderRefunded
-                : t.notifications.orderCompleted,
-            message: isRefunded
-                ? t.notifications.orderRefundedMsg(titles)
-                : t.notifications.orderCompletedMsg(titles),
+            title,
+            message,
             time: getNotificationTime(date, t),
             href: "/orders",
-            icon: isRefunded ? Clock : CheckCircle2,
+            icon: isRefunded || isPending
+                ? Clock
+                : isRejected
+                    ? AlertCircle
+                    : CheckCircle2,
             className: "notification-item__icon--purchase",
         });
-    });
-
     posts.forEach((post) => {
         if (post.userId !== userId) return;
         post.replies.forEach((reply) => {
@@ -160,8 +197,11 @@ export default function Header() {
     const { t, formatPrice } = useI18n();
 
     useEffect(() => {
+    const [prevUrlKeyword, setPrevUrlKeyword] = useState(urlKeyword);
+    if (prevUrlKeyword !== urlKeyword) {
+        setPrevUrlKeyword(urlKeyword);
         setKeyword(urlKeyword);
-    }, [urlKeyword]);
+    }
 
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);
@@ -190,7 +230,7 @@ export default function Header() {
     const readIds = Array.isArray(readNotificationIds)
         ? readNotificationIds.filter((id): id is string => typeof id === "string")
         : [];
-    const currentNotificationsError = user?.id === notificationsError?.userId
+    const currentNotificationsError = notificationsError && user?.id === notificationsError.userId
         ? notificationsError.message
         : "";
     const unreadNotificationCount = notificationsForUser.filter(
