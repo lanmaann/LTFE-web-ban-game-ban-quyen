@@ -20,12 +20,14 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/useAuth";
 import { orderService } from "../services/orderService";
-import { formatPrice } from "../utils/format";
 import { generateCdKey } from "../utils/license";
 import type { Order } from "../types/order";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function OrderHistory() {
     const { user } = useAuth();
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedDetailOrder, setSelectedDetailOrder] = useState<Order | null>(null);
@@ -124,7 +126,7 @@ export default function OrderHistory() {
             case "ewallet":
                 return (
                     <span className="order-pay-badge order-pay-badge--wallet">
-                        <Wallet size={14} /> Ví điện tử
+                        <Wallet size={14} /> {isVi ? "Ví điện tử" : "E-Wallet"}
                     </span>
                 );
             default:
@@ -136,7 +138,7 @@ export default function OrderHistory() {
         return (
             <div className="orders-page">
                 <div className="orders-loading">
-                    Đang tải lịch sử mua hàng...
+                    {t.common.loading}
                 </div>
             </div>
         );
@@ -147,22 +149,22 @@ export default function OrderHistory() {
             <div className="orders-header">
                 <div className="orders-header__title-group">
                     <h1 className="orders-header__title">
-                      Lịch sử mua hàng bản quyền
+                      {t.orders.title}
                     </h1>
                 </div>
 
                 <Link to="/library" className="orders-header__lib-btn">
-                     Đến Thư viện game
+                     {t.library.title}
                 </Link>
             </div>
 
             {orders.length === 0 ? (
                 <div className="orders-empty">
                     <Package size={60} strokeWidth={1.2} />
-                    <h2>Chưa có giao dịch nào</h2>
-                    <p>Bạn chưa thực hiện đơn mua game bản quyền nào trên ATA Games.</p>
+                    <h2>{t.orders.empty}</h2>
+                    <p>{isVi ? "Bạn chưa thực hiện đơn mua game bản quyền nào trên ATA Games." : "You haven't placed any orders on ATA Games yet."}</p>
                     <Link to="/store" className="checkout-btn checkout-btn--primary">
-                        Khám phá Cửa hàng <ArrowRight size={16} />
+                        {t.library.viewStore} <ArrowRight size={16} />
                     </Link>
                 </div>
             ) : (
@@ -186,7 +188,7 @@ export default function OrderHistory() {
                                         </span>
                                         <span className="order-card__date">
                                             <Clock size={13} />
-                                            {new Date(order.createdAt).toLocaleString("vi-VN")}
+                                            {new Date(order.createdAt).toLocaleString(isVi ? "vi-VN" : "en-US")}
                                         </span>
                                         {getPaymentBadge(order.paymentMethod)}
                                     </div>
@@ -201,11 +203,11 @@ export default function OrderHistory() {
                                         >
                                             {isRefunded ? (
                                                 <>
-                                                    <RotateCcw size={13} /> Đã hoàn tiền
+                                                    <RotateCcw size={13} /> {t.orders.status.refunded}
                                                 </>
                                             ) : (
                                                 <>
-                                                    <CheckCircle2 size={13} /> Hoàn tất
+                                                    <CheckCircle2 size={13} /> {t.orders.status.completed}
                                                 </>
                                             )}
                                         </span>
@@ -224,25 +226,25 @@ export default function OrderHistory() {
                                                         {item.title}
                                                     </strong>
                                                     <span className="order-card__item-type">
-                                                        Số lượng: 1
+                                                        {t.cart.quantity}: 1
                                                     </span>
                                                 </div>
 
                                                 <div className="order-card__key-zone">
                                                     {isRefunded ? (
                                                         <span className="order-license-status order-license-status--revoked">
-                                                            Đã thu hồi bản quyền
+                                                            {isVi ? "Đã thu hồi bản quyền" : "License revoked"}
                                                         </span>
                                                     ) : (
                                                         <span className="order-license-status order-license-status--active">
-                                                            <ShieldCheck size={13} /> Bản quyền chính hãng
+                                                            <ShieldCheck size={13} /> {isVi ? "Bản quyền chính hãng" : "Official License"}
                                                         </span>
                                                     )}
                                                 </div>
 
                                                 <span className="order-card__item-price">
                                                     {item.price === 0
-                                                        ? "Miễn phí"
+                                                        ? t.common.free
                                                         : formatPrice(item.price)}
                                                 </span>
                                             </div>
@@ -253,7 +255,7 @@ export default function OrderHistory() {
                                         <div className="order-card__refund-info">
                                             <AlertCircle size={14} />
                                             <span>
-                                                Lý do hoàn tiền: {order.refundReason}
+                                                {isVi ? "Lý do hoàn tiền:" : "Refund reason:"} {order.refundReason}
                                             </span>
                                         </div>
                                     )}
@@ -261,7 +263,7 @@ export default function OrderHistory() {
 
                                 <div className="order-card__footer">
                                     <div className="order-card__total">
-                                        <span>Tổng tiền:</span>
+                                        <span>{t.orders.total}:</span>
                                         <strong className="order-card__total-amount">
                                             {formatPrice(order.totalAmount)}
                                         </strong>
@@ -273,7 +275,7 @@ export default function OrderHistory() {
                                             className="order-card__detail-btn"
                                             onClick={() => setSelectedDetailOrder(order)}
                                         >
-                                            <FileText size={14} /> Chi tiết đơn hàng
+                                            <FileText size={14} /> {t.orders.viewDetail}
                                         </button>
 
                                         {!isRefunded && (
@@ -283,11 +285,11 @@ export default function OrderHistory() {
                                                     className="order-card__refund-btn"
                                                     onClick={() => setRefundOrder(order)}
                                                 >
-                                                    <RotateCcw size={14} /> Yêu cầu hoàn tiền
+                                                    <RotateCcw size={14} /> {t.orders.refund}
                                                 </button>
                                             ) : (
                                                 <span className="order-refund-expired">
-                                                    Hết hạn hoàn tiền (&gt;14 ngày)
+                                                    {isVi ? "Hết hạn hoàn tiền (>14 ngày)" : "Refund expired (>14 days)"}
                                                 </span>
                                             )
                                         )}
@@ -296,7 +298,7 @@ export default function OrderHistory() {
                                             to="/library"
                                             className="order-card__view-lib-btn"
                                         >
-                                            Xem trong Thư viện
+                                            {t.library.title}
                                         </Link>
                                     </div>
                                 </div>
@@ -305,8 +307,6 @@ export default function OrderHistory() {
                     })}
                 </div>
             )}
-
-            {/* Modal Chi tiết đơn hàng đầy đủ */}
             {selectedDetailOrder && (
                 <div className="modal-overlay" role="dialog" aria-modal="true">
                     <div className="modal-box modal-box--order-detail">
@@ -345,7 +345,6 @@ export default function OrderHistory() {
                         </div>
 
                         <div className="modal-box__body order-detail-modal-body">
-                            {/* Banner thông báo nếu đơn hàng đã hoàn tiền */}
                             {selectedDetailOrder.status === "refunded" && (
                                 <div className="order-detail-refund-banner">
                                     <div className="order-detail-refund-banner__header">
@@ -367,10 +366,7 @@ export default function OrderHistory() {
                                     </span>
                                 </div>
                             )}
-
-                            {/* Khối 2 cột: Khách hàng & Thanh toán */}
-                            <div className="order-detail-columns">
-                                {/* Thẻ thông tin khách hàng */}
+                          <div className="order-detail-columns">
                                 <div className="order-detail-card">
                                     <h4 className="order-detail-card__title">
                                         <User size={16} /> Thông tin khách hàng & Tài khoản
@@ -408,9 +404,7 @@ export default function OrderHistory() {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Thẻ thông tin thanh toán */}
-                                <div className="order-detail-card">
+                               <div className="order-detail-card">
                                     <h4 className="order-detail-card__title">
                                         <CreditCard size={16} /> Chi tiết thanh toán & Bảo mật
                                     </h4>
@@ -490,8 +484,6 @@ export default function OrderHistory() {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Danh sách sản phẩm game kèm mã CD-Key */}
                             <div className="order-detail-products">
                                 <div className="order-detail-products__header">
                                     <h4 className="order-detail-section-title">
@@ -603,8 +595,6 @@ export default function OrderHistory() {
                                     </table>
                                 </div>
                             </div>
-
-                            {/* Bảng kê tổng kết chi phí */}
                             <div className="order-detail-summary-card">
                                 <div className="order-detail-summary-row">
                                     <span>Tạm tính ({selectedDetailOrder.items.length} game):</span>
@@ -675,8 +665,6 @@ export default function OrderHistory() {
                     </div>
                 </div>
             )}
-
-            {/* Modal Yêu cầu hoàn tiền */}
             {refundOrder && (
                 <div className="modal-overlay" role="dialog" aria-modal="true">
                     <div className="modal-box">

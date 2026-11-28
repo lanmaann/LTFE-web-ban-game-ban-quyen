@@ -33,8 +33,8 @@ import {
 } from "../store/cartSlice";
 import { selectGames } from "../store/gamesSlice";
 import { orderService } from "../services/orderService";
-import { formatPrice } from "../utils/format";
 import type { PaymentMethod, Order } from "../types/order";
+import { useI18n } from "../i18n/I18nContext";
 
 type CheckoutStep = "review" | "payment_select" | "processing" | "result";
 
@@ -49,6 +49,8 @@ export default function Checkout() {
     const dispatch = useAppDispatch();
     const { user } = useAuth();
     const location = useLocation();
+    const { t, locale, formatPrice } = useI18n();
+    const isVi = locale === "vi";
 
     const cartItems = useAppSelector(selectCartItems);
     const cartTotal = useAppSelector(selectCartTotal);
@@ -250,12 +252,14 @@ export default function Checkout() {
                     <div className="checkout-empty__icon">
                         <ShoppingBag size={64} />
                     </div>
-                    <h2 className="checkout-empty__title">Không có game nào để thanh toán</h2>
+                    <h2 className="checkout-empty__title">{t.cart.empty}</h2>
                     <p className="checkout-empty__desc">
-                        Giỏ hàng của bạn đang trống. Hãy chọn game bản quyền bạn muốn mua từ Cửa hàng!
+                        {isVi
+                            ? "Giỏ hàng của bạn đang trống. Hãy chọn game bản quyền bạn muốn mua từ Cửa hàng!"
+                            : "Your cart is empty. Pick a game from the Store to checkout!"}
                     </p>
                     <Link to="/store" className="checkout-btn checkout-btn--primary">
-                        Khám phá Cửa hàng
+                        {t.library.viewStore}
                     </Link>
                 </div>
             </div>
@@ -266,18 +270,18 @@ export default function Checkout() {
         <div className="checkout-page">
             <div className="checkout-header">
                 <div className="checkout-header__title-group">
-                    <h1 className="checkout-header__title">Thanh toán đơn hàng</h1>
+                    <h1 className="checkout-header__title">{t.checkout.title}</h1>
                     <p className="checkout-header__subtitle">
-                        Tài khoản thụ hưởng: <strong>{user?.name}</strong> ({user?.email})
+                        {isVi ? "Tài khoản thụ hưởng:" : "Account:"} <strong>{user?.name}</strong> ({user?.email})
                     </p>
                 </div>
 
-                <div className="checkout-stepper" aria-label="Tiến trình thanh toán">
+                <div className="checkout-stepper" aria-label={t.checkout.title}>
                     <div className={`stepper-step ${step === "review" ? "stepper-step--active" : "stepper-step--done"}`}>
                         <div className="stepper-step__circle">
                             1
                         </div>
-                        <span className="stepper-step__label">Rà soát</span>
+                        <span className="stepper-step__label">{isVi ? "Rà soát" : "Review"}</span>
                     </div>
                     <div className="stepper-line" />
                     <div
@@ -292,12 +296,12 @@ export default function Checkout() {
                         <div className="stepper-step__circle">
                             2
                         </div>
-                        <span className="stepper-step__label">Phương thức</span>
+                        <span className="stepper-step__label">{t.checkout.paymentMethod}</span>
                     </div>
                     <div className="stepper-line" />
                     <div className={`stepper-step ${step === "result" ? "stepper-step--active" : ""}`}>
                         <div className="stepper-step__circle">3</div>
-                        <span className="stepper-step__label">Kết quả</span>
+                        <span className="stepper-step__label">{isVi ? "Kết quả" : "Result"}</span>
                     </div>
                 </div>
             </div>

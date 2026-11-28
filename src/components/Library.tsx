@@ -24,13 +24,16 @@ import { reviewService } from "../services/reviewService";
 import { favoriteService } from "../services/favoriteService";
 import type { Game } from "../types/game";
 import type { Review } from "../types/review";
-import { formatPrice } from "../utils/format";
+import { useI18n } from "../i18n/I18nContext";
+import { getLocalizedGame } from "../i18n/productI18n";
 
 
 export default function Library() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { user } = useAuth();
+    const { t, locale } = useI18n();
+    const isVi = locale === "vi";
 
     const games = useAppSelector(selectGames);
     const gamesStatus = useAppSelector(selectGamesStatus);
@@ -174,26 +177,26 @@ export default function Library() {
                     <div className="library-page__header-title-row">
                         <div className="library-page__title-box">
                             <Gamepad2 size={32} className="library-page__icon" />
-                            <h1 className="library-page__title">Thư viện trò chơi</h1>
+                            <h1 className="library-page__title">{t.library.title}</h1>
                         </div>
 
                         {user && (
                             <div className="library-page__stats-row">
                                 <div className="library-page__stat-pill">
                                     <ShieldCheck size={16} />
-                                    <span>{purchasedGames.length} đã sở hữu</span>
+                                    <span>{purchasedGames.length} {isVi ? "đã sở hữu" : "owned"}</span>
                                 </div>
                                 <div className="library-page__stat-pill">
                                     <Heart size={16} />
-                                    <span>{favorites.length} yêu thích</span>
+                                    <span>{favorites.length} {isVi ? "yêu thích" : "favorites"}</span>
                                 </div>
                                 <div className="library-page__stat-pill">
                                     <MessageSquare size={16} />
-                                    <span>{userReviews.length} đã đánh giá</span>
+                                    <span>{userReviews.length} {isVi ? "đã đánh giá" : "reviewed"}</span>
                                 </div>
-                                <Link to="/orders" className="library-page__stat-pill" title="Xem lịch sử đơn hàng">
+                                <Link to="/orders" className="library-page__stat-pill" title={t.orders.title}>
                                     <Package size={16} />
-                                    <span>Lịch sử đơn</span>
+                                    <span>{t.orders.title}</span>
                                 </Link>
                             </div>
                         )}
@@ -207,28 +210,28 @@ export default function Library() {
                                     className={`library-page__tab-btn ${activeTab === "all" ? "is-active" : ""}`}
                                     onClick={() => setActiveTab("all")}
                                 >
-                                    Tất cả ({purchasedGames.length})
+                                    {t.store.filters.all} ({purchasedGames.length})
                                 </button>
                                 <button
                                     type="button"
                                     className={`library-page__tab-btn ${activeTab === "favorites" ? "is-active" : ""}`}
                                     onClick={() => setActiveTab("favorites")}
                                 >
-                                    ⭐ Yêu thích ({purchasedGames.filter((g) => favorites.includes(g.id)).length})
+                                    ⭐ {t.header.account.favorites} ({purchasedGames.filter((g) => favorites.includes(g.id)).length})
                                 </button>
                                 <button
                                     type="button"
                                     className={`library-page__tab-btn ${activeTab === "reviewed" ? "is-active" : ""}`}
                                     onClick={() => setActiveTab("reviewed")}
                                 >
-                                    Đã đánh giá ({purchasedGames.filter((g) => reviewsMap.has(g.id)).length})
+                                    {isVi ? "Đã đánh giá" : "Reviewed"} ({purchasedGames.filter((g) => reviewsMap.has(g.id)).length})
                                 </button>
                                 <button
                                     type="button"
                                     className={`library-page__tab-btn ${activeTab === "unreviewed" ? "is-active" : ""}`}
                                     onClick={() => setActiveTab("unreviewed")}
                                 >
-                                    Chưa đánh giá ({purchasedGames.filter((g) => !reviewsMap.has(g.id)).length})
+                                    {isVi ? "Chưa đánh giá" : "Unreviewed"} ({purchasedGames.filter((g) => !reviewsMap.has(g.id)).length})
                                 </button>
                             </div>
 
@@ -236,7 +239,7 @@ export default function Library() {
                                 <Search size={16} />
                                 <input
                                     type="text"
-                                    placeholder="Tìm trong thư viện..."
+                                    placeholder={isVi ? "Tìm trong thư viện..." : "Search in library..."}
                                     value={searchKeyword}
                                     onChange={(e) => setSearchKeyword(e.target.value)}
                                     className="library-page__search-input"
@@ -251,63 +254,66 @@ export default function Library() {
                         <div className="library-page__auth-icon">
                             <Gamepad2 size={40} />
                         </div>
-                        <h2>Đăng nhập để xem Thư viện game của bạn</h2>
+                        <h2>{isVi ? "Đăng nhập để xem Thư viện game của bạn" : "Sign in to view your Game Library"}</h2>
                         <p>
-                            Quản lý toàn bộ game bản quyền kỹ thuật số đã mua, kích hoạt tự động theo tài khoản,
-                            đánh giá trải nghiệm và theo dõi danh sách trò chơi yêu thích.
+                            {isVi
+                                ? "Quản lý toàn bộ game bản quyền kỹ thuật số đã mua, kích hoạt tự động theo tài khoản, đánh giá trải nghiệm và theo dõi danh sách trò chơi yêu thích."
+                                : "Manage all your purchased digital games, activate keys, write reviews, and track your favorites."}
                         </p>
                         <Link to="/login" className="library-page__auth-btn">
                             <LogIn size={18} />
-                            <span>Đăng nhập ngay</span>
+                            <span>{t.auth.login}</span>
                         </Link>
                     </section>
                 ) : loading ? (
                     <div className="library-page__loading">
-                        <p>Đang tải thư viện trò chơi của bạn...</p>
+                        <p>{t.common.loading}</p>
                     </div>
                 ) : purchasedGames.length === 0 ? (
                     <section className="library-page__empty-card">
                         <div className="library-page__empty-icon">
                             <Gamepad2 size={44} />
                         </div>
-                        <h2>Thư viện của bạn đang trống</h2>
+                        <h2>{t.library.empty}</h2>
                         <p>
-                            Bạn chưa sở hữu bản quyền tựa game nào trên hệ thống ATA GAMES.
-                            Hãy ghé thăm Cửa hàng để sở hữu những tựa game hấp dẫn nhất với giá ưu đãi!
+                            {isVi
+                                ? "Bạn chưa sở hữu bản quyền tựa game nào trên hệ thống ATA GAMES. Hãy ghé thăm Cửa hàng để sở hữu những tựa game hấp dẫn nhất với giá ưu đãi!"
+                                : "You don't own any games on ATA GAMES yet. Visit the Store to find great deals!"}
                         </p>
                         <Link to="/store" className="library-page__primary-btn">
                             <ShoppingCart size={18} />
-                            <span>Khám phá Cửa hàng ngay</span>
+                            <span>{t.library.viewStore}</span>
                         </Link>
                     </section>
                 ) : (
                     <section className="library-page__shelf">
                         <div className="library-page__shelf-header">
                             <h2>
-                                {activeTab === "all" && "Trò chơi đã mua của bạn"}
-                                {activeTab === "favorites" && "Trò chơi yêu thích trong thư viện"}
-                                {activeTab === "reviewed" && "Trò chơi bạn đã viết nhận xét"}
-                                {activeTab === "unreviewed" && "Trò chơi đang chờ bạn đánh giá"}
+                                {activeTab === "all" && (isVi ? "Trò chơi đã mua của bạn" : "Your Purchased Games")}
+                                {activeTab === "favorites" && (isVi ? "Trò chơi yêu thích trong thư viện" : "Favorite Games in Library")}
+                                {activeTab === "reviewed" && (isVi ? "Trò chơi bạn đã viết nhận xét" : "Reviewed Games")}
+                                {activeTab === "unreviewed" && (isVi ? "Trò chơi đang chờ bạn đánh giá" : "Games Awaiting Your Review")}
                                 <span className="library-page__shelf-count">({filteredGames.length})</span>
                             </h2>
                         </div>
 
                         {filteredGames.length === 0 ? (
                             <div className="library-page__no-match">
-                                <p>Không tìm thấy game nào phù hợp với bộ lọc hiện tại.</p>
+                                <p>{t.store.noResults}</p>
                             </div>
                         ) : (
                             <div className="library-page__grid">
                                 {filteredGames.map((game) => {
                                     const review = reviewsMap.get(game.id);
                                     const isFav = favorites.includes(game.id);
+                                    const localized = getLocalizedGame(game, locale);
 
                                     return (
                                         <article key={game.id} className="library-card">
                                             <div className="library-card__media">
                                                 <img
                                                     src={game.bannerImage || game.coverImage}
-                                                    alt={game.title}
+                                                    alt={localized.title}
                                                     className="library-card__img"
                                                     loading="lazy"
                                                 />
@@ -315,8 +321,8 @@ export default function Library() {
                                                     type="button"
                                                     className={`library-card__fav-btn ${isFav ? "is-active" : ""}`}
                                                     onClick={() => handleToggleFavorite(game.id)}
-                                                    title={isFav ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
-                                                    aria-label={isFav ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
+                                                    title={isFav ? t.favorites.remove : t.favorites.addToCart}
+                                                    aria-label={isFav ? t.favorites.remove : t.favorites.addToCart}
                                                 >
                                                     <Heart size={16} fill={isFav ? "currentColor" : "none"} />
                                                 </button>
@@ -324,9 +330,9 @@ export default function Library() {
 
                                             <div className="library-card__body">
                                                 <div className="library-card__info">
-                                                    <span className="library-card__genre">{game.genre}</span>
+                                                    <span className="library-card__genre">{localized.genre}</span>
                                                     <h3 className="library-card__title">
-                                                        <Link to={`/games/${game.id}`}>{game.title}</Link>
+                                                        <Link to={`/games/${game.id}`}>{localized.title}</Link>
                                                     </h3>
                                                     <span className="library-card__developer">{game.developer}</span>
                                                 </div>
@@ -356,20 +362,20 @@ export default function Library() {
                                                                 className="library-card__review-btn is-edit"
                                                             >
                                                                 <Edit3 size={14} />
-                                                                <span>Sửa đánh giá</span>
+                                                                <span>{isVi ? "Sửa đánh giá" : "Edit Review"}</span>
                                                             </Link>
                                                         </div>
                                                     ) : (
                                                         <div className="library-card__unreviewed-info">
                                                             <span className="library-card__unreviewed-text">
-                                                                Chưa viết nhận xét
+                                                                {isVi ? "Chưa viết nhận xét" : "Not reviewed yet"}
                                                             </span>
                                                             <Link
                                                                 to={`/games/${game.id}#reviews-heading`}
                                                                 className="library-card__review-btn is-new"
                                                             >
                                                                 <Star size={14} fill="currentColor" />
-                                                                <span>Đánh giá ngay</span>
+                                                                <span>{isVi ? "Đánh giá ngay" : "Write Review"}</span>
                                                             </Link>
                                                         </div>
                                                     )}
@@ -380,7 +386,7 @@ export default function Library() {
                                                         to={`/games/${game.id}`}
                                                         className="library-card__detail-link"
                                                     >
-                                                        <span>Xem trang chi tiết</span>
+                                                        <span>{t.orders.viewDetail}</span>
                                                         <ExternalLink size={14} />
                                                     </Link>
                                                 </div>
@@ -397,7 +403,7 @@ export default function Library() {
                     <section className="library-page__shelf library-page__shelf--wishlist">
                         <div className="library-page__shelf-header">
                             <h2>
-                                Trò chơi yêu thích khác (Chưa sở hữu)
+                                {isVi ? "Trò chơi yêu thích khác (Chưa sở hữu)" : "Other Favorite Games (Not Owned)"}
                                 <span className="library-page__shelf-count">({favoriteOnlyGames.length})</span>
                             </h2>
                         </div>
@@ -415,14 +421,16 @@ export default function Library() {
                             <div className="library-page__rec-title-box">
                                 <Sparkles size={20} className="library-page__rec-icon" />
                                 <div>
-                                    <h2>Gợi ý game tương tự dành cho bạn</h2>
+                                    <h2>{isVi ? "Gợi ý game tương tự dành cho bạn" : "Recommended For You"}</h2>
                                     <p className="library-page__rec-subtitle">
-                                        Đề xuất dựa trên các tựa game bạn đã sở hữu và yêu thích trên ATA GAMES
+                                        {isVi
+                                            ? "Đề xuất dựa trên các tựa game bạn đã sở hữu và yêu thích trên ATA GAMES"
+                                            : "Based on games you own and love on ATA GAMES"}
                                     </p>
                                 </div>
                             </div>
                             <Link to="/store" className="library-page__see-more-link">
-                                Xem tất cả tại Cửa hàng &rarr;
+                                {t.home.viewAll} &rarr;
                             </Link>
                         </div>
 
@@ -442,6 +450,8 @@ function RecommendedCard({ game }: { game: Game }) {
     const dispatch = useAppDispatch();
     const isInCart = useAppSelector(selectIsInCart(game.id));
     const [added, setAdded] = useState(false);
+    const { formatPrice, locale, t } = useI18n();
+    const localized = getLocalizedGame(game, locale);
 
     function handleAddToCart(e: React.MouseEvent) {
         e.preventDefault();
@@ -454,7 +464,7 @@ function RecommendedCard({ game }: { game: Game }) {
     return (
         <article className="rec-card">
             <Link to={`/games/${game.id}`} className="rec-card__image-link">
-                <img src={game.coverImage} alt={game.title} className="rec-card__img" loading="lazy" />
+                <img src={game.coverImage} alt={localized.title} className="rec-card__img" loading="lazy" />
                 {game.discountPercent > 0 && (
                     <span className="rec-card__discount-tag">-{game.discountPercent}%</span>
                 )}
@@ -462,11 +472,11 @@ function RecommendedCard({ game }: { game: Game }) {
 
             <div className="rec-card__content">
                 <span className="rec-card__genre">
-                    <Tag size={12} /> {game.genre}
+                    <Tag size={12} /> {localized.genre}
                 </span>
 
                 <h4 className="rec-card__title">
-                    <Link to={`/games/${game.id}`}>{game.title}</Link>
+                    <Link to={`/games/${game.id}`}>{localized.title}</Link>
                 </h4>
 
                 <div className="rec-card__rating-row">
@@ -486,7 +496,7 @@ function RecommendedCard({ game }: { game: Game }) {
                         type="button"
                         onClick={handleAddToCart}
                         className={`rec-card__cart-btn ${isInCart || added ? "is-added" : ""}`}
-                        title={isInCart ? "Đã trong giỏ hàng" : "Thêm vào giỏ"}
+                        title={isInCart ? t.gameDetail.inCart : t.home.addToCart}
                     >
                         {isInCart || added ? <Check size={16} /> : <ShoppingCart size={16} />}
                     </button>

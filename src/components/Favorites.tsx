@@ -7,12 +7,16 @@ import { fetchGames, selectGames, selectGamesStatus } from "../store/gamesSlice"
 import { favoriteService } from "../services/favoriteService";
 import GameItem from "./GameItem";
 import StateMessage from "./StateMessage";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function Favorites() {
     const { user } = useAuth();
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);
     const status = useAppSelector(selectGamesStatus);
+    const { t, locale } = useI18n();
+    const isVi = locale === "vi";
+
     useEffect(() => {
         if (status === "idle") void dispatch(fetchGames());
     }, [dispatch, status]);
@@ -23,14 +27,23 @@ export default function Favorites() {
     return (
         <section className="favorites-page">
             <div className="favorites-page__heading">
-                <div><h1>Game yêu thích</h1></div>
+                <div><h1>{t.favorites.title}</h1></div>
             </div>
             {status === "loading" || status === "idle" ? (
-                <StateMessage variant="loading" title="Đang tải game" message="Vui lòng đợi trong giây lát." />
+                <StateMessage
+                    variant="loading"
+                    title={isVi ? "Đang tải game" : "Loading games"}
+                    message={isVi ? "Vui lòng đợi trong giây lát." : "Please wait a moment."}
+                />
             ) : favoriteGames.length ? (
                 <div className="home-game-grid">{favoriteGames.map((game) => <GameItem key={game.id} game={game} />)}</div>
             ) : (
-                <div className="favorites-empty"><Heart size={34} /><h2>Chưa có game yêu thích</h2><p>Nhấn biểu tượng trái tim trên game để thêm vào danh sách này.</p><Link to="/store">Khám phá cửa hàng</Link></div>
+                <div className="favorites-empty">
+                    <Heart size={34} />
+                    <h2>{t.favorites.empty}</h2>
+                    <p>{isVi ? "Nhấn biểu tượng trái tim trên game để thêm vào danh sách này." : "Click the heart icon on any game to add it here."}</p>
+                    <Link to="/store">{t.library.viewStore}</Link>
+                </div>
             )}
         </section>
     );

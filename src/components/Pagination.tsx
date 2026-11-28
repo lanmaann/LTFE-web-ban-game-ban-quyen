@@ -1,3 +1,4 @@
+import { useI18n } from "../i18n/I18nContext";
 
 interface PaginationProps {
     page: number;
@@ -21,12 +22,13 @@ function getPageItems(page: number, totalPages: number): (number | "ellipsis-lef
 }
 
 export default function Pagination({ page, totalPages, onChange }: PaginationProps) {
+    const { t, locale } = useI18n();
     if (totalPages <= 1) return null;
 
     return (
-        <nav className="pagination" aria-label="Phân trang">
+        <nav className="pagination" aria-label={locale === "vi" ? "Phân trang" : "Pagination"}>
             <button type="button" disabled={page === 1} onClick={() => onChange(page - 1)}>
-                Trước
+                {t.store.pagination.prev}
             </button>
 
             {getPageItems(page, totalPages).map((item) =>
@@ -46,7 +48,7 @@ export default function Pagination({ page, totalPages, onChange }: PaginationPro
             )}
 
             <button type="button" disabled={page === totalPages} onClick={() => onChange(page + 1)}>
-                Sau
+                {t.store.pagination.next}
             </button>
         </nav>
     );
