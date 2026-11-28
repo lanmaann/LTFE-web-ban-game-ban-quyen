@@ -82,7 +82,8 @@ function buildNotifications(
     posts: CommunityPost[],
     spins: SpinHistoryItem[],
     userId: string,
-    t: Translations
+    t: Translations,
+    locale: string
 ): HeaderNotification[] {
     const notifications: HeaderNotification[] = [];
 
@@ -98,7 +99,7 @@ function buildNotifications(
         const isRefunded = order.status === "refunded";
         const isRejected = order.status === "refund_rejected";
         const isPending = order.status === "refund_pending";
-
+        const titles = order.items.map((item) => item.title).join(", ");
         const date = isRefunded
             ? order.refundedAt ?? order.createdAt
             : isRejected
@@ -107,27 +108,24 @@ function buildNotifications(
                     ? order.refundRequestedAt ?? order.createdAt
                     : order.createdAt;
 
-        const titles = order.items.map((item) => item.title).join(", ");
-
-        let title: string;
-        let message: string;
-
-        if (isRefunded) {
-            title = t.notifications.orderRefunded;
-            message = t.notifications.orderRefundedMsg(titles);
-        } else if (isRejected) {
-            title = t.notifications.orderRefundRejected;
-            message = t.notifications.orderRefundRejectedMsg(
-                order.id,
-                order.refundRejectReason || "Không đủ điều kiện hoàn tiền."
-            );
-        } else if (isPending) {
-            title = t.notifications.orderRefundPending;
-            message = t.notifications.orderRefundPendingMsg(order.id);
-        } else {
-            title = t.notifications.orderCompleted;
-            message = t.notifications.orderCompletedMsg(titles);
-        }
+        const title = isRefunded
+            ? t.notifications.orderRefunded
+            : isRejected
+                ? (locale === "vi" ? "Yêu cầu hoàn tiền bị từ chối" : "Refund request rejected")
+                : isPending
+                    ? (locale === "vi" ? "Đang xử lý yêu cầu hoàn tiền" : "Refund request pending")
+                    : t.notifications.orderCompleted;
+        const message = isRefunded
+            ? t.notifications.orderRefundedMsg(titles)
+            : isRejected
+                ? (locale === "vi"
+                    ? `Đơn hàng ${order.id}: ${order.refundRejectReason || "Không đủ điều kiện hoàn tiền."}`
+                    : `Order ${order.id}: ${order.refundRejectReason || "The order is not eligible for a refund."}`)
+                : isPending
+                    ? (locale === "vi"
+                        ? `Yêu cầu hoàn tiền cho đơn hàng ${order.id} đang được xem xét.`
+                        : `The refund request for order ${order.id} is being reviewed.`)
+                    : t.notifications.orderCompletedMsg(titles);
 
         notifications.push({
             id: `order:${order.id}:${order.status}`,
@@ -136,13 +134,11 @@ function buildNotifications(
             message,
             time: getNotificationTime(date, t),
             href: "/orders",
-            icon: isRefunded || isPending
-                ? Clock
-                : isRejected
-                    ? AlertCircle
-                    : CheckCircle2,
+            icon: isRefunded ? Clock : isRejected ? AlertCircle : isPending ? Clock : CheckCircle2,
             className: "notification-item__icon--purchase",
         });
+    });
+
     posts.forEach((post) => {
         if (post.userId !== userId) return;
         post.replies.forEach((reply) => {
@@ -194,14 +190,11 @@ export default function Header() {
     const [searchParams] = useSearchParams();
     const urlKeyword = searchParams.get("q") ?? "";
     const [keyword, setKeyword] = useState(urlKeyword);
-    const { t, formatPrice } = useI18n();
+    const { t, formatPrice, locale } = useI18n();
 
     useEffect(() => {
-    const [prevUrlKeyword, setPrevUrlKeyword] = useState(urlKeyword);
-    if (prevUrlKeyword !== urlKeyword) {
-        setPrevUrlKeyword(urlKeyword);
         setKeyword(urlKeyword);
-    }
+    }, [urlKeyword]);
 
     const dispatch = useAppDispatch();
     const games = useAppSelector(selectGames);
@@ -255,7 +248,7 @@ export default function Header() {
                 if (!active) return;
                 setNotifications({
                     userId,
-                    items: buildNotifications(orders, posts, spins, userId, t),
+                    items: buildNotifications(orders, posts, spins, userId, t, locale),
                 });
                 setNotificationsError(null);
             } catch (error) {
@@ -275,7 +268,7 @@ export default function Header() {
             active = false;
             window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
         };
-    }, [currentUserId, t]);
+    }, [currentUserId, t, locale]);
 
     useEffect(() => {
         return onSearchHistoryChange(() => setHistory(getSearchHistory()));

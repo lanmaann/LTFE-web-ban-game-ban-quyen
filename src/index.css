@@ -25,6 +25,23 @@
     text-rendering: optimizeLegibility;
 }
 
+:root[data-theme="light"] {
+    --color-bg: #edf3fa;
+    --color-surface: #ffffff;
+    --color-surface-2: #e6eef7;
+    --color-border: #c9d6e5;
+    --color-text: #172033;
+    --color-muted: #607087;
+    --color-primary: #1674cf;
+    --color-primary-hover: #268de9;
+    --color-accent: #1674cf;
+    --color-success: #167955;
+    --color-warning: #9a6500;
+    --color-danger: #b52f3a;
+    color: #172033;
+    background: #edf3fa;
+}
+
 body {
     margin: 0;
     min-width: 320px;

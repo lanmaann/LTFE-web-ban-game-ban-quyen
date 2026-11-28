@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Globe } from "lucide-react";
+import { Globe, Moon, Sun } from "lucide-react";
 import { CURRENCIES, LOCALE_META, useI18n } from "../i18n/I18nContext";
 import type { Currency, Locale } from "../i18n/I18nContext";
+import { useTheme } from "../utils/theme";
 
 export default function LanguageSwitcher() {
     const { locale, setLocale, t, currency, setCurrency } = useI18n();
+    const { isLight, toggleTheme } = useTheme();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -28,6 +30,15 @@ export default function LanguageSwitcher() {
 
     return (
         <div className="lang-switcher" ref={ref}>
+            <button
+                type="button"
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label={isLight ? "Chuyển sang giao diện tối" : "Chuyển sang giao diện sáng"}
+                title={isLight ? "Giao diện tối" : "Giao diện sáng"}
+            >
+                {isLight ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
             <button
                 type="button"
                 className="lang-switcher__trigger"
